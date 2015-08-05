@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>vb_access</title>
+</head>
+<body>
+	<h3>
+		vb调用access主要代码
+   	</h3>
+	<p>
+	Dim cnn As ADODB.Connection
+	<br>Dim rs As ADODB.Recordset
+	<br>Set cnn = New ADODB.Connection
+	<br>Set rs = New ADODB.Recordset
+	<br>cnn.Open "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=XXX.mdb;Persist Security Info=False" 'XXX.mdb为你数据库名称 
+	<br>rs.CursorLocation = adUseClient
+	<br>rs.Open "select * from XXX", cnn, adOpenDynamic, adLockPessimistic 'XXX为你的数据表
+	<br>
+	<br>a=rs.fields("字段名").value
+	<br>一般都是一个字段值一个字段值取，不是整条记录。如果要整条记录可以遍历。 
+	<br>l=rs.fields.count-1
+	<br>for i=0 to l
+	<br>xxx(i)=rs.fields(i).value
+	<br>next
+	<br>
+	<br>dim cn as new adodb.connection
+	<br>dim rs as new adodb.recordset
+	<br>
+	<br>rs.open "select * from 数据库 where id=3",adOpenDynamic, adLockOptimistic, -1
+	<br>if not rs.eof then
+	<br>rs("你要修改的字段1")="具体值1"
+	<br>...
+	<br>rs("你要修改的字段n")="具体值n"
+	<br>rs.update
+	<br>end if
+	<br>rs.close
+	</p>
+</body>
+</html>

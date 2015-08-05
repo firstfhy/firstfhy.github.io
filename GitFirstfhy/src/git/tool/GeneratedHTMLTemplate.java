@@ -15,7 +15,7 @@ public class GeneratedHTMLTemplate {
 			} else {
 				file.createNewFile();
 				
-				StringBuilder builder = new StringBuilder("Generated");
+				StringBuilder builder = new StringBuilder("<!DOCTYPE html>");
 				builder.append("\r\n");
 				builder.append("<html>").append("\r\n");
 				builder.append("<head>").append("\r\n");

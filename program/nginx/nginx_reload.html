@@ -2,9 +2,12 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>nginx_reload</title>
 </head>
 <body>
+	<h3>
+      nginx的平滑重启
+    </h3>
   	<div id="blog_content" class="blog_content">
 	    <div class="iteye-blog-content-contain" style="font-size: 14px;">
 			<p>在研发过程中，修改nginx的配置文件nginx.conf是很平常的事，需要重启nginx。如果我们直接reload是有一定风险的，我们可以通过发送系统信号给nginx主进程的方式来进行。</p>

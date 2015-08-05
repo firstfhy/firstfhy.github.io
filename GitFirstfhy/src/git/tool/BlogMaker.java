@@ -6,7 +6,7 @@ public class BlogMaker extends GeneratedHTMLTemplate {
 	
 	public static void main(String[] args) {
 		try {
-			new BlogMaker().make("nginx", "nginx_reload", "", true);;
+			new BlogMaker().make("cpp", "cpp_dll", "", true);;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

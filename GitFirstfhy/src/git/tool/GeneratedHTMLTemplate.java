@@ -25,7 +25,7 @@ public class GeneratedHTMLTemplate {
 				builder.append("\t").append("<link rel=\"stylesheet\" href=\"../../stylesheets/stylesheet.css\" media=\"screen\">").append("\r\n");
 				builder.append("\t").append("<link rel=\"stylesheet\" href=\"../../stylesheets/pygment_trac.css\">").append("\r\n");
 				builder.append("\t").append("<script type=\"text/javascript\" src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js\"></script>").append("\r\n");
-				builder.append("\t").append("<link rel=\"stylesheet\" href=\"../../javascripts/script.js\">").append("\r\n");
+				builder.append("\t").append("<script type=\"text/javascript\" src=\"../../javascripts/script.js\"></script>").append("\r\n");
 				builder.append("\t").append("<meta name=\"description\" content=\"firstfhy\">").append("\r\n");
 				builder.append("\t").append("<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">").append("\r\n");
 				builder.append("</head>").append("\r\n");
@@ -33,7 +33,7 @@ public class GeneratedHTMLTemplate {
 				builder.append("\t").append("<div class=\"wrapper\">").append("\r\n");
 				builder.append("\t\t").append("<div class=\"container\">").append("\r\n");
 				builder.append("\t\t\t").append("<div id=\"main\" role=\"main\">").append("\r\n");
-				builder.append("\t\t\t\t").append("<div class=\"wrapper\">").append("\r\n");
+				builder.append("\t\t\t\t").append("<div class=\"download-bar\">").append("\r\n");
 				builder.append("\t\t\t\t\t").append("<div class=\"inner\">").append("\r\n");
 				builder.append("\t\t\t\t\t\t").append("<a class=\"code\">").append(name.toUpperCase()).append("</a>").append("\r\n");
 				builder.append("\t\t\t\t\t").append("</div>").append("\r\n");

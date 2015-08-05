@@ -5,20 +5,23 @@
 <title>vc_link_vb</title>
 </head>
 <body>
-<p>
-一般来说，VB和VC共同编程有3种方式：一种是VC生成DLL，在VB中调用DLL；一种是VC生成ActiveX控件(.ocx)，在VB中插入；还有一种是在VC中生成ActiveX   Automation服务器，在VB中调用。相对而言，第一种方法对VC编程者的要求最低，但要求你的伙伴进行配合，我推荐这种方法。   
-<br>先说说VC++的编程。首先在VC++中生成Win32   DLL工程。在这个工程中添加几个函数供VB用户调用。一个DLL中的函数要想被VB调用，必须满足两个条件：一是调用方式为stdcall，另一个是必须是export的。要做到第一条，只须在函数声明前加上__stdcall关键字。如:   
-<br>short   __stdcall   sample(short   nLen,   short   *buffer)   
-<br>要做到第二条，需要在*.def文件中加上如下的几行：   
-<br>EXPORTS   
-<br>sample   @1   
-<br>这里的sample是你要在VB中调用的函数名，@1表示该函数在DLL中的编号，每个函数都不一样。注意这里的函数名是区分大小写的。至于你说的需要传递大量数据，可以这样做，在VB中用一个数组存放数据，然后将该数组的大小和地址传给VC(至于如何在VB中编程我会在下面介绍)。就象上面的例子，nLen是数组大小，buffer是数组地址，有了这两条，你可以象使用VC的数组一样进行处理了。至于输出图形，可以生成WMF或BMP格式，让VB调用。不过，我认为也可以直接输出到视窗，只要VB将窗口的句柄hWnd和hDC以及视窗的绘图位置(VB和VC采用的坐标系必须一致才行)传给VC就行了。而VB的AutoRedraw属性必须为False，在Paint事件中调用VC的绘图程序。   
-<br>再谈谈VB的编程。VB调用DLL的方法和调用Windows   API的方法是一样的，一般在VB的书中有介绍。对于上面一个例子，先要声明VC函数：   
-<br>Declare   Function   sample   Lib   "mydll.dll"   (ByVal   nLen   As   Integer,   buffer   As   Integer)   As   Integer   
-<br>这里mydll.dll是你的dll的名字。你可能已经注意到了两个参数的声明有所不同，第一个参数加上了ByVal。规则是这样的：如果在VC中某个参数声明为指针和数组，就不加ByVal，否则都要加上ByVal。在VB中调用这个函数采用这样的语法：   
-<br>sample   10,   a(0)   
-<br>这里的a()数组是用来存放数据的，10为数组长度，这里的第二个参数不能是a()，而必须是要传递的数据中的第一个。这是VB编程的关键。   
-<br>下面在说几个可能遇到的问题。一个问题是VB可能报告找不到dll，你可以把dll放到system目录下，并确保VB的Declare语句正确。另一个问题是VB报告找不到需要的函数，这通常是因为在VC中*.def文件没设置。第三种情况是VB告诉不能进行转换，这可能是在VC中没有加上__stdcall关键字，也可能是VB和VC的参数类型不一致，注意在VC中int是4个字节(相当于VB的Long)，而VB的Integer只有2个字节。必须保证VB和VC的参数个数相同，所占字节数也一致。最后一个要注意的问题是VC中绝对不能出现数组越界的情况，否则会导致VB程序崩溃。
-</p>
+	<h3>
+		VB连VC
+   	</h3>
+	<p>
+	一般来说，VB和VC共同编程有3种方式：一种是VC生成DLL，在VB中调用DLL；一种是VC生成ActiveX控件(.ocx)，在VB中插入；还有一种是在VC中生成ActiveX   Automation服务器，在VB中调用。相对而言，第一种方法对VC编程者的要求最低，但要求你的伙伴进行配合，我推荐这种方法。   
+	<br>先说说VC++的编程。首先在VC++中生成Win32   DLL工程。在这个工程中添加几个函数供VB用户调用。一个DLL中的函数要想被VB调用，必须满足两个条件：一是调用方式为stdcall，另一个是必须是export的。要做到第一条，只须在函数声明前加上__stdcall关键字。如:   
+	<br>short   __stdcall   sample(short   nLen,   short   *buffer)   
+	<br>要做到第二条，需要在*.def文件中加上如下的几行：   
+	<br>EXPORTS   
+	<br>sample   @1   
+	<br>这里的sample是你要在VB中调用的函数名，@1表示该函数在DLL中的编号，每个函数都不一样。注意这里的函数名是区分大小写的。至于你说的需要传递大量数据，可以这样做，在VB中用一个数组存放数据，然后将该数组的大小和地址传给VC(至于如何在VB中编程我会在下面介绍)。就象上面的例子，nLen是数组大小，buffer是数组地址，有了这两条，你可以象使用VC的数组一样进行处理了。至于输出图形，可以生成WMF或BMP格式，让VB调用。不过，我认为也可以直接输出到视窗，只要VB将窗口的句柄hWnd和hDC以及视窗的绘图位置(VB和VC采用的坐标系必须一致才行)传给VC就行了。而VB的AutoRedraw属性必须为False，在Paint事件中调用VC的绘图程序。   
+	<br>再谈谈VB的编程。VB调用DLL的方法和调用Windows   API的方法是一样的，一般在VB的书中有介绍。对于上面一个例子，先要声明VC函数：   
+	<br>Declare   Function   sample   Lib   "mydll.dll"   (ByVal   nLen   As   Integer,   buffer   As   Integer)   As   Integer   
+	<br>这里mydll.dll是你的dll的名字。你可能已经注意到了两个参数的声明有所不同，第一个参数加上了ByVal。规则是这样的：如果在VC中某个参数声明为指针和数组，就不加ByVal，否则都要加上ByVal。在VB中调用这个函数采用这样的语法：   
+	<br>sample   10,   a(0)   
+	<br>这里的a()数组是用来存放数据的，10为数组长度，这里的第二个参数不能是a()，而必须是要传递的数据中的第一个。这是VB编程的关键。   
+	<br>下面在说几个可能遇到的问题。一个问题是VB可能报告找不到dll，你可以把dll放到system目录下，并确保VB的Declare语句正确。另一个问题是VB报告找不到需要的函数，这通常是因为在VC中*.def文件没设置。第三种情况是VB告诉不能进行转换，这可能是在VC中没有加上__stdcall关键字，也可能是VB和VC的参数类型不一致，注意在VC中int是4个字节(相当于VB的Long)，而VB的Integer只有2个字节。必须保证VB和VC的参数个数相同，所占字节数也一致。最后一个要注意的问题是VC中绝对不能出现数组越界的情况，否则会导致VB程序崩溃。
+	</p>
 </body>
 </html>

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>cpp_dll</title>
+</head>
+<body>
+	<h3>
+		标准C/C++的DLL编写
+   	</h3>
+	<div id="article_content" class="article_content">
+	<p>DLL也就是动态链接库，使用DLL编程的好处大家应当都知道了吧，可是怎么样来作呢，今天我就来说说。</p><p>首先，你要确定你要导出那些个函数，然后你就在你要导出的函数名前加上下面一句话：</p><p>&nbsp;&nbsp;&nbsp; <font color="#008000">// 输出函数的前缀</font><br/>&nbsp;&nbsp;&nbsp; <font color="#0000ff">#define</font>&nbsp; DLL_EXPORT&nbsp;&nbsp; <font color="#0000ff">extern</font> &quot;C&quot; <font color="#0000ff">__declspec</font>( <font color="#0000ff">dllexport</font> ) </p><p>&nbsp;&nbsp;&nbsp; <font color="#0000ff">DLL_EXPORT</font> <font color="#0000ff">VOID&nbsp; <font color="#000000">ExportFun</font></font>()<br/>&nbsp;&nbsp;&nbsp; {<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...<br/>&nbsp;&nbsp;&nbsp; }</p><p>&nbsp; 是不是很简单啊。如果你要导出整个类或者全局变量，你需要这样做：</p><p><font color="#008000">// 输出类的前缀<br/></font><font color="#0000ff">#define</font>&nbsp; DLL_CLASS_EXPORT&nbsp;&nbsp; <font color="#0000ff">__declspec</font>( <font color="#0000ff">dllexport</font> ) </p><p><font color="#008000">// 输出全局变量的前缀</font><br/><font color="#0000ff">#define</font>&nbsp; DLL_GLOBAL_EXPORT&nbsp;&nbsp; <font color="#0000ff">extern __declspec</font>( <font color="#0000ff">dllexport</font> )</p><p>&nbsp;完成了这些以后，我们就要在主程序中调用这些个函数了，用下面的方法：</p><p>&nbsp;&nbsp;&nbsp; <font color="#0000ff">HINSTANCE</font> hInst = NULL;<br/>&nbsp;&nbsp;&nbsp; hInst = LoadLibrary(&quot;*.dll&quot;);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#008000">//&nbsp;你的DLL文件名</font></p><p>&nbsp;&nbsp;<font color="#0000ff">&nbsp; if</font> (!hInst)<br/>&nbsp;&nbsp;&nbsp; {<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBox(hWnd,&quot;无法加载 *.Dll &quot;,&quot;Error&quot;,MB_OK);<br/>&nbsp;&nbsp;&nbsp; }</p><p>&nbsp;&nbsp;&nbsp; 还记得上面我声明的那个ExportFun()函数吗？我不能直接得到那个函数，但是可以把那个函数的地址取出来。其实函数地址使用起来和函数是一样的。只不过，为了使用方便，需要定义一个函数指针的类型。如果要指向上面的那个ExportFun()，则它的函数指针的类型定义如下：</p><p>&nbsp;&nbsp;&nbsp; <font color="#0000ff">typedef</font> void (CALLBACK* LPEXPORTFUN)(void)</p><p>&nbsp;&nbsp;&nbsp; 之后需要做的是声明一个指针，然后得到DLL中ExportFun()的地址。GetProcAddress函数的第一个参数是之前得到的DLL的实例句柄，后面一个是DLL中那个函数的函数名。<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br/>&nbsp;&nbsp;&nbsp; <font color="#0000ff">LPEXPORTFUN</font> pFun = NULL;<br/>&nbsp;&nbsp;&nbsp; <font color="#0000ff">LPEXPORTFUN</font> pFun = (LPEXPORTFUN)GetProcAddress(hInst, &quot;ExportFun&quot;);</p><p>好了，到这里已经就要大功告成了，还差最后一步，调用那个函数：</p><p>pFun();</p><p>大功告成！！</p>    
+	</div>
+</body>
+</html>

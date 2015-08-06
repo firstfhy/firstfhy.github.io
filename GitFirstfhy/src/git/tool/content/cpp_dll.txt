@@ -1,33 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<meta charset="UTF-8">
-	<title>标准C/C++的DLL编写</title>
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	
-	<link rel="stylesheet" href="[resource_parent]stylesheets/stylesheet.css" media="screen">
-	<link rel="stylesheet" href="[resource_parent]stylesheets/pygment_trac.css"/>
-	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-	<script type="text/javascript" src="[resource_parent]javascripts/script.js"></script>
-	
-	<meta name="description" content="firstfhy">
-	
-	<meta name="viewport" content="width=device-width,initial-scale=1">
-</head>
-<body>
-	<div class="wrapper">
-		<div id="container">
-		    <div id="main" role="main">
-		    	<div class="download-bar">
-			    	<div class="inner">
-			          	<a class="code">CPP</a>
-			        </div>
-		        	<span class="blc"></span><span class="trc"></span>
-		        </div>
-		        <article class="markdown-body">
-					<h3>
-						标准C/C++的DLL编写
-				   	</h3>
 					<div id="article_content" class="article_content">
 						<p>首先，你要确定你要导出那些个函数，然后你就在你要导出的函数名前加上下面一句话：</p>
 						<p>&nbsp;&nbsp;&nbsp; 
@@ -87,18 +57,3 @@
 						<p>pFun();</p>
 						<p>大功告成！！</p>    
 					</div>
-
-				</article>
-			</div>
-		</div>
-	    <footer>
-			<div class="owner">
-				<p><a href="https://github.com/firstfhy" class="avatar"><img src="https://avatars0.githubusercontent.com/u/10542465?v=3&amp;s=60" width="48" height="48"></a>View <a href="https://github.com/firstfhy">firstfhy</a> on <a href="https://www.github.com">GitHub</a></p>
-			</div>
-			<div class="creds">
-			  	<small>This page generated using <a href="http://pages.github.com/">GitHub Pages</a><br>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
-			</div>
-	    </footer>
-	</div>
-</body>
-</html>

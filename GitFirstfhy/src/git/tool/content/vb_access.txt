@@ -1,33 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<meta charset="UTF-8">
-	<title>vb调用access主要代码</title>
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	
-	<link rel="stylesheet" href="[resource_parent]stylesheets/stylesheet.css" media="screen">
-	<link rel="stylesheet" href="[resource_parent]stylesheets/pygment_trac.css"/>
-	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-	<script type="text/javascript" src="[resource_parent]javascripts/script.js"></script>
-	
-	<meta name="description" content="firstfhy">
-	
-	<meta name="viewport" content="width=device-width,initial-scale=1">
-</head>
-<body>
-	<div class="wrapper">
-		<div id="container">
-		    <div id="main" role="main">
-		    	<div class="download-bar">
-			    	<div class="inner">
-			          	<a class="code">VB</a>
-			        </div>
-		        	<span class="blc"></span><span class="trc"></span>
-		        </div>
-		        <article class="markdown-body">
-					<h3>
-						vb调用access主要代码
-				   	</h3>
 					<p>
 						一般来说，VB和VC共同编程有3种方式：一种是VC生成DLL，在VB中调用DLL；一种是VC生成ActiveX控件(.ocx)，在VB中插入；还有一种是在VC中生成ActiveX   Automation服务器，在VB中调用。相对而言，第一种方法对VC编程者的要求最低，但要求你的伙伴进行配合，我推荐这种方法。   
 						<br>先说说VC++的编程。首先在VC++中生成Win32   DLL工程。在这个工程中添加几个函数供VB用户调用。一个DLL中的函数要想被VB调用，必须满足两个条件：一是调用方式为stdcall，另一个是必须是export的。要做到第一条，只须在函数声明前加上__stdcall关键字。如:   
@@ -43,18 +13,3 @@
 						<br>这里的a()数组是用来存放数据的，10为数组长度，这里的第二个参数不能是a()，而必须是要传递的数据中的第一个。这是VB编程的关键。   
 						<br>下面在说几个可能遇到的问题。一个问题是VB可能报告找不到dll，你可以把dll放到system目录下，并确保VB的Declare语句正确。另一个问题是VB报告找不到需要的函数，这通常是因为在VC中*.def文件没设置。第三种情况是VB告诉不能进行转换，这可能是在VC中没有加上__stdcall关键字，也可能是VB和VC的参数类型不一致，注意在VC中int是4个字节(相当于VB的Long)，而VB的Integer只有2个字节。必须保证VB和VC的参数个数相同，所占字节数也一致。最后一个要注意的问题是VC中绝对不能出现数组越界的情况，否则会导致VB程序崩溃。
 					</p>
-
-				</article>
-			</div>
-		</div>
-	    <footer>
-			<div class="owner">
-				<p><a href="https://github.com/firstfhy" class="avatar"><img src="https://avatars0.githubusercontent.com/u/10542465?v=3&amp;s=60" width="48" height="48"></a>View <a href="https://github.com/firstfhy">firstfhy</a> on <a href="https://www.github.com">GitHub</a></p>
-			</div>
-			<div class="creds">
-			  	<small>This page generated using <a href="http://pages.github.com/">GitHub Pages</a><br>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
-			</div>
-	    </footer>
-	</div>
-</body>
-</html>

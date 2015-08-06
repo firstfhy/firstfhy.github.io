@@ -1,66 +1,79 @@
 package git.tool;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.LineNumberReader;
+import java.util.Map;
 
 public class GeneratedHTMLTemplate {
 	
-	public void make(String path, String name, String content, boolean existsDelete) throws Exception {
-		File file = new File(path + "/" + name + ".html");
+	public void make(File file, final Map<String, String> contents, boolean existsDelete, File template) throws Exception {
 		if (existsDelete) {
 			file.delete();
 		} else {
 			if (file.exists()) {
 				System.out.println("File exists.");
+				return;
 			} else {
 				file.createNewFile();
-				
-				StringBuilder builder = new StringBuilder("<!DOCTYPE html>");
-				builder.append("\r\n");
-				builder.append("<html>").append("\r\n");
-				builder.append("<head>").append("\r\n");
-				builder.append("\t").append("<meta charset=\"UTF-8\">").append("\r\n");
-				builder.append("\t").append("<title>").append(name.toUpperCase()).append("</title>").append("\r\n");
-				builder.append("\t").append("<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\">").append("\r\n");
-				builder.append("\t").append("<link rel=\"stylesheet\" href=\"../../stylesheets/stylesheet.css\" media=\"screen\">").append("\r\n");
-				builder.append("\t").append("<link rel=\"stylesheet\" href=\"../../stylesheets/pygment_trac.css\">").append("\r\n");
-				builder.append("\t").append("<script type=\"text/javascript\" src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js\"></script>").append("\r\n");
-				builder.append("\t").append("<script type=\"text/javascript\" src=\"../../javascripts/script.js\"></script>").append("\r\n");
-				builder.append("\t").append("<meta name=\"description\" content=\"firstfhy\">").append("\r\n");
-				builder.append("\t").append("<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">").append("\r\n");
-				builder.append("</head>").append("\r\n");
-				builder.append("<body>").append("\r\n");
-				builder.append("\t").append("<div class=\"wrapper\">").append("\r\n");
-				builder.append("\t\t").append("<div class=\"container\">").append("\r\n");
-				builder.append("\t\t\t").append("<div id=\"main\" role=\"main\">").append("\r\n");
-				builder.append("\t\t\t\t").append("<div class=\"download-bar\">").append("\r\n");
-				builder.append("\t\t\t\t\t").append("<div class=\"inner\">").append("\r\n");
-				builder.append("\t\t\t\t\t\t").append("<a class=\"code\">").append(name.toUpperCase()).append("</a>").append("\r\n");
-				builder.append("\t\t\t\t\t").append("</div>").append("\r\n");
-				builder.append("\t\t\t\t\t").append("<span class=\"blc\"></span><span class=\"trc\"></span>").append("\r\n");
-				builder.append("\t\t\t\t").append("</div>").append("\r\n");
-				builder.append("\t\t\t\t").append("<article class=\"markdown-body\">").append("\r\n");
-				builder.append(content);
-				builder.append("\t\t\t\t").append("</article>").append("\r\n");
-				builder.append("\t\t\t").append("</div>").append("\r\n");
-				builder.append("\t\t").append("</div>").append("\r\n");
-				builder.append("\t\t").append("<footer>").append("\r\n");
-				builder.append("\t\t\t").append("<div class=\"owner\">").append("\r\n");
-				builder.append("\t\t\t\t").append("<p><a href=\"https://github.com/firstfhy\" class=\"avatar\"><img src=\"https://avatars0.githubusercontent.com/u/10542465?v=3&amp;s=60\" width=\"48\" height=\"48\"></a>View <a href=\"https://github.com/firstfhy\">firstfhy</a> on <a href=\"https://www.github.com\">GitHub</a></p>").append("\r\n");
-				builder.append("\t\t\t").append("</div>").append("\r\n");
-				builder.append("\t\t\t").append("<div class=\"creds\">").append("\r\n");
-				builder.append("\t\t\t\t").append("<small>This page generated using <a href=\"http://pages.github.com/\">GitHub Pages</a><br>theme by <a href=\"https://twitter.com/jonrohan/\">Jon Rohan</a></small>").append("\r\n");
-				builder.append("\t\t\t").append("</div>").append("\r\n");
-				builder.append("\t\t").append("</footer>").append("\r\n");
-				builder.append("\t").append("</div>").append("\r\n");
-				builder.append("</html>");
-				
-				FileWriter writer = new FileWriter(file);
-				writer.append(builder.toString());
-				writer.flush();
-				writer.close();
 			}
 		}
+		
+		ReadLineCallback callback = new ReadLineCallback() {
+			
+			@Override
+			public String readLine(String line) {
+				for (String key : contents.keySet()) {
+					line = line.replace(key, contents.get(key));
+				}
+				return line;
+			}
+			
+		};
+		String content = readFileToString(template, callback);
+		
+		FileWriter writer = new FileWriter(file);
+		writer.append(content);
+		writer.flush();
+		writer.close();
+	}
+	
+	public void make(String name, Map<String, String> contents, boolean existsDelete, File template) throws Exception {
+		make(new File(name), contents, existsDelete, template);
+	}
+	
+	public String readFileToString(File file, final ReadLineCallback callback) throws Exception {
+		final StringBuilder builder = new StringBuilder();
+		ReadLineCallback builderCallback = new ReadLineCallback() {
+			
+			@Override
+			public String readLine(String line) {
+				builder.append(callback == null ? line : callback.readLine(line)).append("\r\n");
+				return line;
+			}
+			
+		};
+		readFile(file, builderCallback);
+		return builder.toString();
+	}
+	
+	public void readFile(File file, ReadLineCallback callback) throws Exception {
+		String line;
+		LineNumberReader reader = new LineNumberReader(new FileReader(file));
+		try {
+			while ((line = reader.readLine()) != null) {
+				callback.readLine(line);
+			}
+		} finally {
+			reader.close();
+		}
+	}
+	
+	public static interface ReadLineCallback {
+		
+		String readLine(String line);
+		
 	}
 
 }

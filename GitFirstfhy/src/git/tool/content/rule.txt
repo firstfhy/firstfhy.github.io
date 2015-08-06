@@ -8,3 +8,5 @@ vb/vb_access.html template.html content/vb_access.txt [title]-vb调用access主�
 net/net_session.html template.html content/net_session.txt [title]-Session的生命周期
 
 java/sping_01.html template.html content/sping_01.txt [title]-浅谈springMVC的拦截器、错误异常、数据绑定、转换器、属性编辑器
+
+system/windows_subst.html template.html content/windows_subst.txt [title]-windows磁盘映射

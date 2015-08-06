@@ -91,12 +91,12 @@ public class HTMLMaker extends GeneratedHTMLTemplate {
 			if (file.isDirectory()) {
 				String[] infos = makeIndex(file, template);
 				content.append("\t").append("<li><a href=\"").append(infos[0]).append("/").append(infos[0]).append(".html\">").append(infos[1]).append("</a></li>").append("\r\n");
-			} else if (!fileName.equals(target.getName())) {
+			} else if (!fileName.equals(name)) {
 				Parser parser = new Parser(file.getPath());
 				parser.setEncoding("utf-8");
 				NodeIterator iterator = parser.elements();
 				String title = getTitle(iterator);
-				content.append("\t").append("<li><a href=\"").append(file.getName()).append(".html\">").append(title).append("</a></li>").append("\r\n");
+				content.append("\t").append("<li><a href=\"").append(file.getName()).append("\">").append(title).append("</a></li>").append("\r\n");
 			}
 		}
 		content.append("</ol>");
@@ -105,6 +105,7 @@ public class HTMLMaker extends GeneratedHTMLTemplate {
 		
 		Map<String, String> contents = new HashMap<String, String>();
 		contents.put("[title]", title);
+		contents.put("[code]", title);
 		contents.put("[content]", content.toString());
 		
 		make(new File(target, target.getName() + ".html"), contents, true, template);

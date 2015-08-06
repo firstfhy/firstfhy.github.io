@@ -1,18 +1,7 @@
 <div class="blog_main">
-  <div class="blog_title">
-    <h3>
-      <a href="/blog/1409505">浅谈springMVC的拦截器、错误异常、数据绑定、转换器、属性编辑器</a>
-      <em class="actions">      </em>
-    </h3>
-    <ul class='blog_categories'><strong>博客分类：</strong> <li><a href="/category/191921">spring</a></li> </ul>
-        <div class='news_tag'>&nbsp;</div>
-  </div>
-
   <div id="blog_content" class="blog_content">
     <div class="iteye-blog-content-contain" style="font-size: 14px;">
 <p>一、拦截器</p>
-<p>上篇博文中已经说到过可以继承HandlerInterceptorAdapter类或者实现HandlerInterceptor接口。</p>
-<p>这里想说的是对于其方法中一个参数的说明。</p>
 <p> </p>
 <pre name="code" class="java"> /** 
      * Controller之前执行 
@@ -235,7 +224,7 @@ public class TestController{
 <pre name="code" class="java">SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 binder.registerCustomEditor(Date.class, new CustomDateEditor(sdf, false));</pre>
 <p> </p>
-<p><br><img src="http://dl.iteye.com/upload/attachment/0063/3643/3c4fce1b-0006-3b2c-81e7-a5d490d10447.jpg" alt=""></p>
+<p><br><img src="../../images/program/java/3c4fce1b-0006-3b2c-81e7-a5d490d10447.jpg" alt=""></p>
 <p>当然也可以自定义属性编辑器，你只需继承PropertyEditorSupport类(推荐)或者实现PropertyEditor接口；然后实现其setAsText(String text)方法做自己的操作。</p>
 <div> </div>
 <p> </p>

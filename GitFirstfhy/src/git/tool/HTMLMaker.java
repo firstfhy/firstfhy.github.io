@@ -28,7 +28,7 @@ public class HTMLMaker extends GeneratedHTMLTemplate {
 		File rule = new File(getClass().getResource(args[1]).toURI());
 		target.mkdirs();
 		loadRule(rule, target);
-		makeIndex(target, find(args[2]));
+		makeIndex(target, find(args[2]), 1);
 	}
 	
 	private File find(String target) throws Exception {
@@ -55,11 +55,17 @@ public class HTMLMaker extends GeneratedHTMLTemplate {
 					
 					File file = new File(target, infos[0]);
 					file.getParentFile().mkdirs();
+					int count = file.getPath().replace(target.getPath(), "").split("/").length + 1;
+					StringBuilder builder = new StringBuilder();
+					for (int i = 0;i < count;i++) {
+						builder.append("../");
+					}
 					try {
 						File template = find(infos[1]);
 						Map<String, String> contents = new HashMap<String, String>();
 						contents.put("[content]", readFileToString(find(infos[2]), null));
 						contents.put("[code]", file.getParentFile().getName().toUpperCase());
+						contents.put("[resource_parent]", builder.toString());
 						for (int i = 3;i < infos.length;i++) {
 							String[] content = infos[i].split("-");
 							contents.put(content[0], content[1]);
@@ -81,7 +87,7 @@ public class HTMLMaker extends GeneratedHTMLTemplate {
 		make(target, contents, true, template);
 	}
 	
-	private String[] makeIndex(File target, File template) throws Exception {
+	private String[] makeIndex(File target, File template, int count) throws Exception {
 		String name = target.getName();
 		
 		StringBuilder content = new StringBuilder("<ol>");
@@ -89,22 +95,28 @@ public class HTMLMaker extends GeneratedHTMLTemplate {
 		for (File file : target.listFiles()) {
 			String fileName = file.getName().replace(".html", "");
 			if (file.isDirectory()) {
-				String[] infos = makeIndex(file, template);
+				String[] infos = makeIndex(file, template, count + 1);
 				content.append("\t").append("<li><a href=\"").append(infos[0]).append("/").append(infos[0]).append(".html\">").append(infos[1]).append("</a></li>").append("\r\n");
-			} else if (!fileName.equals(target.getName())) {
+			} else if (!fileName.equals(name)) {
 				Parser parser = new Parser(file.getPath());
 				parser.setEncoding("utf-8");
 				NodeIterator iterator = parser.elements();
 				String title = getTitle(iterator);
-				content.append("\t").append("<li><a href=\"").append(file.getName()).append(".html\">").append(title).append("</a></li>").append("\r\n");
+				content.append("\t").append("<li><a href=\"").append(file.getName()).append("\">").append(title).append("</a></li>").append("\r\n");
 			}
 		}
 		content.append("</ol>");
 		
 		String title = name.toUpperCase();
+		StringBuilder builder = new StringBuilder();
+		for (int i = 0;i < count;i++) {
+			builder.append("../");
+		}
 		
 		Map<String, String> contents = new HashMap<String, String>();
 		contents.put("[title]", title);
+		contents.put("[code]", title);
+		contents.put("[resource_parent]", builder.toString());
 		contents.put("[content]", content.toString());
 		
 		make(new File(target, target.getName() + ".html"), contents, true, template);

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>浅谈springMVC的拦截器、错误异常、数据绑定、转换器、属性编辑器</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	
+	<link rel="stylesheet" href="../../stylesheets/stylesheet.css" media="screen">
+	<link rel="stylesheet" href="../../stylesheets/pygment_trac.css"/>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script type="text/javascript" src="../../javascripts/script.js"></script>
+	
+	<meta name="description" content="firstfhy">
+	
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+<body>
+	<div class="wrapper">
+		<div id="container">
+		    <div id="main" role="main">
+		    	<div class="download-bar">
+			    	<div class="inner">
+			          	<a class="code">JAVA</a>
+			        </div>
+		        	<span class="blc"></span><span class="trc"></span>
+		        </div>
+		        <article class="markdown-body">
+					<h3>
+						浅谈springMVC的拦截器、错误异常、数据绑定、转换器、属性编辑器
+				   	</h3>
+<div class="blog_main">
+  <div class="blog_title">
+    <h3>
+      <a href="/blog/1409505">浅谈springMVC的拦截器、错误异常、数据绑定、转换器、属性编辑器</a>
+      <em class="actions">      </em>
+    </h3>
+    <ul class='blog_categories'><strong>博客分类：</strong> <li><a href="/category/191921">spring</a></li> </ul>
+        <div class='news_tag'>&nbsp;</div>
+  </div>
+
+  <div id="blog_content" class="blog_content">
+    <div class="iteye-blog-content-contain" style="font-size: 14px;">
+<p>一、拦截器</p>
+<p>上篇博文中已经说到过可以继承HandlerInterceptorAdapter类或者实现HandlerInterceptor接口。</p>
+<p>这里想说的是对于其方法中一个参数的说明。</p>
+<p> </p>
+<pre name="code" class="java"> /** 
+     * Controller之前执行 
+     */  
+    @Override  
+    public boolean preHandle(HttpServletRequest request,  
+            HttpServletResponse response, Object handler) throws Exception {}</pre>
+<p> request、response自不必多说。这里有个handler，据我多方了解，可以确定此handler为下一步要执行的拦截器或者Controller。我们都知道拦截器可以配置多个，就有个拦截器链，按照顺序去执行这么多拦截器(不知是不是按照你配置的先后顺序来执行的)，如果你正在执行的拦截器完成后，下面还有个拦截器等待执行，那么handler就是那个拦截器类；如果这个拦截器执行完了，就执行controller，那么这个handler就是那个Controller类了。</p>
+<p> </p>
+<p>二、错误异常(2种方式)</p>
+<p>目前大家常用的错误异常捕捉可能是在web.xml中配置：</p>
+<p> </p>
+<pre name="code" class="xml">&lt;error-page&gt;
+   &lt;error-code&gt;&lt;/error-code&gt;
+   &lt;location&gt;&lt;/location&gt;
+&lt;/error-page&gt;
+或者
+&lt;error-page&gt;
+   &lt;exception-type&gt;&lt;/exception-type&gt;
+   &lt;location&gt;&lt;/location&gt;
+&lt;/error-page&gt;</pre>
+<p> </p>
+<p> 当springMVC内部抛出自定义的运行时异常，如：NoSuchRequestHandlingMethodException(错误代码404)，无法根据web.xml配置的404代码跳转到相应页面，那么我们就需要配置springMVC提供的错误异常日志处理类。</p>
+<p> </p>
+<p>第一种，配置文件形式：看配置文件：</p>
+<p> </p>
+<pre name="code" class="xml">&lt;!-- 系统错误转发配置[并记录错误日志]   --&gt;
+&lt;bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver"&gt;
+&lt;property name="defaultErrorView" value="error"&gt;&lt;/property&gt;   &lt;!-- 默认为500，系统错误(error.jsp)  --&gt;
+&lt;property name="defaultStatusCode" value="500"&gt;&lt;/property&gt;
+&lt;property name="statusCodes"&gt;&lt;!-- 配置多个statusCode --&gt;
+  &lt;props&gt;    
+      &lt;prop key="error"&gt;500&lt;/prop&gt;  &lt;!-- error.jsp --&gt;
+      &lt;prop key="error1"&gt;404&lt;/prop&gt;    &lt;!-- error1.jsp --&gt;
+  &lt;/props&gt;    
+&lt;/property&gt;    
+&lt;property name="exceptionMappings"&gt;
+	&lt;props&gt;
+		&lt;!-- 这里你可以根据需要定义N多个错误异常转发 --&gt;
+		&lt;prop key="java.sql.SQLException"&gt;dbError&lt;/prop&gt; &lt;!-- 数据库错误(dbError.jsp) --&gt;
+		&lt;prop key="org.springframework.web.bind.ServletRequestBindingException"&gt;bizError&lt;/prop&gt; &lt;!-- 参数绑定错误(如：必须参数没传递)(bizError.jsp) --&gt;
+		&lt;prop key="java.lang.IllegalArgumentException"&gt;bizError&lt;/prop&gt;  &lt;!-- 参数错误(bizError.jsp) --&gt;
+		&lt;prop key="org.springframework.validation.BindException"&gt;bizError&lt;/prop&gt;  &lt;!-- 参数类型有误(bizError.jsp) --&gt;
+		&lt;prop key="java.lang.Exception"&gt;unknowError&lt;/prop&gt;  &lt;!-- 其他错误为'未定义错误'(unknowError.jsp)  --&gt;
+	&lt;/props&gt;
+&lt;/property&gt;
+&lt;/bean&gt;</pre>
+<p> 注意：</p>
+<p>1、这里需要说明一点的是，它只能转发到jsp页面，不能转发到Controller；</p>
+<p>2、如果错误不能转发到对应的错误页面，请查看你的错误类是否写正确了，如org.springframework.validation.BindException是否写正确。</p>
+<p>3、传递到错误页面不能传递参数，如&lt;prop key="java.lang.Exception"&gt;unknowError?flag=1&lt;/prop&gt;，这么写就不会转发到unknowError.jsp页面了。</p>
+<p>4、如果错误页面没有记录错误日志，那么你的log4j日志文件也是不会记录错误日志的，那么我们需要自己手动在错误页面中记录，代码如下：</p>
+<p> </p>
+<pre name="code" class="jsp">&lt;%@ page language="java" import="org.apache.log4j.Logger" pageEncoding="UTF-8" contentType="text/html; charset=utf-8"%&gt;
+&lt;%
+	Exception exception = (Exception)request.getAttribute("exception");
+	final Logger logger = Logger.getRootLogger();
+	logger.error(exception.getMessage(),exception);
+%&gt;</pre>
+<p> </p>
+<p>说明：根据SimpleMappingExceptionResolver类的源码可知，它将错误日志放在了request的属性变量中，变量名为exception,类型为Exception，需要引入org.apache.log4j.Logger包，这样的话，log4j日志就会记录错误日志了。</p>
+<p>5、当然也需要这个配置文件(定义jsp文件的位置)：</p>
+<p> </p>
+<pre name="code" class="xml">&lt;bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"&gt;
+	&lt;property name="prefix" value="/WEB-INF/views/"&gt;&lt;/property&gt;
+	&lt;property name="suffix" value=".jsp"&gt;&lt;/property&gt;
+&lt;/bean&gt;</pre>
+<p> 第二种，注解形式：</p>
+<p>  以上基于配置文件形式配置异常处理机制，适用于项目全局。而注解形式主要适用于局部，如果想适用于全局，需要首先声明一个BaseController类，加入注解异常处理机制，其他Controller继承该BaseController。具体使用方式，看代码：</p>
+<pre name="code" class="java">@ExceptionHandler(Exception.class)   //在Controller类中添加该注解方法即可(注意：添加到某个controller，只针对该controller起作用)
+	public void exceptionHandler(Exception ex,HttpServletResponse response,HttpServletRequest request) throws IOException{  
+		log.error(ex.getMessage(), ex);
+		if(ex.getClass() == NoSuchRequestHandlingMethodException.class){
+			response.sendRedirect(request.getContextPath()+"/common/view/404.jsp");
+		}else{
+			response.sendRedirect(request.getContextPath()+"/common/view/500.jsp");
+		}
+	}</pre>
+<p> spring自定义的异常类对应的错误代码如下：</p>
+<pre name="code" class="cpp">***  SpringMVC自定义异常对应的status code
+           Exception	                   HTTP Status Code
+ConversionNotSupportedException	        500 (Internal Server Error)
+HttpMediaTypeNotAcceptableException	    406 (Not Acceptable)
+HttpMediaTypeNotSupportedException	    415 (Unsupported Media Type)
+HttpMessageNotReadableException	        400 (Bad Request)
+HttpMessageNotWritableException	        500 (Internal Server Error)
+HttpRequestMethodNotSupportedException	405 (Method Not Allowed)
+MissingServletRequestParameterException	400 (Bad Request)
+NoSuchRequestHandlingMethodException	404 (Not Found)
+TypeMismatchException	                400 (Bad Request)</pre>
+<p> </p>
+<p>三、数据绑定</p>
+<p> </p>
+<p>上篇博文中有提到在BaseController中定义全局的数据转换(如String转换为Date或者Calendar；如果String转换为JavaBean等)，只要注册一个方法protected void ininBinder(WebDataBinder binder){  }，并且添加注解@InitBinder，就可以实现全局Controller的数据转换。</p>
+<p>下面详细介绍下两种方式实现数据的绑定：</p>
+<p>1、全局数据绑定</p>
+<p>第一种方式，定义一个BaseController，在里面注册一个protected void ininBinder(WebDataBinder binder){},添加注解@InitBinder。【注解式】</p>
+<p>第二种方式，定义一个类MyBinder实现WebBindingInitializer接口，同时实现其方法public void initBinder(WebDataBinder binder, WebRequest arg1) {}。【声明式】</p>
+<p>接下来需要在spring-mvc.xml中配置，这里要多说一点。</p>
+<p>一般大家可能省事，直接写了&lt;mvc:annotation-driven/&gt;来激活@Controller模式，它默认会自动注册DefaultAnnotationHandlerMapping与AnnotationMethodHandlerAdapter两个bean，它们是springMVC为@Controllers分发请求所必须的。但是如果你想用声明式注册一个数据绑定，你需要手动注册AnnotationMethodHandlerAdapter和DefaultAnnotationHandlerMapping。</p>
+<p> </p>
+<pre name="code" class="xml">&lt;bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"&gt;&lt;/bean&gt;  &lt;!-- 这个类里面你可以注册拦截器什么的 --&gt;
+&lt;bean id="jacksonMessageConverter" class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter"&gt;&lt;/bean&gt;
+&lt;bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"&gt;
+	&lt;property name="webBindingInitializer"&gt;
+		&lt;bean class="packagename.MyBinder"&gt;&lt;/bean&gt;  &lt;!-- 这里注册自定义数据绑定类 --&gt;
+	&lt;/property&gt;
+	&lt;property name="messageConverters"&gt;
+	  &lt;list&gt;
+	    &lt;ref bean="jacksonMessageConverter"/&gt;    &lt;!-- 注册JSON  Converter--&gt;
+	  &lt;/list&gt;
+	&lt;/property&gt;
+&lt;/bean&gt;</pre>
+<p> </p>
+<p> 说明：这里我还引用了org.springframework.http.converter.json.MappingJacksonHttpMessageConverter,也在这里说明一下。项目中我使用了springMVC为人津津乐道的可以直接返回JSON字符串的功能，就是在Controller的方法前面加@ResponseBody。但是我发现我引用了自定义数据绑定类，运行时候不会返回JSON字符串，并且报错(好像就是缺少了个XXXConverter)，经过多方寻找，原来是需要手动注册一个json的Converter。如果你想用它的这个功能，需要引入两个jar包。jackson-core-asl.jar和jackson-mapper-asl.jar。</p>
+<p> </p>
+<p>2、局部数据绑定</p>
+<p>这个就简单了，直接在需要的绑定的Controller中，添加protected void ininBinder(WebDataBinder binder){  }，并且添加注解@InitBinder就可以实现。例如：</p>
+<p> </p>
+<pre name="code" class="java">@Controller
+public class TestController{
+  
+   //日期转换器，这样就会作用到这个Controller里所有方法上
+   @InitBinder  
+    public void initBinder(WebDataBinder binder) {  
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");  
+        dateFormat.setLenient(false);  
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, false));
+    }
+   
+ ...各种增删改查方法
+}</pre>
+<p> </p>
+<p> </p>
+<p>四、转换器</p>
+<p> </p>
+<p> Spring提供了很多默认转换器，如StringToBooleanConverter，ObjectToStringConverter，NumberToCharacterConverter，ArrayToCollectionConverter，StringToArrayConverter，ObjectToCollectionConverter，ObjectToObjectConverter等等，如果需要自定义转换器，需要实现接口</p>
+<ol class="dp-j" style="font-size: 12px; margin-bottom: 1px; padding-top: 2px; padding-bottom: 2px; border: 1px solid #d1d7dc; color: #2b91af; font-family: Monaco, 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', Consolas, 'Courier New', monospace;">
+<li style="margin-bottom: 0px; margin-left: 38px; padding-left: 10px; border-left-width: 1px; border-left-style: solid; border-left-color: #d1d7dc; background-color: #fafafa; line-height: 18px;">public interface Converter&lt;S, T&gt; { //S是源类型 T是目标类型  </li>
+<li style="margin-bottom: 0px; margin-left: 38px; padding-left: 10px; border-left-width: 1px; border-left-style: solid; border-left-color: #d1d7dc; background-color: #fafafa; line-height: 18px;">    T convert(S source); //转换S类型的source到T目标类型的转换方法  </li>
+<li style="margin-bottom: 0px; margin-left: 38px; padding-left: 10px; border-left-width: 1px; border-left-style: solid; border-left-color: #d1d7dc; background-color: #fafafa; line-height: 18px;">}</li>
+</ol>
+<p> 我目前用到的转换器和数据绑定，基本都是对字段类型转换，两种方式都可以实现字符串到日期的转换。如：</p>
+<pre name="code" class="java">public class CustomDateConverter implements Converter&lt;String, Date&gt; {
+
+	private String dateFormatPattern;  //转换的格式
+
+    public CustomDateConverter(String dateFormatPattern) {
+            this.dateFormatPattern = dateFormatPattern;
+    }
+	
+	@Override
+	public Date convert(String source) {
+		 if(!StringUtils.hasLength(source)) {
+             return null;
+		 }
+	     DateFormat df = new SimpleDateFormat(dateFormatPattern);
+	     try {
+	    	 return df.parse(source);
+	     } catch (ParseException e) {
+	         throw new IllegalArgumentException(String.format("类型转换失败，需要格式%s，但格式是[%s]", dateFormatPattern, source)); 
+	     }
+	}
+}</pre>
+<p> 配置文件有两种方式，</p>
+<p>第一种比较简单：</p>
+<pre name="code" class="java">   &lt;mvc:annotation-driven conversion-service="conversionService"/&gt;
+   &lt;bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean"&gt;
+	   &lt;property name="converters"&gt;
+	         &lt;list&gt;
+			&lt;bean class="packagename.CustomDateConverter"&gt;
+				&lt;constructor-arg value="yyyy-MM-dd"&gt;&lt;/constructor-arg&gt;
+			&lt;/bean&gt;
+		&lt;/list&gt;
+	   &lt;/property&gt;
+   &lt;/bean&gt;</pre>
+<p> 第二种，稍微麻烦点：</p>
+<pre name="code" class="java">&lt;bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean"&gt;
+   &lt;property name="converters"&gt;
+	&lt;list&gt;
+		&lt;bean class="packagename.CustomDateConverter"&gt;
+			&lt;constructor-arg value="yyyy-MM-dd"&gt;&lt;/constructor-arg&gt;
+		&lt;/bean&gt;
+	&lt;/list&gt;
+   &lt;/property&gt;
+&lt;/bean&gt;
+&lt;bean id="myBinder" class="org.springframework.web.bind.support.ConfigurableWebBindingInitializer"&gt;  
+    &lt;property name="conversionService" ref="conversionService"/&gt;  
+&lt;/bean&gt;
+&lt;bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"&gt;
+    	&lt;property name="webBindingInitializer" ref="myBinder"&gt;&lt;/property&gt;
+&lt;/bean&gt;</pre>
+<p> </p>
+<p> </p>
+<p> </p>
+<p>五、属性编辑器</p>
+<p>1、在第三条中说了数据绑定，那么怎么能做到将String转换为Calendar或者Date呢。这里需要说的就是Spring的属性编辑器，感觉跟struts2的那个数据转换差不多。先看一段代码：</p>
+<p> </p>
+<pre name="code" class="java">public void initBinder(WebDataBinder binder, WebRequest arg1) {
+	//这里我定义了一个匿名属性编辑器将String转为为Calendar
+        binder.registerCustomEditor(Calendar.class, new PropertyEditorSupport(){
+		@Override
+		public void setAsText(String text) throws IllegalArgumentException {
+			Calendar cal = null;
+			Date date = Util.convertDate(text);
+			if(date != null){
+				cal = new GregorianCalendar();
+				cal.setTime(date);
+			}
+			setValue(cal);
+		}
+	});
+}</pre>
+<p>说明：用binder.registerCustomEditor()注册一个属性编辑器，来进行数据的转换操作。它有2种方式。</p>
+<p>第一种binder.registerCustomEditor(Class clz,String field,PropertyEditor propertyEditor)；这种方式可以针对bean中的某一个属性进行转换操作。clz为类的class，field为bean中的某一个属性，propertyEditor为编辑器。</p>
+<p>第二种binder.registerCustomEditor(Class clz,PropertyEditor propertyEditor)。这种方式可以针对某种数据类型进行数据转换操作。如：将传递过来的String字符串转换为Calendar，这里就需要将clz设置为Calendar.class,propertyEditor为编辑器。</p>
+<p> </p>
+<p>2、默认spring提供了很多种属性编辑器，可以在Spring-beans-3.0.5.jar的org.springframework.beans.propertyeditors包中看到。直接使用即可，如将String转换为Date类型：</p>
+<p> </p>
+<pre name="code" class="java">SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+binder.registerCustomEditor(Date.class, new CustomDateEditor(sdf, false));</pre>
+<p> </p>
+<p><br><img src="http://dl.iteye.com/upload/attachment/0063/3643/3c4fce1b-0006-3b2c-81e7-a5d490d10447.jpg" alt=""></p>
+<p>当然也可以自定义属性编辑器，你只需继承PropertyEditorSupport类(推荐)或者实现PropertyEditor接口；然后实现其setAsText(String text)方法做自己的操作。</p>
+<div> </div>
+<p> </p>
+<p> </p>
+<p> </p>
+</div>
+  </div>
+
+				</article>
+			</div>
+		</div>
+	    <footer>
+			<div class="owner">
+				<p><a href="https://github.com/firstfhy" class="avatar"><img src="https://avatars0.githubusercontent.com/u/10542465?v=3&amp;s=60" width="48" height="48"></a>View <a href="https://github.com/firstfhy">firstfhy</a> on <a href="https://www.github.com">GitHub</a></p>
+			</div>
+			<div class="creds">
+			  	<small>This page generated using <a href="http://pages.github.com/">GitHub Pages</a><br>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
+			</div>
+	    </footer>
+	</div>
+</body>
+</html>

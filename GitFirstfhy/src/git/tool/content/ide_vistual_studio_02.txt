@@ -1,0 +1,210 @@
+<p>我的上篇文章《<a href="../45249/" target="_blank"><strong>Vistual Studio</strong><strong>原生开发的10</strong><strong>个调试技巧</strong></a>》引发了很多人的兴趣，所以我决定跟大家分享更多的调试技巧。接下来你又能看到一些对于原生应用程序的很有帮助的调试技巧（接着上一篇文章来编号）。这些技巧需要应用在Vistual Studio 2005 或者更新的版本中（当然也有一些适用于旧版本）。如果你能阅读本文中推荐的一些相关文章，就可以知道每一个技巧的更多信息。</p>
+<ul>
+<li><strong>11. </strong><strong>数据断点</strong></li>
+<li><strong>12. </strong><strong>线程重命名</strong></li>
+<li><strong>13. </strong><strong>给指定线程设置断点</strong></li>
+<li><strong>14.</strong><strong>（粗略）估算执行时间</strong></li>
+<li><strong>15.  </strong><strong>数字格式化</strong></li>
+<li><strong>16. </strong><strong>（内存）数据格式化</strong></li>
+<li><strong>17</strong><strong>．系统DLL</strong><strong>中断</strong></li>
+<li><strong>18</strong><strong>．加载符号表</strong></li>
+<li><strong>19.  </strong><strong>监测MFC</strong><strong>中的内存泄漏</strong></li>
+<li><strong>20.  </strong><strong>调试ATL</strong></li>
+</ul>
+<p><strong>技巧11</strong><strong>： </strong><strong>数据断点</strong></p>
+<p>当数据所在的内存位置发生变化时，可以通知调试器进行中断，但是每次只能创建4个字节这样的硬件数据断点。数据断点只能在调试期间添加，可以通过菜单(Debug&gt;New Breakpoint&gt;New Data Breakpoint) 或者断点窗口来添加。</p>
+<p><a href="../../images/program/ide/vistual_studio_02/y10jq01.png" rel="lightbox[45447]" title="y10jq01"><img class="alignnone size-full wp-image-45448" title="y10jq01" src="../../images/program/ide/vistual_studio_02/y10jq01.png" alt="" /></a></p>
+<p>你可以使用内存地址或者地址表达式。尽管栈上和堆上的值你都可以看到，但是我认为当堆上的数值发生变化时，这个功能才会更有用处。它对于识别内存损坏有很大的帮助。</p>
+<p>下面的例子中，指针的值发生了变化，不再是它所指向对象的值。为了找出在什么地方发生改变的，我在存储指针值的位置设置了一个断点，即&amp;ptr（注意必须在指针初始化之后）。数据发生变化就意味着有人修改了指针的值，调试器发生中断，我就能找出是哪段代码引起的改变。</p>
+<p><a href="../../images/program/ide/vistual_studio_02/y10jq02.png" rel="lightbox[45447]" title="y10jq02"><img class="alignnone size-full wp-image-45449" title="y10jq02" src="../../images/program/ide/vistual_studio_02/y10jq02.png" alt="" /></a></p>
+<p>更多阅读：</p>
+<p>1.怎样查明指针是否损坏内存</p>
+<p>2.怎样查明指针在什么地方发生改变</p>
+<p><strong>技巧12</strong><strong>： </strong><strong>线程重命名</strong></p>
+<p>在调试多线程应用程序时，线程窗口会显示创建了哪些线程以及当前正在运行的线程。线程越多，想找到你想要的线程就越困难（尤其是当一段程序被多个线程同时执行的时候，你不能确切地知道哪个才是当前正在执行的线程实例）。</p>
+<p><a href="../../images/program/ide/vistual_studio_02/y10jq03.png" rel="lightbox[45447]" title="y10jq03"><img class="alignnone size-full wp-image-45450" title="y10jq03" src="../../images/program/ide/vistual_studio_02/y10jq03.png" alt="" /></a></p>
+<p>调试器允许修改线程的名字，可以在线程窗口使用线程的快捷菜单，给线程重命名。</p>
+<p><a href="../../images/program/ide/vistual_studio_02/y10jq04.png" rel="lightbox[45447]" title="y10jq04"><img class="alignnone size-full wp-image-45451" title="y10jq04" src="../../images/program/ide/vistual_studio_02/y10jq04.png" alt="" /></a></p>
+<p>也可以在程序里给线程命名，尽管有点棘手，而且必须在线程启动之后给它命名，否则调试器会以默认命名规范将它重新初始化。定义一个线程，并用下面的函数重命名该线程。</p>
+<pre class="brush: cpp; gutter: true">typedef struct tagTHREADNAME_INFO
+{
+	DWORD dwType;        // must be 0x1000
+	LPCSTR szName;       // pointer to name (in same addr space)
+	DWORD dwThreadID;    // thread ID (-1 caller thread)
+	DWORD dwFlags;       // reserved for future use, most be zero
+} THREADNAME_INFO;
+
+void SetThreadName(DWORD dwThreadID, LPCSTR szThreadName)
+{
+	THREADNAME_INFO info;
+	info.dwType = 0x1000;
+	info.szName = szThreadName;
+	info.dwThreadID = dwThreadID;
+	info.dwFlags = 0;
+
+	__try
+	{
+		RaiseException(0x406D1388, 0, sizeof(info)/sizeof(DWORD), (DWORD*)&amp;info);
+	}
+	__except (EXCEPTION_CONTINUE_EXECUTION)
+	{
+	}
+}</pre>
+<p align="left">更多阅读：</p>
+<p align="left">设置线程名字（非托管）</p>
+<p align="left"><strong>技巧13： 给指定线程设置断点</strong></p>
+<p align="left"> 对于多线程应用程序来说,另一个有用的技巧就是给指定的线程,进程,甚至是计算机中的断点设置过滤.可以通过断点的Filter命令来实现此功能.</p>
+<p align="left"> <a href="../../images/program/ide/vistual_studio_02/y10jq05.png" rel="lightbox[45447]" title="y10jq05"><img class="alignnone size-full wp-image-45452" title="y10jq05" src="../../images/program/ide/vistual_studio_02/y10jq05.png" alt="" /></a></p>
+<p align="left">调试器允许你指定线程名,线程ID,进程名,进程ID和机器名的任意组合(使用AND，OR，NOT)来设置过滤。了解怎样设置线程名字也使得这项过滤操作变得更加简单。</p>
+<p align="left">更多阅读：</p>
+<ol>
+<li>怎样指定断点过滤器</li>
+<li>设置断点过滤</li>
+</ol>
+<p align="left"><strong>技巧14: (粗略)估算执行时间</strong></p>
+<p align="left">在上一篇文章中，我有写关于Watch窗口中的伪变量，有一个没提到的是@clk，它用于显示计数器的值，可以粗略地计算出两个断点之间的代码的执行时间，单位是微秒（μS）。但是，千万不要用这个方法来分析程序的执行效率，应该使用Visual Studio 分析工具或者性能计时器来分析。</p>
+<p align="left">可以在Watch 窗口或者即时窗口添加@clk=0来完成对计时器的重置。因此要想估算执行一段代码需要多长时间，可以按照下面的步骤来操作：</p>
+<ol>
+<li>在代码块的开始位置设置断点</li>
+<li>在代码块的结束位置设置断点
+<ol>
+<li>在Watch窗口添加 @clk</li>
+<li>程序进入到第一个断点时，在即时窗口输入@clk=0</li>
+<li>运行程序直到执行进入代码块末尾的断点，查看Watch窗口 @clk的值。</li>
+</ol>
+</li>
+</ol>
+<p align="left">注意网上有一些技巧说在Watch窗口添加两个表达式：@clk和@clk=0，需要在每次执行断点的时候都要重置计时器。这种用法只适用于Visual Studio的老版本，在VS2005及以上版本不再适用。</p>
+<p align="left">更多阅读：</p>
+<p align="left"> 调试技巧-@CLK</p>
+<p align="left"><strong>技巧15：数字格式化</strong></p>
+<p align="left">当你在Watch或者Quick Watch窗口查看变量时, 这些值是以默认的预定义可视化形式显示的。而对于数字，则是根据数据类型（integer, float, double）,用十进制形式显示的。但是你可以使用调试器把数字用不同的类型或者进制数显示出来。</p>
+<p align="left">想要改变显示类型可在变量前加以下前缀：</p>
+<ol>
+<li><strong>by</strong> –unsigned char (又称为unsigned byte)</li>
+<li><strong>wo – </strong>unsigned shot(又称为 unsigned word)</li>
+<li><strong>dw –</strong> unsigned long（又称为 unsigned double word）</li>
+</ol>
+<p align="left">要改变显示的进制数在变量前加下列前缀：</p>
+<ol>
+<li>d 或者 i– 有符号十进制数</li>
+<li>u – 无符号十进制数</li>
+<li>o -  无符号八进制数</li>
+<li>x – 小写十六进制数</li>
+<li>X – 大写十六进制数</li>
+</ol>
+<p align="left"> <a href="../../images/program/ide/vistual_studio_02/y10jq06.png" rel="lightbox[45447]" title="y10jq06"><img class="alignnone size-full wp-image-45453" title="y10jq06" src="../../images/program/ide/vistual_studio_02/y10jq06.png" alt="" /></a></p>
+<p align="left"><a href="../../images/program/ide/vistual_studio_02/y10jq07.png" rel="lightbox[45447]" title="y10jq07"><img class="alignnone size-full wp-image-45454" title="y10jq07" src="../../images/program/ide/vistual_studio_02/y10jq07.png" alt="" /></a></p>
+<p align="left">更多阅读：</p>
+<p align="left">C++ 调试技巧</p>
+<p align="left"><strong>技巧16：（内存数据）格式化</strong></p>
+<p align="left">除了数字，调试器还可以在Watch窗口显示格式化的内存数据，最多64 bytes。 你可以使用在表达式（变量或内存地址）后添加下列说明符作为后缀来格式化数据：</p>
+<ol>
+<li>mb 或者 m – 十六进制显示的16字节数据，后跟16个ASCII 字符</li>
+<li>mw – 8 words</li>
+<li>md – 4 double words</li>
+<li>mq -  2 quad-words</li>
+<li>ma – 64个ASCII字符</li>
+<li>mu – 2字节的UNICODE字符</li>
+</ol>
+<p align="left"> <a href="../../images/program/ide/vistual_studio_02/y10jq08.png" rel="lightbox[45447]" title="y10jq08"><img class="alignnone size-full wp-image-45455" title="y10jq08" src="../../images/program/ide/vistual_studio_02/y10jq08.png" alt="" /></a></p>
+<p align="left">更多阅读：</p>
+<ol>
+<li>C++中的格式说明符</li>
+<li>Developer Studio的调试技巧</li>
+</ol>
+<p align="left"><strong>技巧17： 系统DLL的中断</strong></p>
+<p align="left"> 有时候在DLL中的函数被调用时进行中断是很有用的,像系统DLL(比如 Kernel32.dll 或者user32.dll).实现此中断,需要使用本机调试器提供的上下文运算符.你可以设定断点位置,变量名或者表达式:</p>
+<p align="left"> 1.{[函数],[源码],[模块]}位置</p>
+<p align="left"> 2. [函数],[源码],[模块]}变量名</p>
+<p align="left"> 3. [函数],[源码],[模块]}表达式</p>
+<p align="left">花括号里可以是函数名,源代码和模块的任意组合,但是逗号不能省略.</p>
+<p align="left">我们假设想要在CreateThread函数被调用时发生中断,这个函数是从kernel32.dll中导出的,所以上下文运算符应该为:  <strong>{,,kernel32.dll}CreateThread</strong>. 然而，这样并不可行,因为上下文运算符需要CreatThread的修饰符,可以使用DBH.exe来获取一个特定函数的修饰符。</p>
+<p align="left">下面就是如何得到CreateThread函数的修饰符的：</p>
+<pre class="brush: cpp; gutter: true">C:\Program Files (x86)\Debugging Tools for Windows (x86)&gt;dbh.exe -s:srv*C:\Symbo
+ls*http://msdl.microsoft.com/Download/Symbols -d C:\Windows\SysWOW64\kernel32.dl
+l enum *CreateThread*
+Symbol Search Path: srv*C:\Symbols*http://msdl.microsoft.com/Download/Symbols
+
+ index            address     name
+     1            10b4f65 :   _BaseCreateThreadPoolThread@12
+     2            102e6b7 :   _CreateThreadpoolWork@12
+     3            103234c :   _CreateThreadpoolStub@4
+     4            1011ea8 :   _CreateThreadStub@24
+     5            1019d40 :   _NtWow64CsrBasepCreateThread@12
+     6            1019464 :   ??_C@_0BC@PKLIFPAJ@SHCreateThreadRef?$AA@
+     7            107309c :   ??_C@_0BD@CIEDBPNA@TF_CreateThreadMgr?$AA@
+     8            102ce87 :   _CreateThreadpoolCleanupGroupStub@0
+     9            1038fe3 :   _CreateThreadpoolIoStub@16
+     a            102e6f0 :   _CreateThreadpoolTimer@12
+     b            102e759 :   _CreateThreadpoolWaitStub@12
+     c            102ce8e :   _CreateThreadpoolCleanupGroup@0
+     d            102e6e3 :   _CreateThreadpoolTimerStub@12
+     e            1038ff0 :   _CreateThreadpoolIo@16
+     f            102e766 :   _CreateThreadpoolWait@12
+    10            102e6aa :   _CreateThreadpoolWorkStub@12
+    11            1032359 :   _CreateThreadpool@4</pre>
+<p>看上去实际名字应该是_CreateThreadStub@24，这样我们就可以创建断点，<strong>{,,kernel32.dll}_CreateThreadStub@24</strong>。</p>
+<p><a href="../../images/program/ide/vistual_studio_02/y10jq09.png" rel="lightbox[45447]" title="y10jq09"><img class="alignnone size-full wp-image-45456" title="y10jq09" src="../../images/program/ide/vistual_studio_02/y10jq09.png" alt="" /></a></p>
+<pre>运行程序，发生中断时会有消息提示断点处无相关源代码，直接忽略它。</pre>
+<p><a href="../../images/program/ide/vistual_studio_02/y10jq10.png" rel="lightbox[45447]" title="y10jq10"><img class="alignnone size-full wp-image-45457" title="y10jq10" src="../../images/program/ide/vistual_studio_02/y10jq10.png" alt="" /></a></p>
+<pre>使用调用栈窗口查看调用该函数的代码。</pre>
+<p><a href="../../images/program/ide/vistual_studio_02/y10jq11.png" rel="lightbox[45447]" title="y10jq11"><img class="alignnone size-full wp-image-45458" title="y10jq11" src="../../images/program/ide/vistual_studio_02/y10jq11.png" alt="" /></a></p>
+<pre>更多阅读：</pre>
+<pre>1.  在Visual Studio 2010中，没有源代码如何设置断点</pre>
+<pre>2.  上下文运算符（C/C++语言表达式）</pre>
+<pre>3.  怎样给函数设置断点</pre>
+<p align="left"><strong>技巧18：加载符号表</strong></p>
+<p>在调试程序的时候，调用栈窗口不会显示完整的调用栈，跳过了系统DLL（比如kernel32.dll 和 user32.dll）的信息。</p>
+<p><a href="../../images/program/ide/vistual_studio_02/y10jq12.png" rel="lightbox[45447]" title="y10jq12"><img class="alignnone size-full wp-image-45459" title="y10jq12" src="../../images/program/ide/vistual_studio_02/y10jq12.png" alt="" /></a></p>
+<p>可以通过加载这些DLL的符号表来获得完整的调用栈信息，直接在调用栈窗口使用快捷菜单就能完成。你可以从预先指定的符号路径或者微软的符号服务器（如果是系统DLL）来下载符号。符号下载完成后，直接导入到调试器，调用栈就会得到更新。&lt;/span&gt;</p>
+<p align="left"> <a href="../../images/program/ide/vistual_studio_02/y10jq13.png" rel="lightbox[45447]" title="y10jq13"><img class="alignnone size-full wp-image-45461" title="y10jq13" src="../../images/program/ide/vistual_studio_02/y10jq13.png" alt="" /></a></p>
+<p align="left">这些符合也可以从组件Modules窗口导入。</p>
+<p align="left"> <a href="../../images/program/ide/vistual_studio_02/y10jq14.png" rel="lightbox[45447]" title="y10jq14"><img class="alignnone size-full wp-image-45462" title="y10jq14" src="../../images/program/ide/vistual_studio_02/y10jq14.png" alt="" /></a></p>
+<p align="left">一旦下载完成，符号会保存在缓存中，可以在Tools&gt;Options&gt;Debugging&gt;Symbols中配置。</p>
+<p align="left"> <a href="../../images/program/ide/vistual_studio_02/y10jq15.png" rel="lightbox[45447]" title="y10jq15"><img class="alignnone size-full wp-image-45463" title="y10jq15" src="../../images/program/ide/vistual_studio_02/y10jq15.png" alt="" /></a></p>
+<p align="left"><strong>技巧19：监测MFC中的内存泄漏</strong></p>
+<p align="left">如果你想要在MFC应用程序中检测内存泄漏,需要使用宏DEBUG_NEW来重新定new运算符,这是new运算符的修改版本,记录了每个对象内存分配的文件名和行号.在发行版中DEBUG_NEW会解析成new运算符.</p>
+<p align="left">向导生成的MFC源文件在#includes后包含了下面的预处理指令:</p>
+<pre class="brush: cpp; gutter: true">#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif</pre>
+<p align="left"> 这就是怎样重新定义new运算符的。</p>
+<p align="left">然而,很多STL头文件和重新定义的new运算符和版本不兼容.如果你重新定义了new运算符后,又包含了&lt;map&gt;,&lt;vector&gt;,&lt;list&gt;,&lt;string&gt;等头文件的话,就会出现下面的错误(以&lt;vector&gt;为例):</p>
+<pre class="brush: actionscript3; gutter: true">1&gt;c:\program files (x86)\microsoft visual studio 9.0\vc\include\xmemory(43) : error C2665: &#039;operator new&#039; : none of the 5 overloads could convert all the argument types
+1&gt;        c:\program files\microsoft visual studio 9.0\vc\include\new.h(85): could be &#039;void *operator new(size_t,const std::nothrow_t &amp;) throw()&#039;
+1&gt;        c:\program files\microsoft visual studio 9.0\vc\include\new.h(93): or       &#039;void *operator new(size_t,void *)&#039;
+1&gt;        while trying to match the argument list &#039;(const char [70], int)&#039;
+1&gt;        c:\program files (x86)\microsoft visual studio 9.0\vc\include\xmemory(145) : see reference to function template instantiation &#039;_Ty *std::_Allocate&lt;char&gt;(size_t,_Ty *)&#039; being compiled
+1&gt;        with
+1&gt;        [
+1&gt;            _Ty=char
+1&gt;        ]
+1&gt;        c:\program files (x86)\microsoft visual studio 9.0\vc\include\xmemory(144) : while compiling class template member function &#039;char *std::allocator&lt;_Ty&gt;::allocate(std::allocator&lt;_Ty&gt;::size_type)&#039;
+1&gt;        with
+1&gt;        [
+1&gt;            _Ty=char
+1&gt;        ]
+1&gt;        c:\program files (x86)\microsoft visual studio 9.0\vc\include\xstring(2216) : see reference to class template instantiation &#039;std::allocator&lt;_Ty&gt;&#039; being compiled
+1&gt;        with
+1&gt;        [
+1&gt;            _Ty=char
+1&gt;        ]</pre>
+<p align="left">解决办法就是总是把包含这些STL头文件放在重新定义new运算符之前.</p>
+<p align="left">更多阅读:</p>
+<p align="left"> DEBUG_NEW</p>
+<p align="left"><strong>技巧20: 调试ATL</strong></p>
+<p align="left">在开发ATL COM组件时,你可以在调试器观察COM对象的QueryInterface,AddRef和Release的调用情况.默认情况下并不支持这些,但是你只要在预处理定义或者预编译头文件时定义两个宏,宏定义好之后,关于这些函数的调用信息就会显示在output窗口.</p>
+<p align="left">这两个宏如下:</p>
+<ol>
+<li>_ATL_DEBUG_QI: 显示你定义的对象里每一个被查询的接口的名字,必须在atlcom.h被包含之前定义.</li>
+<li>_ATL_DEBUG_INTERFACES: 在每次AddRef 或者Release被调用时,显示接口的当前引用计数以及对应的类名和接口名,必须在atlbase.h被包含之前定义.</li>
+</ol>
+<p align="left">更多阅读:</p>
+<ol>
+<li>调试技巧</li>
+<li>ATL调试技巧</li>
+<li>_ATL_DEBUG_INTERFACES是如何工作的?</li>
+</ol>
+<p align="left"><strong>结束语</strong></p>
+<p align="left">尽管这两篇文章并不是包含了所有的调试技巧,但是足以帮你解决原生开发中调试时遇到的大多数问题.</p>

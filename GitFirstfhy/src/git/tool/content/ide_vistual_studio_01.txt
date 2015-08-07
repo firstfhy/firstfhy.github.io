@@ -1,0 +1,162 @@
+<p>最近碰巧读了Ivan Shcherbakov写的一篇文章，《<a href="../33865/" target="_blank">11个强大的Visual Studio调试小技巧</a>》。这篇文章只介绍了一些有关Visual Studio的基本调试技巧，但是还有其他一些同样有用的技巧。我整理了一些Visual Studio（至少在VS 2008下）原生开发的调试技巧。（如果你是工作在托管代码下，调试器会有更多的特性，在CodeProject中有介绍它们的文章），下面是我的整理的一些技巧：</p>
+<ol>
+<li>异常中断 | Break on Exception</li>
+<li>Watch窗口中的伪变量 | Pseudo-variables in Watch Windows</li>
+<li>符号越界后查看堆对象 |</li>
+<li>查看数组的值</li>
+<li>避免进入不必要的函数</li>
+<li>从代码启动调试器 | Launch the debugger from code</li>
+<li>在Output窗口打印</li>
+<li>隔离内存泄漏</li>
+<li>调试发行版 | Debug the Release Build</li>
+<li>远程调试</li>
+</ol>
+<p>&nbsp;</p>
+<h3>技巧1： 异常中断</h3>
+<p>在处理被调用之前，异常发生时可以 启动调试器进行中断,可以让你在异常发生后立即调试程序。操作调用栈便于你去查找异常发生的根本原因。</p>
+<p>Vistual Studio允许你去指定想要中断的异常类型或者特殊异常。选择菜单Debug&gt;Exceptions弹出对话框，你可以指定原生的（或者托管的）异常，除了调试器自带的一些默认异常，你还可以添加自己的自定义异常。</p>
+<p><a href="../../images/program/ide/vistual_studio_01/10jq01.png" rel="lightbox[45249]" title="10jq01"><img class="alignnone size-full wp-image-45260" title="10jq01" alt="" src="../../images/program/ide/vistual_studio_01/10jq01.png" /></a></p>
+<p>下面是一个std::exception 异常抛出时调试器中断的例子。</p>
+<p><a href="../../images/program/ide/vistual_studio_01/10jq02.png" rel="lightbox[45249]" title="10jq02"><img class="alignnone size-full wp-image-45261" title="10jq02" alt="" src="../../images/program/ide/vistual_studio_01/10jq02.png" /></a></p>
+<p>更多阅读：</p>
+<ul>
+<li>1．  <a href="http://msdn.microsoft.com/en-us/library/d14azbfh.aspx" target="_blank">异常抛出时如何中断</a></li>
+<li>2．  <a href="http://msdn.microsoft.com/en-us/library/tw4t258c.aspx" target="_blank">如何添加新的异常</a></li>
+</ul>
+<p>&nbsp;</p>
+<h3>技巧2：Watch窗口中的伪变量</h3>
+<p>Watch窗口或QuickWatch对话框提供一些特定的（调试器可识别的）变量，被称为伪变量。文档包含以下：</p>
+<ul>
+<li>$tid&#8212;&#8211;当前线程的线程ID</li>
+<li>$pid&#8212;&#8212;进程ID</li>
+<li>$cmdline&#8212;&#8212;&#8212;-启动程序的命令行字符串</li>
+<li>$user&#8212;&#8212;&#8212;-正在运行程序的账户信息</li>
+<li>$registername&#8212;&#8211;显示寄存器registername 的内容</li>
+</ul>
+<p>不管怎么样，关于最后一个错误的伪变量是非常有用的：</p>
+<ul>
+<li>$err&#8212;&#8212;&#8211;显示最后一个错误的错误码</li>
+<li>$err,hr&#8212;显示最后一个错误的错误信息</li>
+</ul>
+<p><a href="../../images/program/ide/vistual_studio_01/10jq03.png" rel="lightbox[45249]" title="10jq03"><img class="alignnone size-full wp-image-45262" title="10jq03" alt="" src="../../images/program/ide/vistual_studio_01/10jq03.png" /></a></p>
+<p>更多阅读：<a href="http://msdn.microsoft.com/en-us/library/ms164891.aspx" target="_blank">伪变量</a></p>
+<p>&nbsp;</p>
+<h3>技巧3：符合越界后查看堆对象</h3>
+<p>有时候，在调试符号越界后，你还想查看对象的值，这个时候，watch窗口中的变量是被禁用的，不能再查看（也不能更新），尽管对象仍然存在。你如果知道对象的地址，可以继续充分地观察它。你可以将地址转换为该对象类型的指针，放在watch窗中。</p>
+<p>下面的例子中，当单步跳出do_foo()之后，_foo不能再被访问。但是，将它的地址转换为foo*后，就可以继续观察这个对象。</p>
+<p><a href="../../images/program/ide/vistual_studio_01/10jq04.png" rel="lightbox[45249]" title="10jq04"><img class="alignnone size-full wp-image-45265" title="10jq04" alt="" src="../../images/program/ide/vistual_studio_01/10jq04.png" /></a></p>
+<p>&nbsp;</p>
+<h3>技巧4：查看数组的值</h3>
+<p>如果你在操作一个很大的数组(我们假设至少有几百个元素吧,但是可能更少),在Watch窗口中展开数组,查找一些特定范围内的元素很麻烦,因为你要不停地滚动.如果数组是分配在堆上的话,你甚至不能在watch窗口中展开数组元素.对此，有一个解决办法。你可以使用(array+ &lt;offset&gt;),&lt;count&gt; 去查看从&lt;offset&gt;位置开始的特定范围的&lt;count&gt;元素（当然，这儿的数组是你的实际对象）。如果想查看整个数组，可以简单使用array,&lt;count&gt;.</p>
+<p><a href="../../images/program/ide/vistual_studio_01/10jq05.png" rel="lightbox[45249]" title="10jq05"><img class="alignnone size-full wp-image-45266" title="10jq05" alt="" src="../../images/program/ide/vistual_studio_01/10jq05.png" /></a></p>
+<p>如果你的数组是在堆上，你可以在watch窗口中将它展开，但是要查看某个特定范围的值，用法稍有不同：((T*) array + &lt;offset&gt;),&lt;count&gt;(注意这种用法对于堆上的多维数组也有效)。但是这种情况下，T是指数组元素的类型。</p>
+<p><a href="../../images/program/ide/vistual_studio_01/10jq06.png" rel="lightbox[45249]" title="10jq06"><img class="alignnone size-full wp-image-45268" title="10jq06" alt="" src="../../images/program/ide/vistual_studio_01/10jq06.png" /></a></p>
+<p>如果你在用MFC，并使用其中的’array’容器，像 CArray, CDWordArray,CStringArray等等。你当然可以使用同样的过滤方法。除此之外，你必须查看array的m_pData成员，它是保存数据的真实缓存。</p>
+<p><a href="../../images/program/ide/vistual_studio_01/10jq07.png" rel="lightbox[45249]" title="10jq07"><img class="alignnone size-full wp-image-45270" title="10jq07" alt="" src="../../images/program/ide/vistual_studio_01/10jq07.png" /></a></p>
+<p>&nbsp;</p>
+<h3>技巧5：避免进入不必要的函数</h3>
+<p>很多时候，你在调试代码时可能会进入到你想跳过的函数，像构造函数，赋值操作或者其他的。其中最困扰我的是CString构造函数。下面是一个例子，当你准备单步执行take_a_string()函数时，首先进入到CString的构造函数。</p>
+<pre class="brush: actionscript3; gutter: true">void take_a_string(CString const &amp;text)
+{
+}
+
+void test_string()
+{
+   take_a_string(_T(&quot;sample&quot;));
+}</pre>
+<p align="left"><a href="../../images/program/ide/vistual_studio_01/10jq08.png" rel="lightbox[45249]" title="10jq08"><img class="alignnone size-full wp-image-45271" title="10jq08" alt="" src="../../images/program/ide/vistual_studio_01/10jq08.png" /></a></p>
+<p align="left">幸运的是可以告诉调试器去跳过哪些方法，类或者整个命名空间。实现它的方法也已经改变了,回到使用VS6的日子，通常是通过autoexp.dat文件来指定的。Vistual Studio 2002改成了使用注册表设置。想要跳过一些函数，你需要在注册表里添加一些值（详情如下）：</p>
+<ol>
+<li>实际位置取决于你使用的Vistual Studio版本和操作系统平台（x86或x64，因为注册表只能在64位的Windows下浏览）</li>
+<li>值的名字是数字，代表规则的优先级；数字越大，优先级越高。</li>
+<li>值数据是一个正则表达式的REG_SZ值，用于指定怎样过滤和执行。</li>
+</ol>
+<p align="left">为了避免进入任何CString方法，我添加了下面的规则：</p>
+<p align="left"> <a href="../../images/program/ide/vistual_studio_01/10jq09.png" rel="lightbox[45249]" title="10jq09"><img class="alignnone size-full wp-image-45272" title="10jq09" alt="" src="../../images/program/ide/vistual_studio_01/10jq09.png" /></a></p>
+<p align="left">有了这个，即使你强制进入上例中的take_a_string()，调试器也会跳过CString的构造函数。</p>
+<p align="left">更多阅读：</p>
+<ul>
+<li> <a href="http://blogs.msdn.com/b/andypennell/archive/2004/02/06/69004.aspx" target="_blank">使用Visual C++调试器怎样避免进入函数</a></li>
+<li><a href="http://www.codeguru.com/cpp/v-s/debug/article.php/c1281/Tune-the-debugger-using-AutoExpdat.htm" target="_blank">使用AutoExp.dat调整调试器</a></li>
+</ul>
+<h3 align="left">技巧6：从代码启动调试器 Launch the debugger from code</h3>
+<p align="left">你可能很少需要将调试器附加到程序中，但你不能在Attach窗口这样做（可能因为中断发生太快而没有捕获到），你也不能一开始就在调试器中启动程序。你可以在程序中产生中断给调试器一个机会通过调用内部的_degbugbreak()来附加。</p>
+<pre class="brush: actionscript3; gutter: true">void break_for_debugging()
+{
+   __debugbreak();
+}</pre>
+<p align="left">实际上还有其他的方法来完成,例如触发中断3,但这仅仅适用于x86平台（C++64位不再支持ASM）。另外还有DebugBreak()函数，但它的使用不怎么简便，所以这里推荐使用内部方法。</p>
+<pre class="brush: actionscript3; gutter: true">__asm int 3;</pre>
+<p align="left">   程序运行内部方法时会停止运行，这时你就有机会将调试器附加到该进程。</p>
+<p align="left"> <a href="../../images/program/ide/vistual_studio_01/10jq10.png" rel="lightbox[45249]" title="10jq10"><img class="alignnone size-full wp-image-45275" title="10jq10" alt="" src="../../images/program/ide/vistual_studio_01/10jq10.png" /></a></p>
+<p align="left"> <a href="../../images/program/ide/vistual_studio_01/10jq11.png" rel="lightbox[45249]" title="10jq11"><img class="alignnone size-full wp-image-45277" title="10jq11" alt="" src="../../images/program/ide/vistual_studio_01/10jq11.png" /></a></p>
+<p align="left"> <a href="../../images/program/ide/vistual_studio_01/10jq12.png" rel="lightbox[45249]" title="10jq12"><img class="alignnone size-full wp-image-45278" title="10jq12" alt="" src="../../images/program/ide/vistual_studio_01/10jq12.png" /></a></p>
+<p align="left">更多阅读：</p>
+<ul>
+<li><a href="http://msdn.microsoft.com/en-us/library/f408b4et.aspx" target="_blank"> 内部方法_debugbreak</a></li>
+<li><a href="http://www.codeproject.com/Articles/10022/DebugBreak-and-ASSERTs-that-work-always-anywhere" target="_blank">任何时候都离不开设置断点和断言</a></li>
+<li><a href="http://www.cprogramming.com/tutorial/visual_studio_debugging_code_setup.html" target="_blank">Visual Studio 20005/2008的调试，第四部分：为调试器设置代码</a></li>
+</ul>
+<h3 align="left">技巧7：在output窗口打印</h3>
+<p align="left">通过调用DebugOutputString可以在调试器的output窗口显示一段特定的文本。如果没有附加的调试器，该函数什么也不做。</p>
+<p align="left"> <a href="../../images/program/ide/vistual_studio_01/10jq13.png" rel="lightbox[45249]" title="10jq13"><img class="alignnone size-full wp-image-45279" title="10jq13" alt="" src="../../images/program/ide/vistual_studio_01/10jq13.png" /></a></p>
+<p align="left">更多阅读：</p>
+<ul>
+<li><a href="http://msdn.microsoft.com/en-us/library/windows/desktop/aa363362.aspx" target="_blank">函数OutputDebugString</a></li>
+<li><a href="http://www.codeproject.com/Articles/23776/Mechanism-of-OutputDebugString" target="_blank">函数OutputDebugString的调用机制</a></li>
+</ul>
+<h3 align="left">技巧8：隔离内存泄漏</h3>
+<p align="left">内存泄漏是在原生开发中的一个很重要的问题，要检测内存泄漏是一个很严峻的挑战，尤其是在大型项目中。Vistual Studio可以提供检测内存泄漏的报告，还有其他的一些应用程序（免费的或商业的）也可以帮助你检测内存泄漏.有些情况下，在一些内存分配最终会导致泄漏时,可以使用调试器去中断。但是你必须找到可再现的分配编号（尽管没那么容易）。如果能做到这一点，执行程序时调试器才会中断。</p>
+<p align="left"> 我们来看下面的代码，分配了8个字节，却一直没释放分配的内存。Visual Studio提供了造成内存泄漏的对象的报告，多运行几次，会发现一直是同一个分配编号（341）。</p>
+<pre class="brush: actionscript3; gutter: true">void leak_some_memory()
+{
+   char* buffer = new char[8];
+}
+
+Dumping objects -&gt;
+d:\marius\vc++\debuggingdemos\debuggingdemos.cpp(103) : {341} normal block at 0x00F71F38, 8 bytes long.
+ Data: &lt;        &gt; CD CD CD CD CD CD CD CD 
+Object dump complete.</pre>
+<p align="left">在一个特定的（可复现的）位置中断的步骤如下：</p>
+<ol>
+<li>确定你有足够的关于内存泄漏的报告模式（参考<strong><em> 使用CRT库检测内存泄漏）</em></strong></li>
+<li>多次运行程序直到你能在程序运行结束后的内存泄漏报告里找到一个可复现的分配编号，例如上个例子中的（341）</li>
+<li>在程序一开始的地方设置一个断点以便你能够尽早地进行中断。</li>
+<li>当最初的中断发生时，watch窗口的Name栏里会显示：<strong>{,,msvcr90d.dll}_crtBreakAlloc</strong>，在Value栏里写入你想要查找的位置编号</li>
+<li>继续调试（F5）</li>
+<li>程序执行到指定位置会停止，你可以使用调用栈被指引找到被该位置触发的那段代码。</li>
+</ol>
+<p align="left">遵循这些步骤， 在上个例子中，使用分配的编号（341）就可以识别内存泄漏的起因。</p>
+<p align="left"> <a href="../../images/program/ide/vistual_studio_01/10jq14.png" rel="lightbox[45249]" title="10jq14"><img class="alignnone size-full wp-image-45281" title="10jq14" alt="" src="../../images/program/ide/vistual_studio_01/10jq14.png" /></a></p>
+<h3 align="left">技巧9：调试发行版</h3>
+<p align="left">调试和发布是两个不同的目的。调试配置是用于开发的，而发布配置，顾名思义，是用来作为程序的最终版本，因为它必须严格遵循发布的质量要求，该配置包含优化部分和调试版本的中断调试的设置。而且，有时候，要像调试调试版本一样去调试发行版。要做到这一点，你需要在配置里做一些改变。但是这种情况下，你就不再是在调试发行版，而是调试和发行的混合版。</p>
+<p align="left"> <a href="../../images/program/ide/vistual_studio_01/10jq15.png" rel="lightbox[45249]" title="10jq15"><img class="alignnone size-full wp-image-45282" title="10jq15" alt="" src="../../images/program/ide/vistual_studio_01/10jq15.png" /></a></p>
+<p align="left">你还应该做一些事儿，以下是必须要做的：</p>
+<ol>
+<li>配置C/C++ &gt;General&gt;Debug Information Format 应该为 “Program Database(/Zi)”</li>
+<li>配置C/C++ &gt;Optimization&gt;Optimization 应该为”Disabld(/Od)”</li>
+<li>配置Linker&gt;Debugging&gt;Generate Debug Info 应该为”Yes/(DEBUG)”</li>
+</ol>
+<p align="left">如图所示：</p>
+<p align="left"> <a href="../../images/program/ide/vistual_studio_01/10jq16.png" rel="lightbox[45249]" title="10jq16"><img class="alignnone size-full wp-image-45284" title="10jq16" alt="" src="../../images/program/ide/vistual_studio_01/10jq16.png" /></a></p>
+<p align="left">更多阅读：<a href="http://msdn.microsoft.com/en-us/library/fsk896zz.aspx" target="_blank">怎样调试发行版</a></p>
+<h3 align="left">技巧10：远程调试</h3>
+<p align="left">另一个重要的调试就是远程调试，这是一个更大的话题，多次被提到，这里我只做一下简单的概括：</p>
+<ol>
+<li>你需要在远程机器上安装远程调试监控</li>
+<li>远程调试监控必须以管理员身份运行，并且用户必须属于管理员组</li>
+<li>在你运行监控时，会开启一个新的服务，该服务的名字必须用Visual Studio的Attach to Progress窗口的Qualifier组合框的值。</li>
+</ol>
+<p align="left"> <a href="../../images/program/ide/vistual_studio_01/10jq17.png" rel="lightbox[45249]" title="10jq17"><img class="alignnone size-full wp-image-45286" title="10jq17" alt="" src="../../images/program/ide/vistual_studio_01/10jq17.png" /></a></p>
+<p align="left"> <a href="../../images/program/ide/vistual_studio_01/10jq18.png" rel="lightbox[45249]" title="10jq18"><img class="alignnone size-full wp-image-45287" title="10jq18" alt="" src="../../images/program/ide/vistual_studio_01/10jq18.png" /></a></p>
+<ol>
+<li>远程和本地机器上的防火墙必须允许Visual Studio和远程调试监控之间能够通信</li>
+<li>想要调试，PDB文件是关键；为了能够让VisualStudio自动加载它们，必须满足以下条件：</li>
+</ol>
+<p align="left">1）本地的PDB文件必须可用（在远程机器的相同路径下放置一个对应的模块）。</p>
+<p align="left"> 2) 远程机器上的托管PDB文化必须可用。</p>
+<p align="left">远程调试监控下载：</p>
+<ul>
+<li> <a href="http://www.microsoft.com/en-us/download/details.aspx?id=10647">Visual Studio 2008 Service Pack 1 Remote Debugger</a></li>
+<li><a href="http://www.microsoft.com/en-us/download/details.aspx?id=475">Microsoft Visual Studio 2010 Remote Debugger</a></li>
+</ul>

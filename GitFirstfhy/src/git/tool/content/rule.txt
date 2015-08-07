@@ -18,9 +18,11 @@ system/linux_fileInfo.html template.html content/linux_fileInfo.txt [title]-llin
 
 sql/sql_15nosql.html template.html content/sql_15nosql.txt [title]-15个nosql数据库
 
+ide/ide_vistual_studio_01.html template.html content/ide_vistual_studio_01.txt [title]-15个nosql数据库
+
 javascript/javascript_wscript.html template.html content/javascript_wscript.txt [title]-WScript.Shell对象的run和exec
 
-blizzard/blizzard_mpq.html template.html content/blizzard_mpq.txt [title]-进军暴雪---MPQ技术内幕
+blizzard/blizzard_mpq.html template.html content/blizzard_mpq.txt [title]-进军暴雪_MPQ技术内幕
 
 other/track_expression.html template.html content/track_expression.txt [title]-利用堆栈解析算术表达式
 other/2-5dtitle.html template.html content/2-5dtitle.txt [title]-全45度角2.5D游戏如何计算该被显示出的tile地形图片

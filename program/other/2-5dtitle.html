@@ -33,15 +33,15 @@
 <p>&nbsp;</p>
 <p>&nbsp;&nbsp;&nbsp; 游戏世界是个巨大的正方形，采用windows默认窗口坐标系表示它的左上角在( 0, 0 )处， 在全45度视角下通过往正方向( 逆时针 )旋转45度再把y坐标缩小二分之一，它看起来就应该是一个巨大的菱形。为了调试算法方便我用一个64*32（像素）的矩形表示tile图片，用这个矩形的内接菱形来表示实际被显示出来的tile菱形像素块，因为我建立的程序窗口式640*480，所以只假设游戏世界的大菱形是由10 * 10个tile组成的，也就是说整个游戏世界都被显示在窗口中。</p>
 <p>&nbsp;</p>
-<p><img src="http://hi.csdn.net/attachment/201006/16/0_12766599020bDQ.gif" alt="" />
+<p><img src="../../images/program/other/0_12766599020bDQ.gif" alt="" />
 
 </p>
 <p>&nbsp;</p>
-<p><img src="http://hi.csdn.net/attachment/201006/16/0_1276659920vbBh.gif" alt="" />
+<p><img src="../../images/program/other/0_1276659920vbBh.gif" alt="" />
 
 </p>
 <p>&nbsp;</p>
-<p><img src="http://hi.csdn.net/attachment/201006/16/0_1276659967V4HV.gif" alt="" />
+<p><img src="../../images/program/other/0_1276659967V4HV.gif" alt="" />
 </p>
 <p>&nbsp;</p>
 <p>&nbsp;</p>
@@ -81,14 +81,14 @@ sin( -45 ) + y * cos( -45 );</p>
 <p><br />
 我又以玩家所在屏幕点为中心，以一个认为合适的长和宽画了一个矩形，它代表游戏中玩家所看到的画面：</p>
 <p>&nbsp;</p>
-<p><img src="http://hi.csdn.net/attachment/201006/16/0_12766599933KSK.gif" alt="" />
+<p><img src="../../images/program/other/0_12766599933KSK.gif" alt="" />
 </p>
 <p>&nbsp;</p>
 <p>&nbsp;&nbsp;&nbsp; 现在算法建立之上的背景讲完了，下面是算法的思路。</p>
 <p>&nbsp;</p>
 <p>&nbsp;&nbsp;&nbsp; 其实整个算法是以俯瞰正方形游戏地形的观察角度来思考的，正如屏幕上的像素点是正方形的一样。上面的上面那张图看起来类似于这样：</p>
 <p>&nbsp;</p>
-<p><img src="http://hi.csdn.net/attachment/201006/16/0_12766710958wx5.gif" alt="" />
+<p><img src="../../images/program/other/0_12766710958wx5.gif" alt="" />
 </p>
 <p>&nbsp;</p>
 <p>&nbsp;&nbsp;&nbsp; 算法从画面矩形的最高点也就是对应于45度角那幅图中画面矩形的左上角的所在tile行，到最低点也就是对应右下角所在的行，逐行找出两条斜线之间的tile，保存到一个数组中。最后把这些tile画出来。每行该被画出的tile在经过该行的斜线的内侧，分成两种情况，一种情况是当我们在计算顶部两条斜线所穿过的某tile行时，起始的tile的x位置是由左边的那条斜线与这个tile行的底边的焦点位置决定的，终点的tile的x位置是由右边的那条斜线与tile行底边的焦点决定的，另外一种是当我们计算下部两条斜线所穿过的某tile行时，起始的tile的x位置是由左边的斜线与tile行顶边的焦点决定的，终点的tile的x位置是由右边的斜线与tile行顶边的焦点决定的。有一个例外，就是左右两边的两条斜线发生转折的这行，也就是画面矩形的左下点和右上点，没有办法根据上部斜线或者下部斜线与tile行的顶边与底边的焦点来判断起始点和终点，但是在此之前我们已经把这四个顶点所在的tile的x，y坐标算好了（其实就是一个二维数组的坐标 ），后面会讲怎么计算。所以在这行只要把画面矩形的左下点和右上点作为起始点和终点的tilex坐标。</p>
@@ -102,12 +102,12 @@ sin( -45 ) + y * cos( -45 );</p>
 的y轴上的截距，然后对菱形tile块的纵向高度取商就可以得出矩形定点分别坐落在哪些tile块中，当然细节上还需要一些处理，可以看我后面会给出的代
 码。</p>
 <p>&nbsp;</p>
-<p>&nbsp;&nbsp; <img src="http://hi.csdn.net/attachment/201006/16/0_1276659999u070.gif" alt="" />
+<p>&nbsp;&nbsp; <img src="../../images/program/other/0_1276659999u070.gif" alt="" />
 </p>
 <p>&nbsp;</p>
 <p>&nbsp;&nbsp;&nbsp; 如何计算斜线与tile行的顶边或者底边的焦点，先算第一行tile终点，计算顶点在它所在的tile中的偏移高度，如图中画出来的红色线段，然后根据斜率计算出相应的x增量（显然这里的斜率是1，所以可以直接用这个偏移高度的值），再把它加上黄色线段表示的x偏移长度，然后对方形tile的宽取商，接着把画面矩形的左上点所在的tile的x坐标加上这个商。 再接下来一行怎么算？因为斜率是1而tile格子又是正方形，所以接下来这行的tile终点的x坐标只要直接加上1就可以了^_^ ，直到转折点的特殊处理，然后再接着计算与tile行的顶边交点。</p>
 <p>&nbsp;</p>
-<p><img src="http://hi.csdn.net/attachment/201006/16/0_1276674378mGBf.gif" alt="" />
+<p><img src="../../images/program/other/0_1276674378mGBf.gif" alt="" />
 </p>
 <p>&nbsp;</p>
 <p>&nbsp;&nbsp;&nbsp; 看起来还是很容易，但是有个问题就是难道我们要把菱形游戏地形的坐标全部换算成正方形游戏地形上的坐标？其实不用。</p>
@@ -115,21 +115,21 @@ sin( -45 ) + y * cos( -45 );</p>
 <p>&nbsp;</p>
 <p>&nbsp;&nbsp;&nbsp; 一些计算可以利用几何特性来避免菱形与正方形坐标之间的转换。下面的计算求出表示画面的矩形顶点在它所坐落在的tile里的偏移的长度：</p>
 <p>&nbsp;</p>
-<p><img src="http://hi.csdn.net/attachment/201006/16/0_1276669848gNAM.gif" alt="" />
+<p><img src="../../images/program/other/0_1276669848gNAM.gif" alt="" />
 </p>
 <p>&nbsp;</p>
 <p>&nbsp;&nbsp;&nbsp; 绿色点代表画面矩形左上顶点，两条蓝色的线就是它所在的分别与菱形左上左下两条边平行的直线，粉红色的线段代表顶点在tile里偏移的x方向长度，黄色线段代表y方向长度。当然这是在全45角度下所看到的。计算它们只是要得到一个结果，所以我们没有必要把他们转换成上面的上面那张图里的坐标，而可以直接用菱形tile的纵对角线也就是32来作为方形tile的宽度，以平行于大菱形游戏地形的蓝色斜线与y轴的截距对32取模再取相反数来作为上面的上面的图中黄色线段表示的偏移，类似可以求出上面的上面那张图里红色的线段表示的偏移。下图是两个视角的tile块，对角线中黄色部分与纵对角线的比和底边上黄色部分与底长度的比是相同的，只要纵对角线上黄色部分的长度超过纵对角线底部黄色部分的线也会超过底部长度，也就是进入下一个tile。采用对角线来表示是因为它可以直接得到。</p>
 <p>&nbsp;</p>
-<p><img src="http://hi.csdn.net/attachment/201006/16/0_12766784287ZMo.gif" alt="" />
+<p><img src="../../images/program/other/0_12766784287ZMo.gif" alt="" />
 </p>
 <p>&nbsp;</p>
 <p>算法最终得到的效果图片：</p>
 <p>&nbsp;</p>
-<p><img src="http://hi.csdn.net/attachment/201006/16/0_1276678959W3vR.gif" alt="" />
+<p><img src="../../images/program/other/0_1276678959W3vR.gif" alt="" />
 </p>
 <p>&nbsp;</p>
 <p>&nbsp;</p>
-<p><img src="http://hi.csdn.net/attachment/201006/16/0_1276678965JwyY.gif" alt="" />
+<p><img src="../../images/program/other/0_1276678965JwyY.gif" alt="" />
 </p>
 <p>&nbsp;</p>
 <p>下面是算法的代码</p>

@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>利用堆栈解析算术表达式</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	
+	<link rel="stylesheet" href="../../stylesheets/stylesheet.css" media="screen">
+	<link rel="stylesheet" href="../../stylesheets/pygment_trac.css"/>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script type="text/javascript" src="../../javascripts/script.js"></script>
+	
+	<meta name="description" content="firstfhy">
+	
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+<body>
+	<div class="wrapper">
+		<div id="container">
+		    <div id="main" role="main">
+		    	<div class="download-bar">
+			    	<div class="inner">
+			          	<a class="code">OTHER</a>
+			        </div>
+		        	<span class="blc"></span><span class="trc"></span>
+		        </div>
+		        <article class="markdown-body">
+					<h3>
+						利用堆栈解析算术表达式
+				   	</h3>
+<div id="article_content" class="article_content">
+
+<span style="font-size:14pt"><strong>1本文目标<br>
+</strong></span><br>
+分析用堆栈解析算术表达式的基本方法。给出的示例代码能解析任何包括&#43;，-，*，/，()和0到9数字组成的算术表达式。<br>
+<br>
+<span style="font-size:14pt"><strong>2中缀表达式和后缀表达式</strong></span><br>
+<br>
+中缀表达式就是通常所说的算术表达式，比如(1&#43;2)*3-4。<br>
+<br>
+后缀表达式是指通过解析后，运算符在运算数之后的表达式，比如上式解析成后缀表达式就是12&#43;3*4-。这种表达式可以直接利用栈来求解。<br>
+<br>
+<span style="font-size:14pt"><strong>3运算符的优先级<br>
+</strong></span><br>
+<table border="1" cellspacing="0" cellpadding="3" style="width:427px; height:297px; border-collapse:collapse">
+<tbody>
+<tr>
+<td>优先级</td>
+<td>运算符</td>
+</tr>
+<tr>
+<td>1</td>
+<td>括号()</td>
+</tr>
+<tr>
+<td>2</td>
+<td>负号-</td>
+</tr>
+<tr>
+<td>3</td>
+<td>乘方**</td>
+</tr>
+<tr>
+<td>4</td>
+<td>乘*，除/，求余%</td>
+</tr>
+<tr>
+<td>5</td>
+<td>加&#43;，减-</td>
+</tr>
+<tr>
+<td>6</td>
+<td>小于&lt;，小于等于&lt;=，大于&gt;，大于等于&gt;=</td>
+</tr>
+<tr>
+<td>7</td>
+<td>等于==，不等于!=</td>
+</tr>
+<tr>
+<td>8</td>
+<td>逻辑与&amp;&amp;</td>
+</tr>
+<tr>
+<td>9</td>
+<td>逻辑或||</td>
+</tr>
+</tbody>
+</table>
+<p><br>
+大致的规律是，一元运算符 &gt; 二元运算符 &gt; 多元运算符。<br>
+<br>
+<span style="font-size:14pt"><strong>4利用堆栈解析算术表达式的过程<br>
+</strong></span><br>
+中缀表达式翻译成后缀表达式的方法如下：<br>
+<br>
+（1）从左向右依次取得数据ch。<br>
+<br>
+（2）如果ch是操作数，直接输出。<br>
+<br>
+（3）如果ch是运算符（含左右括号），则：<br>
+<wbr><wbr><wbr><wbr><wbr>a：如果ch = '('，放入堆栈。<br>
+<wbr><wbr><wbr><wbr><wbr>b：如果ch = ')'，依次输出堆栈中的运算符，直到遇到'('为止。<br>
+<wbr><wbr><wbr><wbr><wbr>c：如果ch不是')'或者'('，那么就和堆栈顶点位置的运算符top做优先级比较。<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>1：如果ch优先级比top高，那么将ch放入堆栈。<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>2：如果ch优先级低于或者等于top，那么输出top，然后将ch放入堆栈。<br>
+<br>
+（4）如果表达式已经读取完成，而堆栈中还有运算符时，依次由顶端输出。<br>
+<br>
+如果我们有表达式(A-B)*C&#43;D-E/F，要翻译成后缀表达式，并且把后缀表达式存储在一个名叫output的字符串中，可以用下面的步骤。<br>
+<br>
+（1）读取'('，压入堆栈，output为空<br>
+（2）读取A，是运算数，直接输出到output字符串，output = A<br>
+（3）读取'-'，此时栈里面只有一个'('，因此将'-'压入栈，output = A<br>
+（4）读取B，是运算数，直接输出到output字符串，output = AB<br>
+（5）读取')'，这时候依次输出栈里面的运算符'-'，然后就是'('，直接弹出，output = AB-<br>
+（6）读取'*'，是运算符，由于此时栈为空，因此直接压入栈，output = AB-<br>
+（7）读取C，是运算数，直接输出到output字符串，output = AB-C<br>
+（8）读取'&#43;'，是运算符，它的优先级比'*'低，那么弹出'*'，压入'&#43;&quot;，output = AB-C*<br>
+（9）读取D，是运算数，直接输出到output字符串，output = AB-C*D<br>
+（10）读取'-'，是运算符，和'&#43;'的优先级一样，因此弹出'&#43;'，然后压入'-'，output = AB-C*D&#43;<br>
+（11）读取E，是运算数，直接输出到output字符串，output = AB-C*D&#43;E<br>
+（12）读取'/'，是运算符，比'-'的优先级高，因此压入栈，output = AB-C*D&#43;E<br>
+（13）读取F，是运算数，直接输出到output字符串，output = AB-C*D&#43;EF<br>
+（14）原始字符串已经读取完毕，将栈里面剩余的运算符依次弹出，output = AB-C*D&#43;EF/-<br>
+<br>
+<span style="font-size:14pt"><strong>5计算算术表达式<br>
+</strong></span><br>
+当有了后缀表达式以后，运算表达式的&#20540;就非常容易了。可以按照下面的流程来计算。<br>
+<br>
+（1）从左向右扫描表达式，一个取出一个数据data<br>
+（2）如果data是操作数，就压入堆栈<br>
+（3）如果data是操作符，就从堆栈中弹出此操作符需要用到的数据的个数，进行运算，然后把结果压入堆栈<br>
+（4）如果数据处理完毕，堆栈中最后剩余的数据就是最终结果。<br>
+<br>
+比如我们要处理一个后缀表达式1234&#43;*&#43;65/-，那么具体的步骤如下。<br>
+<br>
+（1）首先1，2，3，4都是操作数，将它们都压入堆栈<br>
+（2）取得'&#43;'，为运算符，弹出数据3，4，得到结果7，然后将7压入堆栈<br>
+（3）取得'*'，为运算符，弹出数据7，2，得到数据14，然后将14压入堆栈<br>
+（4）取得'&#43;'，为运算符，弹出数据14，1，得到结果15，然后将15压入堆栈<br>
+（5）6，5都是数据，都压入堆栈<br>
+（6）取得'/'，为运算符，弹出数据6，5，得到结果1.2，然后将1.2压入堆栈<br>
+（7）取得'-'，为运算符，弹出数据15，1.2，得到数据13.8，这就是最后的运算结果</p>
+<p><span style="font-size:14pt"><strong>6 示例代码</strong></span></p>
+<div style="padding:4px 5px 4px 4px; border:1px solid rgb(204,204,204); width:98%; font-size:13px; background-color:rgb(238,238,238)">
+<span style="color:#808080"><wbr><wbr><wbr><wbr>///</span> <span style="color:#0800">
+<wbr></span><span style="color:#808080">&lt;summary&gt;</span><span style="color:#0800"><br>
+<wbr><wbr><wbr><wbr></span><span style="color:#808080">///</span> <span style="color:#0800">
+<wbr>将中缀表达式翻译成后缀表达式<br>
+<wbr><wbr><wbr><wbr></span><span style="color:#808080">///</span> <span style="color:#0800">
+<wbr>输入中缀表达式： <wbr>A&#43;B*(C&#43;D)-E/F<br>
+<wbr><wbr><wbr><wbr></span><span style="color:#808080">///</span> <span style="color:#0800">
+<wbr>翻译成后缀表达式：ABCD&#43;*&#43;EF/-<br>
+<wbr><wbr><wbr><wbr></span><span style="color:#808080">///</span> <span style="color:#0800">
+<wbr>中缀表达式翻译成后缀表达式的方法如下：<br>
+<wbr><wbr><wbr><wbr></span><span style="color:#808080">///</span> <span style="color:#0800">
+<wbr>（1）从左向右依次取得数据ch<br>
+<wbr><wbr><wbr><wbr></span><span style="color:#808080">///</span> <span style="color:#0800">
+<wbr>（2）如果ch是操作数，直接输出<br>
+<wbr><wbr><wbr><wbr></span><span style="color:#808080">///</span> <span style="color:#0800">
+<wbr>（3）如果ch是运算符（含左右括号），则：<br>
+<wbr><wbr><wbr><wbr></span><span style="color:#808080">///</span> <span style="color:#0800">
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>a：如果ch
+<wbr>= <wbr>'('，放入堆栈<br>
+<wbr><wbr><wbr><wbr></span><span style="color:#808080">///</span> <span style="color:#0800">
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>b：如果ch
+<wbr>= <wbr>')'，依次输出堆栈中的运算符，直到遇到'('为止<br>
+<wbr><wbr><wbr><wbr></span><span style="color:#808080">///</span> <span style="color:#0800">
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>c：如果ch不是')'或者'('，那么就和堆栈顶点位置的运算符top做优先级比较<br>
+<wbr><wbr><wbr><wbr></span><span style="color:#808080">///</span> <span style="color:#0800">
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>1：如果ch优先级比top高，那么 将ch放入堆栈<br>
+<wbr><wbr><wbr><wbr></span><span style="color:#808080">///</span> <span style="color:#0800">
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>2：如果ch优先级低于或者等于top，那么输出top，然后将ch放入堆栈<br>
+<wbr><wbr><wbr><wbr></span><span style="color:#808080">///</span> <span style="color:#0800">
+<wbr><wbr><wbr><wbr>（4）如果表达式已经读取完成，而堆栈中还有运算符时，依次由顶端输出</span><span style="color:#808080"><br>
+</span><span style="color:#000000"><wbr><wbr><wbr><wbr></span><span style="color:#000000"><br>
+<wbr><wbr><wbr><wbr></span><span style="color:#808080">///</span> <span style="color:#0800">
+<wbr></span><span style="color:#808080">&lt;/summary&gt;</span><span style="color:#808080"><br>
+</span><span style="color:#000000"><wbr><wbr><wbr><wbr></span><span style="color:#00ff">public</span>
+<span style="color:#000000"><wbr></span><span style="color:#00ff">class</span> <span style="color:#000000">
+<wbr>PosfixParser<br>
+<wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">private</span>
+<span style="color:#000000"><wbr></span><span style="color:#00ff">static</span> <span style="color:#000000">
+<wbr></span><span style="color:#00ff">string</span> <span style="color:#000000"><wbr>expression
+<wbr></span><span style="color:#000000">=</span> <span style="color:#000000"><wbr></span><span style="color:#000000">&quot;</span><span style="color:#000000">1&#43;4/(1&#43;1)&#43;2*(3&#43;4)-6/3&#43;5/(1/2&#43;2/1)</span><span style="color:#000000">&quot;</span><span style="color:#000000">;<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">private</span>
+<span style="color:#000000"><wbr></span><span style="color:#00ff">static</span> <span style="color:#000000">
+<wbr>Stack <wbr>myStack <wbr></span><span style="color:#000000">=</span> <span style="color:#000000">
+<wbr></span><span style="color:#00ff">new</span> <span style="color:#000000"><wbr>Stack();<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">private</span>
+<span style="color:#000000"><wbr></span><span style="color:#00ff">static</span> <span style="color:#000000">
+<wbr>StringBuilder <wbr>posfixExpression <wbr></span><span style="color:#000000">=</span>
+<span style="color:#000000"><wbr></span><span style="color:#00ff">new</span> <span style="color:#000000">
+<wbr>StringBuilder();<br>
+<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">public</span>
+<span style="color:#000000"><wbr></span><span style="color:#00ff">static</span> <span style="color:#000000">
+<wbr></span><span style="color:#00ff">void</span> <span style="color:#000000"><wbr>Main()<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>Console.WriteLine(</span><span style="color:#000000">&quot;</span><span style="color:#000000">This
+<wbr>Midfix <wbr>expression <wbr>is: <wbr>{0}</span><span style="color:#000000">&quot;</span><span style="color:#000000">,
+<wbr>expression);<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>Console.WriteLine(</span><span style="color:#000000">&quot;</span><span style="color:#000000">The
+<wbr>Posfix <wbr>expression <wbr>is: <wbr>{0}</span><span style="color:#000000">&quot;</span><span style="color:#000000">,
+<wbr>Parse());<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>Console.WriteLine(</span><span style="color:#000000">&quot;</span><span style="color:#000000">The
+<wbr>result <wbr>is <wbr>{0}</span><span style="color:#000000">&quot;</span><span style="color:#000000">,
+<wbr>Calculate());<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>Console.Read();<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>}<br>
+<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#0800">//</span><span style="color:#0800">将中缀表达式解析成后缀表达式</span><span style="color:#0800"><br>
+</span><span style="color:#000000"><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">public</span>
+<span style="color:#000000"><wbr></span><span style="color:#00ff">static</span> <span style="color:#000000">
+<wbr></span><span style="color:#00ff">string</span> <span style="color:#000000"><wbr>Parse()<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">int</span>
+<span style="color:#000000"><wbr>i, <wbr>j <wbr></span><span style="color:#000000">=</span>
+<span style="color:#000000"><wbr></span><span style="color:#000000">0</span><span style="color:#000000">;<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">char</span>
+<span style="color:#000000"><wbr>ch, <wbr>ch1;<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">char</span><span style="color:#000000">[]
+<wbr>A <wbr></span><span style="color:#000000">=</span> <span style="color:#000000">
+<wbr>expression.ToCharArray(); <wbr></span><span style="color:#0800">//</span><span style="color:#0800">将字符串转成字符数组，要注意的是，不能有大于10的数存在</span><span style="color:#0800"><br>
+</span><span style="color:#000000"><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">char</span><span style="color:#000000">[]
+<wbr>B <wbr></span><span style="color:#000000">=</span> <span style="color:#000000">
+<wbr></span><span style="color:#00ff">new</span> <span style="color:#000000"><wbr></span><span style="color:#00ff">char</span><span style="color:#000000">[A.Length];
+<wbr></span><span style="color:#0800">//</span><span style="color:#0800">最后生成的后缀表达式会小于这个长度，因为有括号</span><span style="color:#0800"><br>
+</span><span style="color:#000000"><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">int</span>
+<span style="color:#000000"><wbr>length <wbr></span><span style="color:#000000">=</span>
+<span style="color:#000000"><wbr>A.Length;<br>
+<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">for</span><span style="color:#000000">(i</span><span style="color:#000000">=</span><span style="color:#000000">0</span><span style="color:#000000">;
+<wbr>i</span><span style="color:#000000">&lt;</span><span style="color:#000000">length;
+<wbr>i</span><span style="color:#000000">&#43;&#43;</span><span style="color:#000000">)<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>ch
+<wbr></span><span style="color:#000000">=</span> <span style="color:#000000"><wbr>A[i];<br>
+<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">if</span><span style="color:#000000">(
+<wbr>IsOperand( <wbr>ch <wbr>) <wbr>) <wbr></span><span style="color:#0800">//</span><span style="color:#0800">如果是操作数，直接放入B中</span><span style="color:#0800"><br>
+</span><span style="color:#000000"><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>B[j</span><span style="color:#000000">&#43;&#43;</span><span style="color:#000000">]
+<wbr></span><span style="color:#000000">=</span> <span style="color:#000000"><wbr>ch;<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>}<br>
+<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">else</span><span style="color:#000000"><br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">if</span><span style="color:#000000">(
+<wbr>ch <wbr></span><span style="color:#000000">==</span> <span style="color:#000000">
+<wbr></span><span style="color:#000000">'</span><span style="color:#000000">(</span><span style="color:#000000">'</span>
+<span style="color:#000000"><wbr>) <wbr></span><span style="color:#0800">//</span><span style="color:#0800">如果是'('，将它放入堆栈中</span><span style="color:#0800"><br>
+</span><span style="color:#000000"><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>myStack.Push(ch);<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">else</span>
+<span style="color:#000000"><wbr></span><span style="color:#00ff">if</span><span style="color:#000000">(
+<wbr>ch <wbr></span><span style="color:#000000">==</span> <span style="color:#000000">
+<wbr></span><span style="color:#000000">'</span><span style="color:#000000">)</span><span style="color:#000000">'</span><span style="color:#000000">)
+<wbr></span><span style="color:#0800">//</span><span style="color:#0800">如果是')'</span><span style="color:#0800"><br>
+</span><span style="color:#000000"><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">while</span><span style="color:#000000">(
+<wbr></span><span style="color:#000000">!</span><span style="color:#000000">IsEmpty(myStack)
+<wbr>) <wbr></span><span style="color:#0800">//</span><span style="color:#0800">不停地弹出堆栈中的内容，直到遇到'('</span><span style="color:#0800"><br>
+</span><span style="color:#000000"><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>ch
+<wbr></span><span style="color:#000000">=</span> <span style="color:#000000"><wbr>(</span><span style="color:#00ff">char</span><span style="color:#000000">)myStack.Pop();<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">if</span><span style="color:#000000">(
+<wbr>ch <wbr></span><span style="color:#000000">==</span> <span style="color:#000000">
+<wbr></span><span style="color:#000000">'</span><span style="color:#000000">(</span><span style="color:#000000">'</span>
+<span style="color:#000000"><wbr>)<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">break</span><span style="color:#000000">;<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">else</span><span style="color:#000000"><br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>B[j</span><span style="color:#000000">&#43;&#43;</span><span style="color:#000000">]
+<wbr></span><span style="color:#000000">=</span> <span style="color:#000000"><wbr>ch;
+<wbr></span><span style="color:#0800">//</span><span style="color:#0800">将堆栈中弹出的内容放入B中</span><span style="color:#0800"><br>
+</span><span style="color:#000000"><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>}<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>}<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">else</span>
+<span style="color:#000000"><wbr></span><span style="color:#0800">//</span><span style="color:#0800">既不是'('，也不是')'，是其它操作符，<br>
+比如&#43;, <wbr>-, <wbr>*, <wbr>/之类的</span><span style="color:#0800"><br>
+</span><span style="color:#000000"><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">if</span><span style="color:#000000">(
+<wbr></span><span style="color:#000000">!</span><span style="color:#000000">IsEmpty(
+<wbr>myStack <wbr>) <wbr>)<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">do</span>
+<span style="color:#000000"><wbr><br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>ch1
+<wbr></span><span style="color:#000000">=</span> <span style="color:#000000"><wbr>(</span><span style="color:#00ff">char</span><span style="color:#000000">)myStack.Pop();</span><span style="color:#0800">//</span><span style="color:#0800">弹出栈顶元素</span><span style="color:#0800"><br>
+</span><span style="color:#000000"><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">if</span><span style="color:#000000">(Priority(ch)
+<wbr></span><span style="color:#000000">&gt;</span> <span style="color:#000000"><wbr>Priority(ch1))
+<wbr></span><span style="color:#0800">//</span><span style="color:#0800">如果栈顶元素的优 先级小于读取到的操作符</span><span style="color:#0800"><br>
+</span><span style="color:#000000"><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>myStack.Push(ch1);</span><span style="color:#0800">//</span><span style="color:#0800">将栈顶元素放回堆栈</span><span style="color:#0800"><br>
+</span><span style="color:#000000"><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>myStack.Push(ch);</span><span style="color:#0800">//</span><span style="color:#0800">将读取到的操作符放回堆栈</span><span style="color:#0800"><br>
+</span><span style="color:#000000"><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">break</span><span style="color:#000000">;<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>}<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">else</span><span style="color:#0800">//</span><span style="color:#0800">如果栈顶元素的优先级比较高或者两者相等时</span><span style="color:#0800"><br>
+</span><span style="color:#000000"><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>B[j</span><span style="color:#000000">&#43;&#43;</span><span style="color:#000000">]
+<wbr></span><span style="color:#000000">=</span> <span style="color:#000000"><wbr>ch1;
+<wbr></span><span style="color:#0800">//</span><span style="color:#0800">将栈顶元素弹出，放入B中</span><span style="color:#0800"><br>
+</span><span style="color:#000000"><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">if</span><span style="color:#000000">(
+<wbr>IsEmpty(myStack) <wbr>)<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>myStack.Push(ch);
+<wbr></span><span style="color:#0800">//</span><span style="color:#0800">将读取到的操作符压入堆栈中</span><span style="color:#0800"><br>
+</span><span style="color:#000000"><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">break</span><span style="color:#000000">;<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>}<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>}<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>}
+<wbr></span><span style="color:#00ff">while</span><span style="color:#000000">( <wbr>
+</span><span style="color:#000000">!</span><span style="color:#000000">IsEmpty(myStack));<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>}<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">else</span>
+<span style="color:#000000"><wbr></span><span style="color:#0800">//</span><span style="color:#0800">如果堆栈为空，就把操作符放入堆栈中</span><span style="color:#0800"><br>
+</span><span style="color:#000000"><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>myStack.Push(ch);<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>}<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>}<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>}<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>}<br>
+<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">while</span><span style="color:#000000">(
+<wbr></span><span style="color:#000000">!</span><span style="color:#000000">IsEmpty(myStack
+<wbr>) <wbr>)<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>B[j</span><span style="color:#000000">&#43;&#43;</span><span style="color:#000000">]
+<wbr></span><span style="color:#000000">=</span> <span style="color:#000000"><wbr>(</span><span style="color:#00ff">char</span><span style="color:#000000">)myStack.Pop();</span><span style="color:#0800">//</span><span style="color:#0800">将堆栈中剩下的操作符输出到B中</span><span style="color:#0800"><br>
+</span><span style="color:#000000"><br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">for</span><span style="color:#000000">(i</span><span style="color:#000000">=</span><span style="color:#000000">0</span><span style="color:#000000">;
+<wbr>i</span><span style="color:#000000">&lt;</span><span style="color:#000000">B.Length;
+<wbr>i</span><span style="color:#000000">&#43;&#43;</span><span style="color:#000000">)<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">if</span><span style="color:#000000">(
+<wbr>B[i] <wbr></span><span style="color:#000000">!=</span> <span style="color:#000000">
+<wbr></span><span style="color:#000000">'</span><span style="color:#000000">\0</span><span style="color:#000000">'</span>
+<span style="color:#000000"><wbr>) <wbr></span><span style="color:#0800">//</span><span style="color:#0800">去除多余的空字符</span><span style="color:#0800"><br>
+</span><span style="color:#000000"><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>posfixExpression.Append(B[i]);<br>
+<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">return</span>
+<span style="color:#000000"><wbr>posfixExpression.ToString();<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>}<br>
+<wbr><wbr><wbr><wbr><wbr></span></div>
+<p>6 示例代码<br>
+<wbr><wbr><wbr>/// &lt;summary&gt;<br>
+<wbr><wbr><wbr><wbr>/// 将中缀表达式翻译成后缀表达式<br>
+<wbr><wbr><wbr>/// 输入中缀表达式： A&#43;B*(C&#43;D)-E/F<br>
+<wbr><wbr><wbr><wbr>/// 翻译成后缀表达式：ABCD&#43;*&#43;EF/-<br>
+<wbr><wbr><wbr>/// 中缀表达式翻译成后缀表达式的方法如下：<br>
+<wbr><wbr><wbr>/// （1）从左向右依次取得数据ch<br>
+<wbr><wbr><wbr><wbr>/// （2）如果ch是操作数，直接输出<br>
+<wbr><wbr><wbr>/// （3）如果ch是运算符（含左右括号），则：<br>
+<wbr><wbr><wbr>/// <wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>a：如果ch = '('，放入堆栈<br>
+<wbr><wbr><wbr>/// <wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>b：如果ch = ')'，依次输出堆栈中的运算符， 直到遇到'('为止<br>
+<wbr><wbr><wbr><wbr>/// <wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>c：如果ch不是')'或者'('，那么就和堆栈顶点 位置的运算符top做优先级比较<br>
+<wbr><wbr><wbr><wbr>/// <wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>1：如果ch优先级比top高，那么 将ch放入堆栈<br>
+<wbr><wbr><wbr><wbr>/// <wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>2：如果ch优先级低于或者等于 top，那么输出top，然后将ch放入堆栈<br>
+<wbr><wbr><wbr><wbr>/// <wbr><wbr><wbr>（4）如果表达式已经读取完成，而堆栈中还有运算符时，依次由顶端输出<br>
+<wbr><wbr><wbr><wbr><br>
+<wbr><wbr><wbr><wbr>/// &lt;/summary&gt;<br>
+<wbr><wbr><wbr><wbr>public class PosfixParser<br>
+<wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>private static string expression = &quot;1&#43;4/(1&#43;1)&#43;2*(3&#43;4)-6/3&#43;5/(1/2&#43;2/1)&quot;;<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>private static Stack myStack = new Stack();<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>private static StringBuilder posfixExpression = new StringBuilder();</p>
+<p><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>public static void Main()<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>Console.WriteLine(&quot;This Midfix expression is: {0}&quot;, expression);<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>Console.WriteLine(&quot;The Posfix expression is: {0}&quot;, Parse());<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>Console.WriteLine(&quot;The result is {0}&quot;, Calculate());<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>Console.Read();<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>}</p>
+<p><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>//将中缀表达式解析成后缀表达式<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>public static string Parse()<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>int i, j = 0;<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>char ch, ch1;<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>char[] A = expression.ToCharArray(); //将字符串转成字符数组，要注意的是，不能有大于10的数存在<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>char[] B = new char[A.Length]; //最后生成的后缀表达式会小于这个长度，因为有括号<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>int length = A.Length;</p>
+<p><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>for(i=0; i&lt;length; i&#43;&#43;)<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>ch = A[i];</p>
+<p><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>if( IsOperand( ch ) ) //如果是操作数，直接放入B中<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>B[j&#43;&#43;] = ch;<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>}</p>
+<p><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>else<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>if( ch == '(' ) //如果是'('，将它放入堆栈中<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>myStack.Push(ch);<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>else if( ch == ')') //如果是')'<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>while( !IsEmpty(myStack) ) //不停地弹出堆栈中的内容，直到遇到'('<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>ch = (char)myStack.Pop();<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>if( ch == '(' )<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>break;<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>else<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>B[j&#43;&#43;] = ch; //将堆栈中弹出的内容放入B中<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>}<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>}<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>else //既不是'('，也不是')'，是其它操作符，<br>
+比如&#43;, -, *, /之类的<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>if( !IsEmpty( myStack ) )<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>do<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>ch1 = (char)myStack.Pop();//弹出栈顶元素<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>if(Priority(ch) &gt; Priority(ch1)) //如果栈顶元素的优先级小于读取到的操作符<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>myStack.Push(ch1);//将栈顶元素放回堆栈<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>myStack.Push(ch);//将读取到的操作符放回堆栈<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>break;<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>}<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>else//如果栈顶元素的优先级比较高或者两者相等时<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>B[j&#43;&#43;] = ch1; //将栈顶元素弹出，放入B中<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>if( IsEmpty(myStack) )<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>myStack.Push(ch); //将读取到的操作符压入堆栈中<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>break;<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>}<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>}<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>} while( !IsEmpty(myStack));<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>}<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>else //如果堆栈为空，就把操作符放入堆栈中<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>myStack.Push(ch);<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>}<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>}<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>}<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>}</p>
+<p><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>while( !IsEmpty(myStack ) )<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>B[j&#43;&#43;] = (char)myStack.Pop();//将堆栈中剩下的操作符输出到B中<br>
+<wbr><br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>for(i=0; i&lt;B.Length; i&#43;&#43;)<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>if( B[i] != '\0' ) //去除多余的空字符<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>posfixExpression.Append(B[i]);</p>
+<p><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>return posfixExpression.ToString();<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>}<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><span style="color:#0800">//</span><span style="color:#0800">计算后缀表达式的&#20540;</span><span style="color:#0800"><br>
+</span><span style="color:#000000"><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">public</span>
+<span style="color:#000000"><wbr></span><span style="color:#00ff">static</span> <span style="color:#000000">
+<wbr></span><span style="color:#00ff">double</span> <span style="color:#000000"><wbr>Calculate()<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">int</span>
+<span style="color:#000000"><wbr>i;<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">double</span>
+<span style="color:#000000"><wbr>no1, <wbr>no2, <wbr>ret;<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">char</span>
+<span style="color:#000000"><wbr>ch;<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">char</span><span style="color:#000000">[]
+<wbr>A <wbr></span><span style="color:#000000">=</span> <span style="color:#000000">
+<wbr>posfixExpression.ToString().ToCharArray();<br>
+<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>myStack.Clear();<br>
+<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">for</span><span style="color:#000000">(i</span><span style="color:#000000">=</span><span style="color:#000000">0</span><span style="color:#000000">;
+<wbr>i</span><span style="color:#000000">&lt;</span><span style="color:#000000">A.Length;
+<wbr>i</span><span style="color:#000000">&#43;&#43;</span><span style="color:#000000">)<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>ch
+<wbr></span><span style="color:#000000">=</span> <span style="color:#000000"><wbr>A[i];<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">if</span><span style="color:#000000">(IsOperand(ch))</span><span style="color:#0800">//</span><span style="color:#0800">如果是操作数，直接 压入栈</span><span style="color:#0800"><br>
+</span><span style="color:#000000"><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>myStack.Push((</span><span style="color:#00ff">double</span><span style="color:#000000">)(ch</span><span style="color:#000000">-</span><span style="color:#000000">48</span><span style="color:#000000">));<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>}<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">else</span>
+<span style="color:#000000"><wbr></span><span style="color:#0800">//</span><span style="color:#0800">如果是操作符，就弹出两个数字来进行运算</span><span style="color:#0800"><br>
+</span><span style="color:#000000"><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>no1
+<wbr></span><span style="color:#000000">=</span> <span style="color:#000000"><wbr>(</span><span style="color:#00ff">double</span><span style="color:#000000">)
+<wbr>myStack.Pop();<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>no2
+<wbr></span><span style="color:#000000">=</span> <span style="color:#000000"><wbr>(</span><span style="color:#00ff">double</span><span style="color:#000000">)
+<wbr>myStack.Pop();<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>ret
+<wbr></span><span style="color:#000000">=</span> <span style="color:#000000"><wbr>GetValue(ch,
+<wbr>no1, <wbr>no2);<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>myStack.Push(ret);</span><span style="color:#0800">//</span><span style="color:#0800">将结果压入栈</span><span style="color:#0800"><br>
+</span><span style="color:#000000"><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>}<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>}<br>
+<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">return</span>
+<span style="color:#000000"><wbr>(</span><span style="color:#00ff">double</span><span style="color:#000000">)myStack.Pop();</span><span style="color:#0800">//</span><span style="color:#0800">弹出最后的运算结果</span><span style="color:#0800"><br>
+</span><span style="color:#000000"><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>}<br>
+<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#0800">//</span><span style="color:#0800">对两个&#20540;利用运算符计算结果</span><span style="color:#0800"><br>
+</span><span style="color:#000000"><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">private</span>
+<span style="color:#000000"><wbr></span><span style="color:#00ff">static</span> <span style="color:#000000">
+<wbr></span><span style="color:#00ff">double</span> <span style="color:#000000"><wbr>GetValue(</span><span style="color:#00ff">char</span>
+<span style="color:#000000"><wbr>op, <wbr></span><span style="color:#00ff">double</span>
+<span style="color:#000000"><wbr>ch1, <wbr></span><span style="color:#00ff">double</span>
+<span style="color:#000000"><wbr>ch2)<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">switch</span><span style="color:#000000">(
+<wbr>op <wbr>)<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">case</span>
+<span style="color:#000000"><wbr></span><span style="color:#000000">'</span><span style="color:#000000">&#43;</span><span style="color:#000000">'</span><span style="color:#000000">:<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">return</span>
+<span style="color:#000000"><wbr>ch2 <wbr></span><span style="color:#000000">&#43;</span>
+<span style="color:#000000"><wbr>ch1;<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">case</span>
+<span style="color:#000000"><wbr></span><span style="color:#000000">'</span><span style="color:#000000">-</span><span style="color:#000000">'</span><span style="color:#000000">:<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">return</span>
+<span style="color:#000000"><wbr>ch2 <wbr></span><span style="color:#000000">-</span>
+<span style="color:#000000"><wbr>ch1;<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">case</span>
+<span style="color:#000000"><wbr></span><span style="color:#000000">'</span><span style="color:#000000">*</span><span style="color:#000000">'</span><span style="color:#000000">:<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">return</span>
+<span style="color:#000000"><wbr>ch2 <wbr></span><span style="color:#000000">*</span>
+<span style="color:#000000"><wbr>ch1;<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">case</span>
+<span style="color:#000000"><wbr></span><span style="color:#000000">'</span><span style="color:#000000">/</span><span style="color:#000000">'</span><span style="color:#000000">:<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">return</span>
+<span style="color:#000000"><wbr>ch2 <wbr></span><span style="color:#000000">/</span>
+<span style="color:#000000"><wbr>ch1;<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">default</span><span style="color:#000000">:<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">return</span>
+<span style="color:#000000"><wbr></span><span style="color:#000000">0</span><span style="color:#000000">;<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>}<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>}<br>
+<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#0800">//</span><span style="color:#0800">判断堆栈是否为空</span><span style="color:#0800"><br>
+</span><span style="color:#000000"><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">private</span>
+<span style="color:#000000"><wbr></span><span style="color:#00ff">static</span> <span style="color:#000000">
+<wbr></span><span style="color:#00ff">bool</span> <span style="color:#000000"><wbr>IsEmpty(Stack
+<wbr>st)<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">return</span>
+<span style="color:#000000"><wbr>st.Count <wbr></span><span style="color:#000000">==</span>
+<span style="color:#000000"><wbr></span><span style="color:#000000">0</span> <span style="color:#000000">
+<wbr></span><span style="color:#000000">?</span> <span style="color:#000000"><wbr></span><span style="color:#00ff">true</span><span style="color:#000000">:
+<wbr></span><span style="color:#00ff">false</span><span style="color:#000000">;<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>}<br>
+<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#0800">//</span><span style="color:#0800">判断是否是操作数</span><span style="color:#0800"><br>
+</span><span style="color:#000000"><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">private</span>
+<span style="color:#000000"><wbr></span><span style="color:#00ff">static</span> <span style="color:#000000">
+<wbr></span><span style="color:#00ff">bool</span> <span style="color:#000000"><wbr>IsOperand(
+<wbr></span><span style="color:#00ff">char</span> <span style="color:#000000"><wbr>ch
+<wbr>)<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">char</span><span style="color:#000000">[]
+<wbr>operators <wbr></span><span style="color:#000000">=</span> <span style="color:#000000">
+<wbr>{ <wbr></span><span style="color:#000000">'</span><span style="color:#000000">&#43;</span><span style="color:#000000">'</span><span style="color:#000000">,
+<wbr></span><span style="color:#000000">'</span><span style="color:#000000">-</span><span style="color:#000000">'</span><span style="color:#000000">,
+<wbr></span><span style="color:#000000">'</span><span style="color:#000000">*</span><span style="color:#000000">'</span><span style="color:#000000">,
+<wbr></span><span style="color:#000000">'</span><span style="color:#000000">/</span><span style="color:#000000">'</span><span style="color:#000000">,
+<wbr></span><span style="color:#000000">'</span><span style="color:#000000">(</span><span style="color:#000000">'</span><span style="color:#000000">,
+<wbr></span><span style="color:#000000">'</span><span style="color:#000000">)</span><span style="color:#000000">'</span>
+<span style="color:#000000"><wbr>};<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">for</span><span style="color:#000000">(</span><span style="color:#00ff">int</span>
+<span style="color:#000000"><wbr>i</span><span style="color:#000000">=</span><span style="color:#000000">0</span><span style="color:#000000">;
+<wbr>i</span><span style="color:#000000">&lt;</span><span style="color:#000000">operators.Length;
+<wbr>i</span><span style="color:#000000">&#43;&#43;</span><span style="color:#000000">)<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">if</span><span style="color:#000000">(
+<wbr>ch <wbr></span><span style="color:#000000">==</span> <span style="color:#000000">
+<wbr>operators[i] <wbr>)<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">return</span>
+<span style="color:#000000"><wbr></span><span style="color:#00ff">false</span><span style="color:#000000">;<br>
+<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">return</span>
+<span style="color:#000000"><wbr></span><span style="color:#00ff">true</span><span style="color:#000000">;<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>}<br>
+<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#0800">//</span><span style="color:#0800">返回运算符的优先级</span><span style="color:#0800"><br>
+</span><span style="color:#000000"><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">private</span>
+<span style="color:#000000"><wbr></span><span style="color:#00ff">static</span> <span style="color:#000000">
+<wbr></span><span style="color:#00ff">int</span> <span style="color:#000000"><wbr>Priority(
+<wbr></span><span style="color:#00ff">char</span> <span style="color:#000000"><wbr>ch
+<wbr>)<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">int</span>
+<span style="color:#000000"><wbr>priority;<br>
+<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">switch</span><span style="color:#000000">(
+<wbr>ch <wbr>)<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>{<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">case</span>
+<span style="color:#000000"><wbr></span><span style="color:#000000">'</span><span style="color:#000000">&#43;</span><span style="color:#000000">'</span>
+<span style="color:#000000"><wbr>: <wbr><br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>priority
+<wbr></span><span style="color:#000000">=</span> <span style="color:#000000"><wbr></span><span style="color:#000000">1</span><span style="color:#000000">;<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">break</span><span style="color:#000000">;<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">case</span>
+<span style="color:#000000"><wbr></span><span style="color:#000000">'</span><span style="color:#000000">-</span><span style="color:#000000">'</span>
+<span style="color:#000000"><wbr>:<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>priority
+<wbr></span><span style="color:#000000">=</span> <span style="color:#000000"><wbr></span><span style="color:#000000">1</span><span style="color:#000000">;<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">break</span><span style="color:#000000">;<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">case</span>
+<span style="color:#000000"><wbr></span><span style="color:#000000">'</span><span style="color:#000000">*</span><span style="color:#000000">'</span>
+<span style="color:#000000"><wbr>:<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>priority
+<wbr></span><span style="color:#000000">=</span> <span style="color:#000000"><wbr></span><span style="color:#000000">2</span><span style="color:#000000">;<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">break</span><span style="color:#000000">;<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">case</span>
+<span style="color:#000000"><wbr></span><span style="color:#000000">'</span><span style="color:#000000">/</span><span style="color:#000000">'</span>
+<span style="color:#000000"><wbr>:<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>priority
+<wbr></span><span style="color:#000000">=</span> <span style="color:#000000"><wbr></span><span style="color:#000000">2</span><span style="color:#000000">;<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">break</span><span style="color:#000000">;<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">default</span>
+<span style="color:#000000"><wbr>:<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>priority
+<wbr></span><span style="color:#000000">=</span> <span style="color:#000000"><wbr></span><span style="color:#000000">0</span><span style="color:#000000">;<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">break</span><span style="color:#000000"><span style="color:#000000">;</span><br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>}<br>
+<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr></span><span style="color:#00ff">return</span>
+<span style="color:#000000"><wbr>priority;<br>
+<wbr><wbr><wbr><wbr><wbr><wbr><wbr><wbr>}<br>
+<wbr><wbr><wbr><wbr>}</span></p>
+<p>利用上述程序可以求解只包含&#43;，-，*，/，()和0－9之间的数字的表达式的&#20540;。这只是一个相当初级的程序，还有很多工作没有完成，但是只要我们弄清楚了其中的过程和步骤，剩下的工作就不再是那么困难了。<br>
+</p>
+</div>
+
+				</article>
+			</div>
+		</div>
+	    <footer>
+			<div class="owner">
+				<p><a href="https://github.com/firstfhy" class="avatar"><img src="https://avatars0.githubusercontent.com/u/10542465?v=3&amp;s=60" width="48" height="48"></a>View <a href="https://github.com/firstfhy">firstfhy</a> on <a href="https://www.github.com">GitHub</a></p>
+			</div>
+			<div class="creds">
+			  	<small>This page generated using <a href="http://pages.github.com/">GitHub Pages</a><br>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
+			</div>
+	    </footer>
+	</div>
+</body>
+</html>

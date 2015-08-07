@@ -1,0 +1,51 @@
+<p><span style="color: #333333; line-height: 19px; font-family: verdana, tahoma, 'lucida grande', sans-serif;">
+<div style="padding: 0px; margin: 0px;">方法声明：</div>
+<div style="padding: 0px; margin: 0px;">Function Exec(ByVal Command As String) As WshExec</div>
+<div style="padding: 0px; margin: 0px;">Function Run(ByVal Command As String, [ByVal WindowStyle], [ByVal WaitOnReturn]) As Integer</div>
+<div style="padding: 0px; margin: 0px;">区别：</div>
+<div style="padding: 0px; margin: 0px;"> </div>
+<div style="padding: 0px; margin: 0px;">1，返回值</div>
+<div style="padding: 0px; margin: 0px;">run的返回值是一个整数，就是0或1成功和失败两个状态，而exec方法的返回值是一个对象，从返回对象中可以获得控制台输出信息和控制台错误信息，即StdOut和StdErr属性等。</div>
+<div style="padding: 0px; margin: 0px;">如：</div>
+<div style="padding: 0px; margin: 0px;">Dim oShell,exeRs</div>
+<div style="padding: 0px; margin: 0px;">Set oShell = CreateObject("WSCript.shell")</div>
+<div style="padding: 0px; margin: 0px;">commandLine = "xcopy.exe"</div>
+<div style="padding: 0px; margin: 0px;">Set exeRs = oShell.Exec(commandLine)</div>
+<div style="padding: 0px; margin: 0px;">errMsg = exeRs.StdErr.ReadAll()</div>
+<div style="padding: 0px; margin: 0px;">stdMsg = exeRs.StdOut.ReadAll()</div>
+<div style="padding: 0px; margin: 0px;">WScript.echo "errMsg:" &amp; errMsg &amp; "stdMsg:" &amp; stdMsg</div>
+<div style="padding: 0px; margin: 0px;">ret = oShell.run(commandLine, 0, true)</div>
+<div style="padding: 0px; margin: 0px;">WScript.echo "run method return value:" &amp; ret</div>
+<div style="padding: 0px; margin: 0px;">Set oShell = Nothing</div>
+<div style="padding: 0px; margin: 0px;">Set exeRs = Nothing</div>
+<div style="padding: 0px; margin: 0px;">可以取道控制台错误和控制台信息。</div>
+<div style="padding: 0px; margin: 0px;"> </div>
+<div style="padding: 0px; margin: 0px;">附记：WshExec类具有属性ExitCode，ProcessID，Status，StdErr，StdIn，StdOut以及一个函数Terminate，这些属性和函数都很好理解。</div>
+<div style="padding: 0px; margin: 0px;">Status属性具有三个值：</div>
+<div style="padding: 0px; margin: 0px;">Const WshFailed   = 2</div>
+<div style="padding: 0px; margin: 0px;">Const WshFinished = 1</div>
+<div style="padding: 0px; margin: 0px;">Const WshRunning  = 0</div>
+<div style="padding: 0px; margin: 0px;"> </div>
+<div style="padding: 0px; margin: 0px;">2，执行参数</div>
+<div style="padding: 0px; margin: 0px;">Run的后两个参数，一个是cmd窗口的风格，一个是是否等待执行完成。最后一个参数很有用，如果你希望等待本次cmd执行的程序结束后，再执行run后面的语句，设置这个参数为true，否则后面的语句将不等待cmd窗口完成，直接运行。</div>
+<div style="padding: 0px; margin: 0px;">另外，如果你使用exec 方法的时候，如果希望等待cmd中程序执行完后，再执行后面的语句，也可以通过下面的方法： oExec.StdErr.ReadAll()或者oExec.StdOut.ReadAll（），道理上也应该好理解，要得到输出的信息，肯定要cmd执行完后才会有输出的。</div>
+<div style="padding: 0px; margin: 0px;"> </div>
+<div style="padding: 0px; margin: 0px;">WshShell.run函数的参数</div>
+<div style="padding: 0px; margin: 0px;">set WshShell= CreateObject(“Wscript.Shell”)</div>
+<div style="padding: 0px; margin: 0px;">WshShell.run       "notepad.exe",,</div>
+<div style="padding: 0px; margin: 0px;">run函数有三个参数，第一个参数是你要执行的程序的路径，若路径中存在空格，记得要用""括起来，如 """C:\Program Files\nn.exe"""的形式或者Chr(34)&amp;"C:\Program Files\nn.exe"&amp;Chr(34)的形式，第二个程序是窗口的形式，0是在后台运行；1表示正常运行；2表示激活程序并且显示为最小化；3表示激活程序并且显示为最大化；一共有10个这样的参数如下表。 第三个参数是表示这个脚本是等待还是继续执行，如果设为了true,脚本就会等待调用的程序退出后再向后执行。 </div>
+<div style="padding: 0px; margin: 0px;">其实，run做为函数，前面还有一个接受返回值的变量，一般来说如果返回为0，表示成功执行，如果不为0，则这个返回值就是错误代码，可以通过这个代码找出相应的错误。</div>
+<div style="padding: 0px; margin: 0px;"> </div>
+<div style="padding: 0px; margin: 0px;">intWindowStyle<span style="white-space: pre; padding: 0px; margin: 0px;"> </span>说明</div>
+<div style="padding: 0px; margin: 0px;">0<span style="white-space: pre; padding: 0px; margin: 0px;"> </span>隐藏一个窗口并激活另一个窗口。</div>
+<div style="padding: 0px; margin: 0px;">1<span style="white-space: pre; padding: 0px; margin: 0px;"> </span>激活并显示窗口。如果窗口处于最小化或最大化状态，则系统将其还原到原始大小和位置。第一次显示该窗口时，应用程序应指定此标志。</div>
+<div style="padding: 0px; margin: 0px;">2<span style="white-space: pre; padding: 0px; margin: 0px;"> </span>激活窗口并将其显示为最小化窗口。</div>
+<div style="padding: 0px; margin: 0px;">3<span style="white-space: pre; padding: 0px; margin: 0px;"> </span>激活窗口并将其显示为最大化窗口。</div>
+<div style="padding: 0px; margin: 0px;">4<span style="white-space: pre; padding: 0px; margin: 0px;"> </span>按最近的窗口大小和位置显示窗口。活动窗口保持活动状态。</div>
+<div style="padding: 0px; margin: 0px;">5<span style="white-space: pre; padding: 0px; margin: 0px;"> </span>激活窗口并按当前的大小和位置显示它。</div>
+<div style="padding: 0px; margin: 0px;">6<span style="white-space: pre; padding: 0px; margin: 0px;"> </span>最小化指定的窗口，并按照 Z 顺序激活下一个顶部窗口。</div>
+<div style="padding: 0px; margin: 0px;">7<span style="white-space: pre; padding: 0px; margin: 0px;"> </span>将窗口显示为最小化窗口。活动窗口保持活动状态。</div>
+<div style="padding: 0px; margin: 0px;">8<span style="white-space: pre; padding: 0px; margin: 0px;"> </span>将窗口显示为当前状态。活动窗口保持活动状态。</div>
+<div style="padding: 0px; margin: 0px;">9<span style="white-space: pre; padding: 0px; margin: 0px;"> </span>激活并显示窗口。如果窗口处于最小化或最大化状态，则系统将其还原到原始大小和位置。还原最小化窗口时，应用程序应指定此标志。</div>
+<div style="padding: 0px; margin: 0px;">10<span style="white-space: pre; padding: 0px; margin: 0px;"> </span>根据启动应用程序的程序状态来设置显示状态。</div>
+</span></p>

@@ -13,6 +13,8 @@ system/windows_subst.html template.html content/windows_subst.txt [title]-window
 
 sql/sql_15nosql.html template.html content/sql_15nosql.txt [title]-15个nosql数据库
 
+javascript/javascript_wscript.html template.html content/javascript_wscript.txt [title]-WScript.Shell对象的run和exec
+
 other/track_expression.html template.html content/track_expression.txt [title]-利用堆栈解析算术表达式
 other/2-5dtitle.html template.html content/2-5dtitle.txt [title]-全45度角2.5D游戏如何计算该被显示出的tile地形图片
 other/net_session.html template.html content/net_session.txt [title]-Session的生命周期

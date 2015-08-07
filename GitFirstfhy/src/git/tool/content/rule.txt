@@ -12,3 +12,5 @@ java/sping_01.html template.html content/sping_01.txt [title]-浅谈springMVC的
 system/windows_subst.html template.html content/windows_subst.txt [title]-windows磁盘映射
 
 protobuf/protobuf_01.html template.html content/protobuf_01.txt [title]-Protobuf语言指南
+
+other/track_expression.html template.html content/track_expression.txt [title]-利用堆栈解析算术表达式

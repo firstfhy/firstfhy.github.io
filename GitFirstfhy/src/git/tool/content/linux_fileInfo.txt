@@ -1,0 +1,136 @@
+<div>查看文件时间戳命令：stat awk.txt<br />
+File: `awk.txt'<br />
+Size:
+20&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>
+Blocks:
+8&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>
+IO Block: 4096&nbsp;<wbr>&nbsp;<wbr> regular
+file<br />
+Device:
+801h/2049d&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>
+Inode:
+380730&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>
+Links: 1<br />
+Access: (0644/-rw-r--r--) Uid:
+(&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>
+0/&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>
+root)&nbsp;<wbr>&nbsp;<wbr> Gid:
+(&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>
+0/&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>
+root)<br />
+Access: 2008-04-26 01:50:44.000000000 +0800<br />
+Modify: 2008-04-26 01:48:18.000000000 +0800<br />
+Change: 2008-04-26 01:48:18.000000000 +0800</DIV>
+<div></DIV>
+<div>
+说明：Access访问时间。Modify修改时间。Change状态改变时间。可以stat *查看这个目录所有文件的状态。<br />
+<br />
+现在是要过滤出Modify的时间戳，并以yyyyMMddHHSS格式保存，则可以利用下面这条命令：<br />
+stat awk.txt | grep -i Modify | awk -F. '{print $1}' | awk '{print
+$2$3}'| awk -F- '{print $1$2$3}' | awk -F: '{print $1$2$3}'<br />
+输出结果：20080426014818</DIV>
+<div></DIV>
+<div></DIV>
+<div><strong>修改文件时间与创建新文件：touch</STRONG>
+<p>在介绍ls命令时，提到每个文件在Linux下面都会记录3个主要的修改时间：<br />
+&bull; modification
+time（mtime，修改时间）：当该文件的“内容数据”更改时，就会更新这个时间。内容数据指的是文件的内容，而不是文件的属性。<br />
+
+&bull; status
+time（ctime，状态时间）：当该文件的”状态（status）”改变时，就会更新这个时间，举例来说，更改了权限与属性，就会更新这个时间。<br />
+
+&bull; access time（atime，存取时间）：当“取用文件内容”时，就会更新这个读取时间。举例来说，使用cat去读取
+~/.bashrc，就会更新atime了。<br />
+举例来说，我们来看一看/etc/man.config文件的时间。</P>
+<table BORDERCOLORDARK="#ffffff" BORDERCOLORLIGHT="#000000" ALIGN="center" BORDER="1" CELLPADDING="2" CELLSPACING="0" WIDTH="400">
+<tbody>
+<tr>
+<td BGCOLOR="#E6E6E6">
+<pre>
+[root@linux ~]# ls -l /etc/man.config<br />
+-rw-r--r--  1 root root 4506 Apr  8 19:11 /etc/man.config<br />
+[root@linux ~]# ls -l --time=atime /etc/man.config<br />
+-rw-r--r--  1 root root 4506 Jul 19 17:53 /etc/man.config<br />
+[root@linux ~]# ls -l --time=ctime /etc/man.config<br />
+-rw-r--r--  1 root root 4506 Jun 25 08:28 /etc/man.config
+</PRE></TD>
+</TR>
+</TBODY>
+</TABLE>
+<p>
+看到了吗？在默认的情况下，ls显示的是该文件的mtime，也就是这个文件的内容上次更改的时间。我的系统是在6/25安装的，因此，这个文件产生但状态更改的时间就回溯到那个时间点。因为刚才的范例中使用到这个文件，所以，它的atime就会变成刚刚使用的时间了。</P>
+<p>
+文件的时间很重要，因为如果误判文件时间，可能会造成某些程序无法顺利运行。那么，万一我发现了一个文件来自将来（很多时候会有这个问题的。我们在安装的时候，提到的GMT时间就是那个意思），该如何让该文件的时间变成“现在”的时刻呢？很简单，用touch命令即可。</P>
+<table BORDERCOLORDARK="#ffffff" BORDERCOLORLIGHT="#000000" ALIGN="center" BORDER="1" CELLPADDING="2" CELLSPACING="0" WIDTH="400">
+<tbody>
+<tr>
+<td BGCOLOR="#E6E6E6">
+<pre>
+[root@linux ~]# touch [-acdmt] 文件<br />
+参数：<br />
+-a : 仅修改access time。<br />
+-c : 仅修改时间，而不建立文件。<br />
+-d : 后面可以接日期，也可以使用 --date="日期或时间"<br />
+-m : 仅修改mtime。<br />
+-t : 后面可以接时间，格式为 [YYMMDDhhmm]<br />
+范例：
+<br />
+范例一：新建一个空的文件。<br />
+[root@linux ~]# cd /tmp<br />
+[root@linux tmp]# touch testtouch<br />
+[root@linux tmp]# ls -l testtouch<br />
+-rw-r--r--  1 root root&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>    0 Jul 19 20:49 testtouch<br />
+# 注意，这个文件的大小是0。在默认的状态下，如果touch后面接文件，<br />
+# 则该文件的3个时间（atime/ctime/mtime）都会更新为当前时间。若该文件不存在，<br />
+# 则会主动建立一个新的空文件。例如上面这个例子。
+<br />
+范例二：将 ~/.bashrc复制成为bashrc，假设复制完全的属性，检查其日期。<br />
+[root@linux tmp]# cp ~/.bashrc bashrc<br />
+[root@linux tmp]# ll bashrc; ll --time=atime bashrc; ll --time=ctime bashrc<br />
+-rwxr-xr-x  1 root root 395 Jul  4 11:45 bashrc  &lt;==这是mtime<br />
+-rwxr-xr-x  1 root root 395 Jul 19 20:44 bashrc  &lt;==这是atime<br />
+-rwxr-xr-x  1 root root 395 Jul 19 20:53 bashrc  &lt;==这是ctime<br />
+# 在这个案例中，我们使用了 ; 命令分隔符，它的用法我们会在Bash shell中提到。<br />
+# 此外，ll是ls -l的命令别名，这个也会在bash shell中再次提及，<br />
+# 当前可以简单地想成，ll就是ls -l的简写。至于 ; 则是同时发出两个命令，<br />
+# 且让两个命令“按顺序”执行的意思。上面的结果中可以看到，该文件更改的日期<br />
+# Jul 4 11:45，但是atime与ctime不一样。
+<br />
+范例三：修改案例二的bashrc文件，将日期调整为两天前。<br />
+[root@linux tmp]# touch -d "2 days ago" bashrc<br />
+[root@linux tmp]# ll bashrc; ll --time=atime bashrc; ll --time=ctime bashrc<br />
+-rwxr-xr-x  1 root root 395 Jul 17 21:02 bashrc<br />
+-rwxr-xr-x  1 root root 395 Jul 17 21:02 bashrc<br />
+-rwxr-xr-x  1 root root 395 Jul 19 21:02 bashrc<br />
+# 与上一个范例比较，本来是19日的变成了17日了（atime/mtime）。<br />
+# 不过，ctime并没有跟着改变。
+<br />
+范例四：将上个范例的bashrc日期改为2005/07/15 2:02。<br />
+[root@linux tmp]# touch -t 0507150202 bashrc<br />
+[root@linux tmp]# ll bashrc; ll --time=atime bashrc; ll --time=ctime bashrc<br />
+-rwxr-xr-x  1 root root 395 Jul 15 02:02 bashrc<br />
+-rwxr-xr-x  1 root root 395 Jul 15 02:02 bashrc<br />
+-rwxr-xr-x  1 root root 395 Jul 19 21:05 bashrc<br />
+# 注意，日期在atime与mtime都改变了，但ctime则是记录当前的时间。
+</PRE></TD>
+</TR>
+</TBODY>
+</TABLE>
+通过touch命令，可以轻松地修改文件的日期与时间。并且，也可以建立一个空文件。不过，要注意的是，即使复制一个文件，复制所有属性，但也没有办法复
+制ctime属性。ctime可以记录文件最近改变状态（status）的时间。无论如何，还是要说明一下，我们平时看的文件属性中，比较重要的还是
+mtime。我们关心的常常是这个文件的“内容”是什么时候更改的。<br />
+touch这个命令最常用的情况是：<br />
+&bull; 建立一个空文件。<br />
+&bull; 将某个文件日期修改为当前日期（mtime与atime）。
+<p>&nbsp;<wbr></P>
+</DIV>
+<div>
+<p>与文件相关的几个时间：</P>
+<p>
+1、访问时间，读一次这个文件的内容，这个时间就会更新。比如对这个文件使用more命令。ls、stat命令都不会修改文件的访问时间。</P>
+<p><br />
+2、修改时间，对文件内容修改一次，这个时间就会更新。比如：vi后保存文件。ls -l列出的时间就是这个时间。</P>
+<p>
+3、状态改变时间。通过chmod命令更改一次文件属性，这个时间就会更新。查看文件的详细的状态、准确的修改时间等，可以通过stat命令
+文件名。</P>
+</DIV>

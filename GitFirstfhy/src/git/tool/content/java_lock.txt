@@ -1,0 +1,480 @@
+<h3 style="margin:1.5em 0px 0.5em; padding:0px; font-family:Arial; font-size:1.5em">
+多核时代</h3>
+<p></p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp;&nbsp;摩尔定律告诉我们：当价&#26684;不变时，集成电路上可容纳的晶体管数目，约每隔18个月便会增加一倍，性能也将提升一倍。换言之，每一美元所能买到的电脑性能，将每隔18个月翻两倍以上。然而最近摩尔定律&#20284;乎遇到了麻烦，目前微处理器的集成度&#20284;乎到了极限，在目前的制造工艺和体系架构下很难再提高单个处理器的速度了，否则它就被烧坏了。所以现在的芯片制造商改变了策略，转而在一个电路板上集成更多的处理器，也就是我们现在常见的多核处理器。</p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp; 这就给软件行业带来麻烦（也可以说带来机会，比如说就业机会，呵呵）。原来的情况是：我买一台频率比原来快一倍的处理器，那么我的程序就比原来快一倍，软件工程师什么也不用干。现在不一样了，我买一台双核的处理器，我的程序和原来一样慢，当然这条机器同时处理的任务可以变多了，但是对于单个任务来说并没有帮助。</p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp; 在几年前，并发(Concurrent)和并行(Paralleling)程序设计还是在少量的地方使用，现在在个人的PC机上已经是很常见了。（<strong>Concurrency</strong>&nbsp;and&nbsp;<strong>parallelism</strong>的区别参考&nbsp;<a target="_blank" href="http://stackoverflow.com/questions/1050222/concurrency-vs-parallelism-what-is-the-difference" class="external-link" rel="nofollow" style="color:rgb(0,109,175); text-decoration:none">这个帖子</a>）</p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp; 造个诸葛亮的价钱远远高于造三个臭皮匠！多核是在一台机器上的并发，但是单机也是会到极限，所以分布式的计算也是类&#20284;的思路，用大量普通的机器协作完成一项任务。</p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp; 但是要想编写一个正确并且高效的能利用多核的多线程程序不是件容易的是，更别说分布式的情况（网络问题，机器故障，负载均衡，。。。）。现在的编译器没有办法把单线程的程序自动编译成一个多线程的版本（如果到了那一天，估计所有的程序员就失业了）。所以只能提供一些语言上的支持（比如scala/erlang)或者mapreduce这样的框架。</p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp; Java虽然没有提供scala那样的基于消息的模型，但是也提供了丰富的concurrent特性，并且屏蔽了平台的相关性（这不是件容易的事，比如多个处理器有自己的缓存，他们写的东西不会离开被其它处理器看到），下面我们看看java的内存模型(JMM)</p>
+<h3 style="margin:1.5em 0px 0.5em; padding:0px; font-family:Arial; font-size:1.5em">
+<a target="_blank" name="t1" style="color:rgb(51,102,153)"></a><a target="_blank" name="Java%E7%9A%84Lock%E5%B0%8F%E7%BB%93-JMM%28JavaMemoryModel" style="color:rgb(51,102,153)"></a>JMM(<a target="_blank" href="http://java.sun.com/docs/books/jls/third_edition/html/memory.html" class="external-link" rel="nofollow" style="color:rgb(0,109,175); text-decoration:none">Java
+ Memory Model</a>)</h3>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp;并行程序有很多模型，比如共享内存模型，消息传递模型等等。这些模型或多或少的利用了平台相关的特性（在并行程序设计里很难回避平台的特性以便高效的通信），Java抽象出了自己的内存模型，使得开放人员看不到平台的差异（这不是件容易的事），不过即使这样，和传统程序不同，我们还是不能完全不了解一些体系架构的细节问题，至少我们得了解一些。</p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp;在共享内存的多处理器体系架构里（我们现在用的服务器甚至笔记本都是），每个处理器都有自己的局部缓存并定期的使之与内存同步。不同的处理器架构保证了不同程度的缓存一致性(cache coherence)，所以操作系统，编译器和运行时环境必须一起努力来弥补平台的差异性。</p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp; 让每个处理器都知道其它处理器的状态的代价是非常昂贵的，所以大多数架构都不会保证一致性，这通常不会有什么问题：进程/线程直接并不共享信息，编译器可以调整代码执行顺序以便提高效率，我们都很开心。当然也有需要在线程之间进行同步的时候，比如某个线程要读取到另一个线程写入的信息，这个时候缓存里的数据就得同步到内存里才行。所以这些体系架构都提供了一些指令来完成数据的同步（当然这些指令是非常费时的，能不做就尽量不做）。这些指令一般叫做memory barriers or fences。当然只是很底层的一些东西，所幸Java提供了一些高层的抽象，让我们的生活变得容易一些。</p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+<strong>&nbsp; &nbsp; &nbsp;sequential consistency： 我们假设一个线程执行（可能在多个处理器上切换），每个变量读取到的&#20540;都是最新的修改（也就是Cache里的立马生效），这样得到的结果是我们预期的。</strong></p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp;但是让我们意外的事情是：如果我们不做任何事情，那么很可能会出现错误，比如下面的这个例子：&nbsp; &nbsp; &nbsp;</p>
+<div class="code panel" style="margin:0px 0px 10px; padding:0px; border:1px dashed rgb(187,187,187); font-family:Arial; font-size:14px; line-height:17px; overflow:auto">
+<div class="codeContent panelContent" style="color:rgb(51,51,51); margin:0px; padding:0px 10px; font-size:0.95em">
+<pre code_snippet_id="380617" snippet_file_name="blog_20140606_1_2566042"  class="code-java" name="code" style="white-space: pre-wrap; word-wrap: break-word; padding: 0px; margin-top: 0px; margin-bottom: 0px; overflow: auto; font-family: 'Courier New', Courier, monospace; line-height: 1.3;">&lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;public&lt;/span&gt; class NoVisibility {
+    &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;code-object&quot; style=&quot;color: rgb(145, 0, 145); background-color: inherit;&quot;&gt;boolean&lt;/span&gt; ready;
+    &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;code-object&quot; style=&quot;color: rgb(145, 0, 145); background-color: inherit;&quot;&gt;int&lt;/span&gt; number;
+
+    &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;static&lt;/span&gt; class ReaderThread &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;code-object&quot; style=&quot;color: rgb(145, 0, 145); background-color: inherit;&quot;&gt;Thread&lt;/span&gt; {
+        &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;public&lt;/span&gt; void run() {
+            &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;while&lt;/span&gt; (!ready)
+                &lt;span class=&quot;code-object&quot; style=&quot;color: rgb(145, 0, 145); background-color: inherit;&quot;&gt;Thread&lt;/span&gt;.yield();
+            &lt;span class=&quot;code-object&quot; style=&quot;color: rgb(145, 0, 145); background-color: inherit;&quot;&gt;System&lt;/span&gt;.out.println(number);
+        }
+    }
+
+    &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;static&lt;/span&gt; void main(&lt;span class=&quot;code-object&quot; style=&quot;color: rgb(145, 0, 145); background-color: inherit;&quot;&gt;String&lt;/span&gt;[] args) {
+        &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;new&lt;/span&gt; ReaderThread().start();
+        number = 42;
+        ready = &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;true&lt;/span&gt;;
+    }
+}
+</pre></div>
+</div>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp;我们在主线程里先让number=42(初始&#20540;是0)，然后让ready=true，而另一个线程不断坚持是否ready，如果ready，那么读出number。很自然的我们期望子线程打印出42，但是很可能结果会另我们失望。编译器可能会调换number=42 &nbsp;和 &nbsp;ready=true的顺序（思考一下为什么它要这么干？为什么在单线程的情况下没有问题？），另外子线程可能永远在while里死循环。为什么？子线程会永远看不到ready的变化？这也许让很多人吃惊，事实确实如此，JSR并不保证这一点（虽然大多数时候子线程能够退出），参考<a target="_blank" href="http://stackoverflow.com/questions/4934913/are-static-variables-shared-between-threads" class="external-link" rel="nofollow" style="color:rgb(0,109,175); text-decoration:none">这个帖子</a>和<a target="_blank" href="http://www.cs.umd.edu/~pugh/java/memoryModel/jsr-133-faq.html" class="external-link" rel="nofollow" style="color:rgb(0,109,175); text-decoration:none">JMM的文章</a></p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp;</p>
+<h4 style="margin:1.2em 0px 0.3em; padding:0px; font-family:Arial; font-size:1.3em">
+<a target="_blank" name="t2" style="color:rgb(51,102,153)"></a><a target="_blank" name="Java%E7%9A%84Lock%E5%B0%8F%E7%BB%93-vilatile%E5%92%8Csnychronized%EF%BC%88intrinsicLock%EF%BC%89" style="color:rgb(51,102,153)"></a>vilatile和snychronized（intrinsic Lock）</h4>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp;vilatile关键字告诉编译器，一个线程对某个变量的修改立即对所有其它线程看见，加上这个能保证上面的程序不会死循环。但是不能保证读到42，也就是保证number=42和ready=true的执行顺序，要保证这点就要用到synchronized。</p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp;synchronized能够保证执行的顺序，除此之外，它也能保证可见性。</p>
+<div class="code panel" style="margin:0px 0px 10px; padding:0px; border:1px dashed rgb(187,187,187); font-family:Arial; font-size:14px; line-height:17px; overflow:auto">
+<div class="codeContent panelContent" style="color:rgb(51,51,51); margin:0px; padding:0px 10px; font-size:0.95em">
+<pre code_snippet_id="380617" snippet_file_name="blog_20140606_2_2664319"  class="code-java" name="code" style="white-space: pre-wrap; word-wrap: break-word; padding: 0px; margin-top: 0px; margin-bottom: 0px; overflow: auto; font-family: 'Courier New', Courier, monospace; line-height: 1.3;">&lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;public&lt;/span&gt; class NoVisibility {
+    &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;code-object&quot; style=&quot;color: rgb(145, 0, 145); background-color: inherit;&quot;&gt;boolean&lt;/span&gt; ready;
+    &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;code-object&quot; style=&quot;color: rgb(145, 0, 145); background-color: inherit;&quot;&gt;int&lt;/span&gt; number;
+
+    &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;static&lt;/span&gt; class ReaderThread &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;code-object&quot; style=&quot;color: rgb(145, 0, 145); background-color: inherit;&quot;&gt;Thread&lt;/span&gt; {
+        &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;public&lt;/span&gt; void run() {
+            &lt;span class=&quot;code-object&quot; style=&quot;color: rgb(145, 0, 145); background-color: inherit;&quot;&gt;boolean&lt;/span&gt; r=&lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;false&lt;/span&gt;;
+            &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;while&lt;/span&gt; (&lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;true&lt;/span&gt;){
+                &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;synchronized&lt;/span&gt;(NoVisibility.class){
+                    r=ready;
+                }
+                &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;if&lt;/span&gt;(r) &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;break&lt;/span&gt;;
+                &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;else&lt;/span&gt;  &lt;span class=&quot;code-object&quot; style=&quot;color: rgb(145, 0, 145); background-color: inherit;&quot;&gt;Thread&lt;/span&gt;.yield();
+            }   &#160;
+            &lt;span class=&quot;code-object&quot; style=&quot;color: rgb(145, 0, 145); background-color: inherit;&quot;&gt;System&lt;/span&gt;.out.println(number);
+        }
+    }
+
+    &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;static&lt;/span&gt; void main(&lt;span class=&quot;code-object&quot; style=&quot;color: rgb(145, 0, 145); background-color: inherit;&quot;&gt;String&lt;/span&gt;[] args) {
+        &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;new&lt;/span&gt; ReaderThread().start();
+        &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;synchronized&lt;/span&gt;(NoVisibility.class){
+            number = 42;
+            ready = &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;true&lt;/span&gt;;
+        }
+    }
+}
+</pre></div>
+</div>
+<div class="code panel" style="margin:0px 0px 10px; padding:0px; border:1px dashed rgb(187,187,187); font-family:Arial; font-size:14px; line-height:17px; overflow:auto">
+<div class="codeContent panelContent" style="color:rgb(51,51,51); margin:0px; padding:0px 10px; font-size:0.95em">
+<pre code_snippet_id="380617" snippet_file_name="blog_20140606_3_7298361"  class="code-java" name="code" style="white-space: pre-wrap; word-wrap: break-word; padding: 0px; margin-top: 0px; margin-bottom: 0px; overflow: auto; font-family: 'Courier New', Courier, monospace; line-height: 1.3;">&lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;synchronized&lt;/span&gt;(NoVisibility.class){
+       number = 42;
+       ready = &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;true&lt;/span&gt;;
+ }
+</pre></div>
+</div>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+这段代码保证了两个语句的执行顺序</p>
+<div class="code panel" style="margin:0px 0px 10px; padding:0px; border:1px dashed rgb(187,187,187); font-family:Arial; font-size:14px; line-height:17px; overflow:auto">
+<div class="codeContent panelContent" style="color:rgb(51,51,51); margin:0px; padding:0px 10px; font-size:0.95em">
+<pre code_snippet_id="380617" snippet_file_name="blog_20140606_4_6633270"  class="code-java" name="code" style="white-space: pre-wrap; word-wrap: break-word; padding: 0px; margin-top: 0px; margin-bottom: 0px; overflow: auto; font-family: 'Courier New', Courier, monospace; line-height: 1.3;">&lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;synchronized&lt;/span&gt;(NoVisibility.class){
+       r=ready;       &#160;
+}
+</pre></div>
+</div>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+这保证子线程能看到ready的变化 注意他们必须synchronized同一个对象，如果是下面的代码，则不能有任何保障。为什么？试想任何synchronized里的变量必须立即对所有的可见，那么代价太大， 比如我有这样的需求：我只要求两个语句顺序执行，它是否对别人可见我并不关心。</p>
+<div class="code panel" style="margin:0px 0px 10px; padding:0px; border:1px dashed rgb(187,187,187); font-family:Arial; font-size:14px; line-height:17px; overflow:auto">
+<div class="codeContent panelContent" style="color:rgb(51,51,51); margin:0px; padding:0px 10px; font-size:0.95em">
+<pre code_snippet_id="380617" snippet_file_name="blog_20140606_5_3459923"  class="code-java" name="code" style="white-space: pre-wrap; word-wrap: break-word; padding: 0px; margin-top: 0px; margin-bottom: 0px; overflow: auto; font-family: 'Courier New', Courier, monospace; line-height: 1.3;">&lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;synchronized&lt;/span&gt;(AnotherObject){
+       r=ready;       &#160;
+}
+</pre></div>
+</div>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+每个对象都有个Monitor，所以synchronized也经常叫Monitor Lock，另外这个锁是语言内置的，所以也叫Intrinsic Lock。 这两个关键字是java1.5之前就有了，在java1.5之后新引进了java.util.concurrent包，这里有我们需要关注的很多东西，这里我们只关心Lock相关的接口和类。 不过synchronized来解决互斥不是很完美吗？我为什么要花力气搞这些新鲜东西呢？下面我们来看看synchronized解决不了（或者很难解决）的问题</p>
+<h4 style="margin:1.2em 0px 0.3em; padding:0px; font-family:Arial; font-size:1.3em">
+<a target="_blank" name="t3" style="color:rgb(51,102,153)"></a><a target="_blank" name="Java%E7%9A%84Lock%E5%B0%8F%E7%BB%93-%E9%93%B6%E8%A1%8C%E8%BD%AC%E8%B4%A6%E7%9A%84%E4%BE%8B%E5%AD%90" style="color:rgb(51,102,153)"></a>银行转账的例子</h4>
+<div class="code panel" style="margin:0px 0px 10px; padding:0px; border:1px dashed rgb(187,187,187); font-family:Arial; font-size:14px; line-height:17px; overflow:auto">
+<div class="codeContent panelContent" style="color:rgb(51,51,51); margin:0px; padding:0px 10px; font-size:0.95em">
+<pre code_snippet_id="380617" snippet_file_name="blog_20140606_6_602222"  class="code-java" name="code" style="white-space: pre-wrap; word-wrap: break-word; padding: 0px; margin-top: 0px; margin-bottom: 0px; overflow: auto; font-family: 'Courier New', Courier, monospace; line-height: 1.3;">&lt;span class=&quot;code-comment&quot; style=&quot;color: rgb(128, 128, 128); background-color: inherit;&quot;&gt;// Warning: deadlock-prone!
+&lt;/span&gt;&lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;public&lt;/span&gt; void transferMoney(Account fromAccount,
+                          Account toAccount,
+                          DollarAmount amount)
+        &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;throws&lt;/span&gt; InsufficientFundsException {
+    &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;synchronized&lt;/span&gt; (fromAccount) {
+        &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;synchronized&lt;/span&gt; (toAccount) {
+            &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;if&lt;/span&gt; (fromAccount.getBalance().compareTo(amount) &lt; 0)
+                &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;throw&lt;/span&gt; &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;new&lt;/span&gt; InsufficientFundsException();
+            &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;else&lt;/span&gt; {
+                fromAccount.debit(amount);
+                toAccount.credit(amount);
+            }
+        }
+    }
+}
+</pre></div>
+</div>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+比如我要在两个用户之间转账，为了防止意外，我必须同时锁定两个账户。但是这可能造成死锁。比如：</p>
+<div class="code panel" style="margin:0px 0px 10px; padding:0px; border:1px dashed rgb(187,187,187); font-family:Arial; font-size:14px; line-height:17px; overflow:auto">
+<div class="codeContent panelContent" style="color:rgb(51,51,51); margin:0px; padding:0px 10px; font-size:0.95em">
+<pre code_snippet_id="380617" snippet_file_name="blog_20140606_7_6349079"  class="code-java" name="code" style="white-space: pre-wrap; word-wrap: break-word; padding: 0px; margin-top: 0px; margin-bottom: 0px; overflow: auto; font-family: 'Courier New', Courier, monospace; line-height: 1.3;">A: transferMoney(myAccount, yourAccount, 10);
+B: transferMoney(yourAccount, myAccount, 20);
+</pre></div>
+</div>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+当线程A锁住myAccount时，B锁住了toAccount，这个时候A尝试锁住toAccount，但是已经被B锁住，所以A不能继续运行，同理B也不能运行，造成死锁。</p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+怎么解决呢？你也许回想，我先锁住一个账户，然后&quot;尝试&quot;锁定另一个账户，如果“失败”，那么我释放所有的锁，“休息”一下再继续尝试，当然两个线程节拍一致的话，可能造成“活锁”</p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+可惜synchronized不能提供这样的语义，它一旦尝试加锁，只能拿到锁，你不能控制它，比如你可能有这样的需求：尝试拿锁30s，如果拿不到就算了，synchronized是没办法满足这样的需求的。另外你使用“鸵鸟”策略来解决死锁：什么也不干，如果死锁了，kill他们，重启他们。这种策略看起来很疯狂，不过如果死锁的概率很多，而避免死锁的算法很复杂，那这也是可以一试的策略（那一堆死锁发生的充分必要条件太麻烦了！！！）。下面我们仔细的来看看java1.5后提供的Lock接口及其相关类。</p>
+<h4 style="margin:1.2em 0px 0.3em; padding:0px; font-family:Arial; font-size:1.3em">
+<a target="_blank" name="t4" style="color:rgb(51,102,153)"></a><a target="_blank" name="Java%E7%9A%84Lock%E5%B0%8F%E7%BB%93-Lock%E6%8E%A5%E5%8F%A3" style="color:rgb(51,102,153)"></a><a target="_blank" href="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/locks/Lock.html" class="external-link" rel="nofollow" style="color:rgb(0,109,175); text-decoration:none">Lock接口</a></h4>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; Lock的基本用法如下，为了防止异常退出时没有释放锁，一般都在拿到锁后立马try，try住所有临界区的代码，然后finally释放锁。</p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; 主要和synchronized的区别，synchronized里我们不用操心这些，如果synchronized保护的代码抛出异常，那么jvm会释放掉Monitor Lock。</p>
+<div class="code panel" style="margin:0px 0px 10px; padding:0px; border:1px dashed rgb(187,187,187); font-family:Arial; font-size:14px; line-height:17px; overflow:auto">
+<div class="codeContent panelContent" style="color:rgb(51,51,51); margin:0px; padding:0px 10px; font-size:0.95em">
+<pre code_snippet_id="380617" snippet_file_name="blog_20140606_8_5683988"  class="code-java" name="code" style="white-space: pre-wrap; word-wrap: break-word; padding: 0px; margin-top: 0px; margin-bottom: 0px; overflow: auto; font-family: 'Courier New', Courier, monospace; line-height: 1.3;">&#160;    Lock l = ...
+     l.lock();
+     &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;try&lt;/span&gt; {
+         &lt;span class=&quot;code-comment&quot; style=&quot;color: rgb(128, 128, 128); background-color: inherit;&quot;&gt;// access the resource &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;protected&lt;/span&gt; by &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;this&lt;/span&gt; lock
+&lt;/span&gt;     } &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;finally&lt;/span&gt; {
+         l.unlock();
+     }
+</pre></div>
+</div>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; Lock.lock()在锁定成功后释放锁之前，它所保护的代码段必须与使用synchronized保护的代码段有相同的语义（可见性，顺序性）。</p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; 所以从这个角度来说，Lock完全可以代替synchronized，那么是否应该抛弃掉synchronized呢？答案是否定的。</p>
+<h5 style="font-family:Arial; padding:0px; font-size:1.2em; margin:1em 0px 0.1em">
+<a target="_blank" name="t5" style="color:rgb(51,102,153)"></a><a target="_blank" name="Java%E7%9A%84Lock%E5%B0%8F%E7%BB%93-%26nbsp%3B%E6%98%AF%E5%90%A6%E5%BA%94%E8%AF%A5%E6%8A%9B%E5%BC%83synchronized%EF%BC%9F" style="color:rgb(51,102,153)"></a>&nbsp; 是否应该抛弃synchronized？</h5>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp;在java5引进Lock后，实现了Lock接口的类就是ReentrantLock（呆会再解释Reentrant），因为java5之前synchronized的实现很烂，同样是为了实现互斥，ReentrantLock会比synchronized速度上快很多，不过到了jdk6之后就不是这样了，下面是一个测试结果：&nbsp;<span class="image-wrap"><img src="http://wiki.corp.qunar.com/download/attachments/9343688/pic1.JPG?version=1&amp;modificationDate=1316166342211" alt="" style="border:1px solid black; max-width:100%"></span><br>
+&nbsp; &nbsp;from book &quot;Java Concurrency in Practice&quot;<br>
+&nbsp; 横轴是线程数，纵轴是ReentrantLock的吞吐量/IntrinsicLock的吞吐量。</p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; 可以看出，jdk5中，ReentrantLock快很多，但是到了jdk6，他们就没什么大的差别了。</p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+<strong>&nbsp; synchronized的优点</strong>：锁的释放是语言内置的，不会出现忘记释放锁的情况，另外由于是语言内置的支持，调试是能很快知道锁被哪个线程持有，它加锁的次数。而Lock只是util.concurrent一个普通的类，所以调试器并不知道这个锁的任何信息，它只是一个普通的对象（当然你可以仔细观察每个线程的stack frame来看它在等待锁）。</p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; 所以建议：<strong>如果只是为了实现互斥，那么使用synchronized</strong>（扔掉jdk5吧，现在都java7了），<strong>如果想用Lock附加的功能，那么才使用Lock</strong>。</p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; 下面回来继续看Lock接口。&nbsp;&nbsp;</p>
+<h4 style="margin:1.2em 0px 0.3em; padding:0px; font-family:Arial; font-size:1.3em">
+<a target="_blank" name="t6" style="color:rgb(51,102,153)"></a><a target="_blank" name="Java%E7%9A%84Lock%E5%B0%8F%E7%BB%93-InterfaceLock" style="color:rgb(51,102,153)"></a>Interface Lock</h4>
+<div class="code panel" style="margin:0px 0px 10px; padding:0px; border:1px dashed rgb(187,187,187); font-family:Arial; font-size:14px; line-height:17px; overflow:auto">
+<div class="codeContent panelContent" style="color:rgb(51,51,51); margin:0px; padding:0px 10px; font-size:0.95em">
+<pre code_snippet_id="380617" snippet_file_name="blog_20140606_9_5018896"  class="code-java" name="code" style="white-space: pre-wrap; word-wrap: break-word; padding: 0px; margin-top: 0px; margin-bottom: 0px; overflow: auto; font-family: 'Courier New', Courier, monospace; line-height: 1.3;">&lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;interface&lt;/span&gt; Lock {
+    void lock();
+    void lockInterruptibly() &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;throws&lt;/span&gt; InterruptedException;
+    &lt;span class=&quot;code-object&quot; style=&quot;color: rgb(145, 0, 145); background-color: inherit;&quot;&gt;boolean&lt;/span&gt; tryLock();
+    &lt;span class=&quot;code-object&quot; style=&quot;color: rgb(145, 0, 145); background-color: inherit;&quot;&gt;boolean&lt;/span&gt; tryLock(&lt;span class=&quot;code-object&quot; style=&quot;color: rgb(145, 0, 145); background-color: inherit;&quot;&gt;long&lt;/span&gt; timeout, TimeUnit unit)
+        &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;throws&lt;/span&gt; InterruptedException;
+    void unlock();
+    Condition newCondition();
+}
+</pre></div>
+</div>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp;&nbsp;</p>
+<h5 style="font-family:Arial; padding:0px; font-size:1.2em; margin:1em 0px 0.1em">
+<a target="_blank" name="t7" style="color:rgb(51,102,153)"></a><a target="_blank" name="Java%E7%9A%84Lock%E5%B0%8F%E7%BB%93-%26nbsp%3Bvoidlock%28%29%3B%26nbsp%3B%26nbsp%3B" style="color:rgb(51,102,153)"></a>&nbsp; void lock(); &nbsp;&nbsp;</h5>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp; 尝试获取锁。如果锁被别人拿着，那么当前线程不在执行，也不能被调度，直到拿到锁为止。</p>
+<h5 style="font-family:Arial; padding:0px; font-size:1.2em; margin:1em 0px 0.1em">
+<a target="_blank" name="t8" style="color:rgb(51,102,153)"></a><a target="_blank" name="Java%E7%9A%84Lock%E5%B0%8F%E7%BB%93-%26nbsp%3BvoidlockInterruptibly%28%29throwsInterruptedException" style="color:rgb(51,102,153)"></a>&nbsp; void lockInterruptibly() throws
+ InterruptedException</h5>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp; 尝试获取锁，除非被interrupted。如果锁可以获取，那么立刻返回。</p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp; 如果无非获取锁，那么线程停止执行，并且不能被再调度，直到：</p>
+<ul style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt">
+<li style="line-height:13pt; margin:0px; padding:0px">&nbsp; 当前线程获得锁</li><li style="line-height:13pt; margin:0px; padding:0px">&nbsp;&nbsp;<strong>如果锁的实现支持interruption</strong>，并且有其它线程interrupt当前线程。</li></ul>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp; 仔细阅读javadoc的第二个情况：Lock接口并不要求Lock的实现支持interruption，不过sun jdk的实现都是支持的。<br>
+&nbsp; &nbsp; &nbsp; 这个函数在下面两个情况下抛出InterruptedException：</p>
+<ul style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt">
+<li style="line-height:13pt; margin:0px; padding:0px">&nbsp;&nbsp;<strong>如果锁的实现支持interruption</strong>，并且有其它线程interrupt当前线程。</li><li style="line-height:13pt; margin:0px; padding:0px">&nbsp; 线程调用这个函数之前就被设置了interrupted状态位</li></ul>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp; 可以发现这个方法并不区分这个interrupted状态位是之前就有的还是lock过程中产生的。不管如果，抛出异常后会清除interrupted标记。</p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp; 使用这个方法，我们可以中断某个等锁的线程，比如我们检测到了死锁，那么我们可以中断这个线程。&nbsp; &nbsp; &nbsp;&nbsp;</p>
+<h5 style="font-family:Arial; padding:0px; font-size:1.2em; margin:1em 0px 0.1em">
+<a target="_blank" name="t9" style="color:rgb(51,102,153)"></a><a target="_blank" name="Java%E7%9A%84Lock%E5%B0%8F%E7%BB%93-%26nbsp%3B%26nbsp%3BbooleantryLock%28%29" style="color:rgb(51,102,153)"></a>&nbsp; &nbsp;boolean tryLock()</h5>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp; &nbsp;尝试获取锁，如果可以，那么锁住对象然后返回true，否则返回false，不管怎么样，这个方法会立即返回。下面的例子展示了用这个方法来解决前面转账的死锁：</p>
+<div class="code panel" style="margin:0px 0px 10px; padding:0px; border:1px dashed rgb(187,187,187); font-family:Arial; font-size:14px; line-height:17px; overflow:auto">
+<div class="codeContent panelContent" style="color:rgb(51,51,51); margin:0px; padding:0px 10px; font-size:0.95em">
+<pre code_snippet_id="380617" snippet_file_name="blog_20140606_10_2684582"  class="code-java" name="code" style="white-space: pre-wrap; word-wrap: break-word; padding: 0px; margin-top: 0px; margin-bottom: 0px; overflow: auto; font-family: 'Courier New', Courier, monospace; line-height: 1.3;">&lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;code-object&quot; style=&quot;color: rgb(145, 0, 145); background-color: inherit;&quot;&gt;boolean&lt;/span&gt; transferMoney(Account fromAcct,
+                             Account toAcct,
+                             DollarAmount amount,
+                             &lt;span class=&quot;code-object&quot; style=&quot;color: rgb(145, 0, 145); background-color: inherit;&quot;&gt;long&lt;/span&gt; timeout,
+                             TimeUnit unit)
+        &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;throws&lt;/span&gt; InsufficientFundsException, InterruptedException {
+    &lt;span class=&quot;code-object&quot; style=&quot;color: rgb(145, 0, 145); background-color: inherit;&quot;&gt;long&lt;/span&gt; fixedDelay = getFixedDelayComponentNanos(timeout, unit);
+    &lt;span class=&quot;code-object&quot; style=&quot;color: rgb(145, 0, 145); background-color: inherit;&quot;&gt;long&lt;/span&gt; randMod = getRandomDelayModulusNanos(timeout, unit);
+    &lt;span class=&quot;code-object&quot; style=&quot;color: rgb(145, 0, 145); background-color: inherit;&quot;&gt;long&lt;/span&gt; stopTime = &lt;span class=&quot;code-object&quot; style=&quot;color: rgb(145, 0, 145); background-color: inherit;&quot;&gt;System&lt;/span&gt;.nanoTime() + unit.toNanos(timeout);
+
+    &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;while&lt;/span&gt; (&lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;true&lt;/span&gt;) {
+        &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;if&lt;/span&gt; (fromAcct.lock.tryLock()) {
+            &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;try&lt;/span&gt; {
+                &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;if&lt;/span&gt; (toAcct.lock.tryLock()) {
+                    &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;try&lt;/span&gt; {
+                        &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;if&lt;/span&gt; (fromAcct.getBalance().compareTo(amount)
+                                &lt; 0)
+                            &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;throw&lt;/span&gt; &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;new&lt;/span&gt; InsufficientFundsException();
+                        &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;else&lt;/span&gt; {
+                            fromAcct.debit(amount);
+                            toAcct.credit(amount);
+                            &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;true&lt;/span&gt;;
+                        }
+                    } &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;finally&lt;/span&gt; {
+                        toAcct.lock.unlock();
+                    }
+                 }
+             } &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;finally&lt;/span&gt; {
+                 fromAcct.lock.unlock();
+             }
+         }
+         &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;if&lt;/span&gt; (&lt;span class=&quot;code-object&quot; style=&quot;color: rgb(145, 0, 145); background-color: inherit;&quot;&gt;System&lt;/span&gt;.nanoTime() &lt; stopTime)
+             &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;false&lt;/span&gt;;
+         NANOSECONDS.sleep(fixedDelay + rnd.nextLong() % randMod);
+     }
+}
+</pre></div>
+</div>
+<h5 style="font-family:Arial; padding:0px; font-size:1.2em; margin:1em 0px 0.1em">
+<a target="_blank" name="t10" style="color:rgb(51,102,153)"></a><a target="_blank" name="Java%E7%9A%84Lock%E5%B0%8F%E7%BB%93-tryLock%26nbsp%3BbooleantryLock%28longtime%2CTimeUnitunit%29throwsInterruptedException" style="color:rgb(51,102,153)"></a>tryLock &nbsp;boolean
+ tryLock(long time, TimeUnit unit) throws InterruptedException</h5>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; 和tryLock类&#20284;，不过不是立即返回，而是尝试一定时间后还拿不到锁就返回。</p>
+<h5 style="font-family:Arial; padding:0px; font-size:1.2em; margin:1em 0px 0.1em">
+<a target="_blank" name="t11" style="color:rgb(51,102,153)"></a><a target="_blank" name="Java%E7%9A%84Lock%E5%B0%8F%E7%BB%93-unlock" style="color:rgb(51,102,153)"></a>unlock</h5>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; 释放锁</p>
+<h5 style="font-family:Arial; padding:0px; font-size:1.2em; margin:1em 0px 0.1em">
+<a target="_blank" name="t12" style="color:rgb(51,102,153)"></a><a target="_blank" name="Java%E7%9A%84Lock%E5%B0%8F%E7%BB%93-newCondition" style="color:rgb(51,102,153)"></a>newCondition</h5>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp;暂且不管</p>
+<h4 style="margin:1.2em 0px 0.3em; padding:0px; font-family:Arial; font-size:1.3em">
+<a target="_blank" name="t13" style="color:rgb(51,102,153)"></a><a target="_blank" name="Java%E7%9A%84Lock%E5%B0%8F%E7%BB%93-ClassReentrantLock" style="color:rgb(51,102,153)"></a>Class ReentrantLock</h4>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp;这是sun jdk（open jdk）里唯一直接实现了Lock接口的类，所以如果你想用Lock的那些特性，比如tryLock，那么就应该首先考虑它。</p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp;首先我们解释一下Reentrant。</p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp; Reentrant翻译成中文应该是“可重入”，对于锁来说，可重入是指如果一个线程已经拿到过一把锁，那么它可以再次拿到锁。</p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp; 听起来&#20284;乎没有什么意思，让我们来看看“不可重入”锁可能的一些问题和需要使用”可重入“锁的场景吧。</p>
+<div class="code panel" style="margin:0px 0px 10px; padding:0px; border:1px dashed rgb(187,187,187); font-family:Arial; font-size:14px; line-height:17px; overflow:auto">
+<div class="codeContent panelContent" style="color:rgb(51,51,51); margin:0px; padding:0px 10px; font-size:0.95em">
+<pre code_snippet_id="380617" snippet_file_name="blog_20140606_11_2019491"  class="code-java" name="code" style="white-space: pre-wrap; word-wrap: break-word; padding: 0px; margin-top: 0px; margin-bottom: 0px; overflow: auto; font-family: 'Courier New', Courier, monospace; line-height: 1.3;">&lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;public&lt;/span&gt; class Widget {
+    &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;synchronized&lt;/span&gt; void doSomething() {
+        ...
+    }
+}
+
+&lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;public&lt;/span&gt; class LoggingWidget &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;extends&lt;/span&gt; Widget {
+    &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;synchronized&lt;/span&gt; void doSomething() {
+        &lt;span class=&quot;code-object&quot; style=&quot;color: rgb(145, 0, 145); background-color: inherit;&quot;&gt;System&lt;/span&gt;.out.println(toString() + &lt;span class=&quot;code-quote&quot; style=&quot;color: rgb(0, 145, 0); background-color: inherit;&quot;&gt;&quot;: calling doSomething&quot;&lt;/span&gt;);
+        &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;super&lt;/span&gt;.doSomething();
+    }
+}
+
+
+
+Widget widget=&lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;new&lt;/span&gt; LoggingWidget();
+
+widget.doSomething();
+</pre></div>
+</div>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp; &nbsp;设想这样一个应用场景：我们有一个图的数据结构，我们需要遍历所有节点，找到满足某些条件的节点，锁定所有这些节点，然后对他们进行一些操作。由于图的遍历可能重复访问某个节点，如果简单的锁定每个满足条件的节点，那么可能死锁。当然我们可以自己用程序记下哪些节点已经访问过了，不过也可以把这就事情交给ReentrantLock，第二次锁定某个对象也会成功并立即返回。那么你可能会问，我释放锁的时候怎么记得它锁定过了多少次呢？如果释放少了，那么会死锁；释放多了，可能也会有问题（有些锁实现会抛出异常，但是JMM好像没有定义）。</p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp; &nbsp;【上面的场景参考<a target="_blank" href="http://stackoverflow.com/questions/1312259/what-is-the-re-entrant-lock-and-concept-in-general" class="external-link" rel="nofollow" style="color:rgb(0,109,175); text-decoration:none">http://stackoverflow.com/questions/1312259/what-is-the-re-entrant-lock-and-concept-in-general</a>】</p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp; &nbsp;不用担心，ReentrantLock提供了getHoldCount方法，最后释放这么多次就好了。</p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp; &nbsp;ReentrantLock会记下当前拿锁的线程，已经拿锁的次数，每次unlock都会减一，如果为零了，那么释放锁，另一个线程拿到锁并且计数器&#20540;为一。</p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp; &nbsp;ReentrantLock的构造函数可以接受一个fairness的参数。如果为true，那么它会倾向于把锁给等待时间最长的线程。但是这样的代价也是巨大的：</p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;<span class="image-wrap"><img src="http://wiki.corp.qunar.com/download/attachments/9343688/pic2.JPG?version=1&amp;modificationDate=1316170951730" alt="" style="border:1px solid black; max-width:100%"></span><br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;横轴是并发线程数，参考方法是ConcurrentHashMap，另外分别用Nonfair Lock和 fair Lock封装普通的HashMap，可以看到，是否fair的差别是非常巨大的。<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;正如前面所说的，ReentrantLock是支持Interrupted的。</p>
+<h4 style="margin:1.2em 0px 0.3em; padding:0px; font-family:Arial; font-size:1.3em">
+<a target="_blank" name="t14" style="color:rgb(51,102,153)"></a><a target="_blank" name="Java%E7%9A%84Lock%E5%B0%8F%E7%BB%93-InterfaceReadWriteLock" style="color:rgb(51,102,153)"></a>Interface ReadWriteLock</h4>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;有的应用场景下，有两类角色：Reader和Writer。Reader读取数据，Writer更新数据。多个Reader同时读取是没有问题的，但是Reader们和Writer是互斥的，并且Writer和Writer也是互斥的。而且很多应用中，Reader会很多，而Writer会比较少。这个接口就是为了解决这类特殊场景的。</p>
+<div class="code panel" style="margin:0px 0px 10px; padding:0px; border:1px dashed rgb(187,187,187); font-family:Arial; font-size:14px; line-height:17px; overflow:auto">
+<div class="codeContent panelContent" style="color:rgb(51,51,51); margin:0px; padding:0px 10px; font-size:0.95em">
+<pre code_snippet_id="380617" snippet_file_name="blog_20140606_12_7209941"  class="code-java" name="code" style="white-space: pre-wrap; word-wrap: break-word; padding: 0px; margin-top: 0px; margin-bottom: 0px; overflow: auto; font-family: 'Courier New', Courier, monospace; line-height: 1.3;">&lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;interface&lt;/span&gt; ReadWriteLock {
+    Lock readLock();
+    Lock writeLock();
+}
+
+用法：
+ReadWriteLock rwl = ...;
+&lt;span class=&quot;code-comment&quot; style=&quot;color: rgb(128, 128, 128); background-color: inherit;&quot;&gt;//Reader threads
+&lt;/span&gt;read(){
+   rwl.readLock().lock();
+   &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;try&lt;/span&gt;{
+  &#160;   &lt;span class=&quot;code-comment&quot; style=&quot;color: rgb(128, 128, 128); background-color: inherit;&quot;&gt;//entering critical setion
+&lt;/span&gt;   }&lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;finally&lt;/span&gt;{
+       rwl.readLock().unlock();
+   }
+}
+write(){   rwl.writeLock().lock();   &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;try&lt;/span&gt;{  &#160;   &lt;span class=&quot;code-comment&quot; style=&quot;color: rgb(128, 128, 128); background-color: inherit;&quot;&gt;//entering critical setion   }&lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;finally&lt;/span&gt;{       rwl.writeLock().unlock();   }}
+&lt;/span&gt;
+
+</pre></div>
+</div>
+<h4 style="margin:1.2em 0px 0.3em; padding:0px; font-family:Arial; font-size:1.3em">
+<a target="_blank" name="t15" style="color:rgb(51,102,153)"></a><a target="_blank" name="Java%E7%9A%84Lock%E5%B0%8F%E7%BB%93-%26nbsp%3BClassReentrantReadWriteLock" style="color:rgb(51,102,153)"></a>&nbsp;Class ReentrantReadWriteLock</h4>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;这是Sun jdk里唯一实现ReadWriteLock接口的类。</p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;这个类的特性：</p>
+<h6 style="font-family:Arial; padding:0px; font-size:1.1em; margin:1em 0px 0.1em">
+<a target="_blank" name="t16" style="color:rgb(51,102,153)"></a><a target="_blank" name="Java%E7%9A%84Lock%E5%B0%8F%E7%BB%93-%26nbsp%3B%26nbsp%3B%26nbsp%3B%26nbsp%3B%26nbsp%3B%26nbsp%3B%E8%8E%B7%E5%8F%96%E9%94%81%E7%9A%84%E9%A1%BA%E5%BA%8F" style="color:rgb(51,102,153)"></a>&nbsp;
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;获取锁的顺序</h6>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 这个类并不倾向Reader或者Writer，不过有个fairness的策略</p>
+<h6 style="font-family:Arial; padding:0px; font-size:1.1em; margin:1em 0px 0.1em">
+<a target="_blank" name="t17" style="color:rgb(51,102,153)"></a><a target="_blank" name="Java%E7%9A%84Lock%E5%B0%8F%E7%BB%93-%26nbsp%3B%26nbsp%3B%26nbsp%3B%26nbsp%3B%26nbsp%3B%26nbsp%3B%E9%9D%9E%E5%85%AC%E5%B9%B3%E6%A8%A1%E5%BC%8F%EF%BC%88%E9%BB%98%E8%AE%A4%EF%BC%89" style="color:rgb(51,102,153)"></a>&nbsp;
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;非公平模式（默认）</h6>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;如果很多Reader和Writer的话，很可能Reder一直能获取锁，而Writer可能会饥饿</p>
+<h6 style="font-family:Arial; padding:0px; font-size:1.1em; margin:1em 0px 0.1em">
+<a target="_blank" name="t18" style="color:rgb(51,102,153)"></a><a target="_blank" name="Java%E7%9A%84Lock%E5%B0%8F%E7%BB%93-%26nbsp%3B%26nbsp%3B%26nbsp%3B%26nbsp%3B%26nbsp%3B%26nbsp%3B%E5%85%AC%E5%B9%B3%E6%A8%A1%E5%BC%8F" style="color:rgb(51,102,153)"></a>&nbsp;
+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 公平模式</h6>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;这种模式下，会尽量以请求锁的顺序来保证公平性。当前锁释放以后，等待时间最长的Writer或者一组Reader（Reader是一伙的！）获取锁。</p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;如果锁被拿着，这时Writer来了，他会开始排队；如果Reader来了，如果它之前没有Writer并且当前拿锁的是Reader，那么它直接就拿到锁，当然如果是Writer拿着，那么它也只能排</p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;队等锁。 不过如果Reader拿着锁，Writer排队，然后Reader排在Writer后，但是Writer放弃了排队（比如它用的是tryLock 30s），那么Reader直接拿到锁而不用排队。</p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;还有就是ReentrantReadWriteLock.ReadLock.tryLock() 和 ReentrantReadWriteLock.WriteLock.tryLock()方法不管这些，一旦调用的时候能拿到锁，那么它们就会插队！！</p>
+<h6 style="font-family:Arial; padding:0px; font-size:1.1em; margin:1em 0px 0.1em">
+<a target="_blank" name="t19" style="color:rgb(51,102,153)"></a><a target="_blank" name="Java%E7%9A%84Lock%E5%B0%8F%E7%BB%93-%26nbsp%3B%26nbsp%3B%26nbsp%3B%26nbsp%3B%26nbsp%3B%26nbsp%3B%26nbsp%3BReentrancy" style="color:rgb(51,102,153)"></a>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;Reentrancy</h6>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;从名字就知道它支持可重入。</p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;以前拿过锁的Reader和Writer可以继续拿锁。另外拿到WriteLock的线程可以拿到ReadLock，但是反之不然。</p>
+<h6 style="font-family:Arial; padding:0px; font-size:1.1em; margin:1em 0px 0.1em">
+<a target="_blank" name="t20" style="color:rgb(51,102,153)"></a><a target="_blank" name="Java%E7%9A%84Lock%E5%B0%8F%E7%BB%93-%26nbsp%3B%26nbsp%3B%26nbsp%3B%26nbsp%3B%26nbsp%3B%26nbsp%3B%26nbsp%3BLockdowngrading" style="color:rgb(51,102,153)"></a>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;Lock
+ downgrading</h6>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 拿到WriteLock的可以直接变成ReadLock，不用释放WriteLock再从新请求ReadLock（这样需要重新排队），实现的方法是先拿到WriteLock，接着拿ReadLock（上面的特性保证了不会死锁），然后释放WriteLock，这样就得到一个ReadLock并立马持有。</p>
+<h6 style="font-family:Arial; padding:0px; font-size:1.1em; margin:1em 0px 0.1em">
+<a target="_blank" name="t21" style="color:rgb(51,102,153)"></a><a target="_blank" name="Java%E7%9A%84Lock%E5%B0%8F%E7%BB%93-%26nbsp%3B%26nbsp%3B%26nbsp%3B%26nbsp%3B%26nbsp%3B%26nbsp%3BInterruptionoflockacquisition" style="color:rgb(51,102,153)"></a>&nbsp; &nbsp; &nbsp; &nbsp;
+ &nbsp; &nbsp;<strong>Interruption of lock acquisition</strong></h6>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+<strong>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 支持</strong></p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp;<strong>&nbsp;一个使用读写锁的例子&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</strong>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</p>
+<div class="code panel" style="margin:0px 0px 10px; padding:0px; border:1px dashed rgb(187,187,187); font-family:Arial; font-size:14px; line-height:17px; overflow:auto">
+<div class="codeContent panelContent" style="color:rgb(51,51,51); margin:0px; padding:0px 10px; font-size:0.95em">
+<pre code_snippet_id="380617" snippet_file_name="blog_20140606_13_7624644"  class="code-java" name="code" style="white-space: pre-wrap; word-wrap: break-word; padding: 0px; margin-top: 0px; margin-bottom: 0px; overflow: auto; font-family: 'Courier New', Courier, monospace; line-height: 1.3;">class CachedData {
+   &lt;span class=&quot;code-object&quot; style=&quot;color: rgb(145, 0, 145); background-color: inherit;&quot;&gt;Object&lt;/span&gt; data;
+   &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;volatile&lt;/span&gt; &lt;span class=&quot;code-object&quot; style=&quot;color: rgb(145, 0, 145); background-color: inherit;&quot;&gt;boolean&lt;/span&gt; cacheValid;
+   ReentrantReadWriteLock rwl = &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;new&lt;/span&gt; ReentrantReadWriteLock();
+
+   void processCachedData() {
+     rwl.readLock().lock();
+     &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;if&lt;/span&gt; (!cacheValid) {
+        &lt;span class=&quot;code-comment&quot; style=&quot;color: rgb(128, 128, 128); background-color: inherit;&quot;&gt;// Must release read lock before acquiring write lock
+&lt;/span&gt;        rwl.readLock().unlock();
+        rwl.writeLock().lock();
+        &lt;span class=&quot;code-comment&quot; style=&quot;color: rgb(128, 128, 128); background-color: inherit;&quot;&gt;// Recheck state because another thread might have acquired
+&lt;/span&gt;        &lt;span class=&quot;code-comment&quot; style=&quot;color: rgb(128, 128, 128); background-color: inherit;&quot;&gt;//   write lock and changed state before we did.
+&lt;/span&gt;        &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;if&lt;/span&gt; (!cacheValid) {
+          data = ...
+          cacheValid = &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;true&lt;/span&gt;;
+        }
+        &lt;span class=&quot;code-comment&quot; style=&quot;color: rgb(128, 128, 128); background-color: inherit;&quot;&gt;// Downgrade by acquiring read lock before releasing write lock
+&lt;/span&gt;        rwl.readLock().lock();
+        rwl.writeLock().unlock(); &lt;span class=&quot;code-comment&quot; style=&quot;color: rgb(128, 128, 128); background-color: inherit;&quot;&gt;// Unlock write, still hold read
+&lt;/span&gt;     }
+
+     use(data);
+     rwl.readLock().unlock();
+   }
+ }
+</pre></div>
+</div>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; 一个Cache数据的例子，读取数据时首先拿读锁，如果cache是有效的（volatile boolean cacheValid），直接使用数据。</p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; 如果失效了，那么释放读锁，获取写锁【这个类不支持upgrading】，然后double check一下是否cache有效，如果还是无效（说明它应该更新），那么更新数据，并且修改变量cacheValid，让其它线程看到。</p>
+<h5 style="font-family:Arial; padding:0px; font-size:1.2em; margin:1em 0px 0.1em">
+<a target="_blank" name="t22" style="color:rgb(51,102,153)"></a><a target="_blank" name="Java%E7%9A%84Lock%E5%B0%8F%E7%BB%93-%26nbsp%3B%26nbsp%3B%E8%87%AD%E5%90%8D%E6%98%AD%E8%91%97%E7%9A%84doublecheck" style="color:rgb(51,102,153)"></a>&nbsp; &nbsp;臭名昭著的double check</h5>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+&nbsp; &nbsp; &nbsp;前面提到了double check，这里也顺便讨论一下：</p>
+<div class="code panel" style="margin:0px 0px 10px; padding:0px; border:1px dashed rgb(187,187,187); font-family:Arial; font-size:14px; line-height:17px; overflow:auto">
+<div class="codeContent panelContent" style="color:rgb(51,51,51); margin:0px; padding:0px 10px; font-size:0.95em">
+<pre code_snippet_id="380617" snippet_file_name="blog_20140606_14_8878380"  class="code-java" name="code" style="white-space: pre-wrap; word-wrap: break-word; padding: 0px; margin-top: 0px; margin-bottom: 0px; overflow: auto; font-family: 'Courier New', Courier, monospace; line-height: 1.3;">@NotThreadSafe
+&lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;public&lt;/span&gt; class DoubleCheckedLocking {
+    &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;static&lt;/span&gt; Resource resource;
+
+    &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;static&lt;/span&gt; Resource getInstance() {
+        &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;if&lt;/span&gt; (resource == &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;null&lt;/span&gt;) {
+            &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;synchronized&lt;/span&gt; (DoubleCheckedLocking.class) {
+                &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;if&lt;/span&gt; (resource == &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;null&lt;/span&gt;)
+                    resource = &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;new&lt;/span&gt; Resource();
+            }
+        }
+        &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;return&lt;/span&gt; resource;
+    }
+}
+</pre></div>
+</div>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+很多“hacker”再提到延迟加载的时候都会提到它，上面的代码看起来没有什么问题：首先检查一些resource，如果为空，那么加锁，因为检查resource==null没有加锁，所以可能同时两个线程进入if并且请求加锁，所以第一个拿到锁的初始化一次，第二次拿锁的会再次check。这看起来很完美：大多数情况下resouce不为空，很少的情况（刚开始时）resource为空，那么再加锁，这比一上来就加锁要高效很多。</p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+不过千万别高兴地太早了，因为编译器对引用的赋&#20540;可能会做优化，可能这个对象还没有正确的构造好，&#20540;已经赋好了（为什么要这么做？也许构造对象需要IO，io等待的时间把&#20540;赋好了能提高速度）。这个时候别的线程就惨了！</p>
+<p style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:13pt; margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px">
+另外很多讲延迟加载的文章都比较早（早于jdk6），那个年代java的synchronized确实很不给力。如果你实在在乎这点性能的话，应该用jvm的静态类加载机制来实现：</p>
+<div class="code panel" style="margin:0px 0px 10px; padding:0px; border:1px dashed rgb(187,187,187); font-family:Arial; font-size:14px; line-height:17px; overflow:auto">
+<div class="codeContent panelContent" style="color:rgb(51,51,51); margin:0px; padding:0px 10px; font-size:0.95em">
+<pre code_snippet_id="380617" snippet_file_name="blog_20140606_15_2116984"  class="code-java" name="code" style="white-space: pre-wrap; word-wrap: break-word; padding: 0px; margin-top: 0px; margin-bottom: 0px; overflow: auto; font-family: 'Courier New', Courier, monospace; line-height: 1.3;">@ThreadSafe
+&lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;public&lt;/span&gt; class ResourceFactory {
+     &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;static&lt;/span&gt; class ResourceHolder {
+         &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;static&lt;/span&gt; Resource resource = &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;new&lt;/span&gt; Resource();
+     }
+
+     &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;static&lt;/span&gt; Resource getResource() {
+         &lt;span class=&quot;code-keyword&quot; style=&quot;color: rgb(0, 0, 145); background-color: inherit;&quot;&gt;return&lt;/span&gt;  ResourceHolder.resource ;
+     }
+}</pre></div>
+</div>

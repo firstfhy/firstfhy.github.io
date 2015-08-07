@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>joda_time的使用</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	
+	<link rel="stylesheet" href="../../stylesheets/stylesheet.css" media="screen">
+	<link rel="stylesheet" href="../../stylesheets/pygment_trac.css"/>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script type="text/javascript" src="../../javascripts/script.js"></script>
+	
+	<meta name="description" content="firstfhy">
+	
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+<body>
+	<div class="wrapper">
+		<div id="container">
+		    <div id="main" role="main">
+		    	<div class="download-bar">
+			    	<div class="inner">
+			          	<a class="code">JAVA</a>
+			        </div>
+		        	<span class="blc"></span><span class="trc"></span>
+		        </div>
+		        <article class="markdown-body">
+					<h3>
+						joda_time的使用
+				   	</h3>
+<div id="blog_content" class="blog_content">
+    Joda-Time
+<br />
+<br />Home：<a href="http://joda-time.sourceforge.net/" target="_blank">http://joda-time.sourceforge.net/</a>
+<br />
+<br />JavaDoc：<a href="http://joda-time.sourceforge.net/apidocs/index.html" target="_blank">http://joda-time.sourceforge.net/apidocs/index.html</a>
+<br />
+<br />直接看代码,这是在网上和根据API整理的一些例子,使用时看例子就可以了
+<br />
+<br /><pre name="code" class="java">
+package com.yan.joda;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+public class JodaTest {
+
+	public static void main(String[] args) {
+		//初始化时间
+				DateTime dateTime=new DateTime(2012, 12, 13, 18, 23,55);
+				
+				// 年,月,日,时,分,秒,毫秒  
+		        DateTime dt3 = new DateTime(2011, 2, 13, 10, 30, 50, 333);// 2010年2月13日10点30分50秒333毫秒
+				
+				//下面就是按照一点的格式输出时间
+				String str2 = dateTime.toString("MM/dd/yyyy hh:mm:ss.SSSa");
+				String str3 = dateTime.toString("dd-MM-yyyy HH:mm:ss");
+				String str4 = dateTime.toString("EEEE dd MMMM, yyyy HH:mm:ssa");
+				String str5 = dateTime.toString("MM/dd/yyyy HH:mm ZZZZ");
+				String str6 = dateTime.toString("MM/dd/yyyy HH:mm Z");
+				
+				DateTimeFormatter format = DateTimeFormat .forPattern("yyyy-MM-dd HH:mm:ss");
+				//时间解析  
+				DateTime dateTime2 = DateTime.parse("2012-12-21 23:22:45", format);  
+				  
+				//时间格式化，输出==&gt; 2012/12/21 23:22:45 Fri  
+				String string_u = dateTime2.toString("yyyy/MM/dd HH:mm:ss EE");  
+				System.out.println(string_u);  
+				  
+				//格式化带Locale，输出==&gt; 2012年12月21日 23:22:45 星期五  
+				String string_c = dateTime2.toString("yyyy年MM月dd日 HH:mm:ss EE",Locale.CHINESE);  
+				System.out.println(string_c);
+				
+				DateTime dt1 = new DateTime();// 取得当前时间
+				 
+				// 根据指定格式,将时间字符串转换成DateTime对象,这里的格式和上面的输出格式是一样的  
+			    DateTime dt2 = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss").parseDateTime("2012-12-26 03:27:39");
+			    
+			    //计算两个日期间隔的天数
+			    LocalDate start=new LocalDate(2012, 12,14);  
+				LocalDate end=new LocalDate(2013, 01, 15);  
+				int days = Days.daysBetween(start, end).getDays();
+				
+				//计算两个日期间隔的小时数,分钟数,秒数
+				
+				//增加日期
+				DateTime dateTime1 = DateTime.parse("2012-12-03");
+				dateTime1 = dateTime1.plusDays(30);
+				dateTime1 = dateTime1.plusHours(3);
+				dateTime1 = dateTime1.plusMinutes(3);
+				dateTime1 = dateTime1.plusMonths(2);
+				dateTime1 = dateTime1.plusSeconds(4);
+				dateTime1 = dateTime1.plusWeeks(5);
+				dateTime1 = dateTime1.plusYears(3);
+				
+				// Joda-time 各种操作.....  
+				dateTime = dateTime.plusDays(1) // 增加天  
+				                    .plusYears(1)// 增加年  
+				                    .plusMonths(1)// 增加月  
+				                    .plusWeeks(1)// 增加星期  
+				                    .minusMillis(1)// 减分钟  
+				                    .minusHours(1)// 减小时  
+				                    .minusSeconds(1);// 减秒数
+				
+				//判断是否闰月  
+		        DateTime dt4 = new DateTime();  
+		        org.joda.time.DateTime.Property month = dt4.monthOfYear();  
+		        System.out.println("是否闰月:" + month.isLeap());
+		        
+		        //取得 3秒前的时间  
+		        DateTime dt5 = dateTime1.secondOfMinute().addToCopy(-3);  
+		        dateTime1.getSecondOfMinute();// 得到整分钟后，过的秒钟数  
+		        dateTime1.getSecondOfDay();// 得到整天后，过的秒钟数  
+		        dateTime1.secondOfMinute();// 得到分钟对象,例如做闰年判断等使用
+		        
+		        // DateTime与java.util.Date对象,当前系统TimeMillis转换  
+		        DateTime dt6 = new DateTime(new Date());  
+		        Date date = dateTime1.toDate();  
+		        DateTime dt7 = new DateTime(System.currentTimeMillis());  
+		        dateTime1.getMillis(); 
+		        
+		        Calendar calendar = Calendar.getInstance();  
+		        dateTime = new DateTime(calendar);
+	}
+}
+</pre>
+<br />
+<br />下面是一个小例子用来计算小宝宝从出生到现在总共的天数小时数等，首先用jdk的类去做，不用joda,然后再用joda去做，以做比较
+<br />
+<br />用jdk做的例子,这里算的从出生到现在的时间间隔是准确的，如果是输入的某天来算的话就不是很准确，多一秒就算一天。可以看到用jdk去做的话，要写的代码还是挺繁琐的。
+<br /><pre name="code" class="java">import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Scanner;
+
+public class CalBaby {
+	private final static String birthday = "2012-3-10 08:20:55";
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		while(true){
+			String format1 = "yyyy-MM-dd";
+			String format2 = "yyyy-MM-dd HH:mm:ss";
+			Scanner s = new Scanner(System.in);
+			System.out.println("########################################");
+			cutTwoDateToDay(convertToDate1(birthday,format2),new Date(),false);
+			System.out.println("请选择操作");
+			System.out.println("请输入日期(格式例如:2012-11-08)");
+			System.out.println("########################################");
+			String endDateStr = s.nextLine();
+			Date endDate = convertToDate1(endDateStr,format1);
+			if(endDate == null){
+				System.out.println("输入格式错误!请重新输入.");
+				continue;
+			}
+			boolean inputFlag = true;
+			cutTwoDateToDay(convertToDate1(birthday,format2),endDate,inputFlag);
+		}
+		
+	}
+	
+	/** 
+     * 计算两个日期之间的差距天数 
+     *  
+     * @param a 
+     * @param b 
+     * @return 
+     */  
+    public static void cutTwoDateToDay(Date beginDate, Date endDate,boolean inputFlag) {  
+        Calendar calendar = Calendar.getInstance();  
+        long intervalDays = 0;  
+        calendar.setTime(beginDate);  
+        long begin = calendar.getTimeInMillis();  
+        calendar.setTime(endDate);  
+        long end = calendar.getTimeInMillis();
+        long totalM = end - begin;
+        System.out.println((end -begin));
+        System.out.println(24*60*60*1000);
+        intervalDays = totalM /(24*60*60*1000);
+        long intervalHours = (totalM - (intervalDays*24*60*60*1000))/(60*60*1000);
+       long intervalMin = (totalM - intervalDays * (24*60*60*1000) - intervalHours*60*60*1000)/(60*1000);
+       if(inputFlag){
+    	   if(totalM &gt; 0L &amp;&amp; totalM %(24*60*60*1000) &gt; 0L){
+    		   intervalDays = intervalDays + 1;
+    	   }
+    	   System.out.println("宝宝从出生到"+formatDate(endDate,"yyyy-MM-dd")+"已经"+intervalDays+"天了");
+       }else{
+    	   System.out.println("宝宝来到这个世界已经"+intervalDays+"天"+intervalHours+"小时"+intervalMin+"分钟了");
+       }
+        
+    } 
+    
+    /** 
+     * 将字符串日期转换为Date   yyyy-MM-dd HH:mm:ss  yyyy-MM-dd
+     *  
+     * @param s 
+     * @return 
+     */  
+    public static Date convertToDate1(String s,String format) {  
+
+        if (s == null) {  
+            return null;  
+        }  
+        try {  
+        	SimpleDateFormat df = new SimpleDateFormat(format);  
+            return df.parse(s);  
+        } catch (Exception e) {  
+            return null;  
+        }  
+    }
+        
+    public static String formatDate(Date date, String strType)
+	{
+		if (date == null)
+		{
+			return null;
+		}
+
+		SimpleDateFormat sdf = new SimpleDateFormat(strType);
+		try
+		{
+			return sdf.format(date);
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
+	}
+}</pre>
+<br />
+<br />下面是用joda来做，用这个来做就简单的多了，而且也很准确。
+<br />
+<br /><pre name="code" class="java">
+import java.util.Scanner;
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+public class CalBabyJoda {
+	
+	private final static String birthday = "2012-3-10 08:20:55";
+
+	public static void main(String[] args) {
+		while(true){
+			Scanner s = new Scanner(System.in);
+			System.out.println("########################################");
+			DateTimeFormatter format1 = DateTimeFormat .forPattern("yyyy-MM-dd HH:mm:ss");
+			DateTimeFormatter format2 = DateTimeFormat .forPattern("yyyy-MM-dd");
+			DateTime startDateTime = DateTime.parse(birthday, format1);
+			System.out.println("宝宝来到这个世界已经");
+			calDateToDay(startDateTime,new DateTime());
+			System.out.println("如选择其它日期请输入(格式例如:2012-11-08 14:24:54或着2012-11-08)");
+			System.out.println("########################################");
+			String endDate = s.nextLine();
+			DateTime endDateTime = null;
+			try{
+				endDateTime = DateTime.parse(endDate,format1);
+			}catch(Exception e){
+				try{
+					endDateTime = DateTime.parse(endDate,format2);
+				}catch(Exception e1){
+					System.out.println("输入格式错误!请重新输入.");
+					continue;
+				}
+			}
+			System.out.println("宝宝从出生到" + endDateTime.toString("yyyy-MM-dd HH:mm:ss") + "已经");
+			calDateToDay(startDateTime,endDateTime);
+		}
+	}
+	
+	public static void calDateToDay(DateTime startDateTime,DateTime endDateTime){
+		
+		 LocalDate start=new LocalDate(startDateTime);  
+		LocalDate end=new LocalDate(endDateTime);
+		Days days = Days.daysBetween(start, end);
+		int intervalDays = days.getDays();
+		int intervalHours = endDateTime.getHourOfDay() - startDateTime.getHourOfDay();
+		int intervalMinutes = endDateTime.getMinuteOfHour() - startDateTime.getMinuteOfHour();
+		int intervalSeconds = endDateTime.getSecondOfMinute() - startDateTime.getSecondOfMinute();
+		
+		
+		if(intervalSeconds &lt; 0){
+			intervalMinutes = intervalMinutes -1;
+			intervalSeconds = 60 + intervalSeconds;
+		}
+		
+		if(intervalMinutes &lt; 0){
+			intervalHours = intervalHours -1;
+			intervalMinutes = 60 + intervalMinutes;
+		}
+		
+		if(intervalHours &lt; 0){
+			intervalDays = intervalDays -1;
+			intervalHours = 24 + intervalHours;
+		}
+				
+		System.out.println(intervalDays + "天" + intervalHours + 
+				"小时" + intervalMinutes + "分钟" + intervalSeconds + "秒");
+		System.out.println("############################");
+	}
+
+}
+</pre>
+  </div>
+
+				</article>
+			</div>
+		</div>
+	    <footer>
+			<div class="owner">
+				<p><a href="https://github.com/firstfhy" class="avatar"><img src="https://avatars0.githubusercontent.com/u/10542465?v=3&amp;s=60" width="48" height="48"></a>View <a href="https://github.com/firstfhy">firstfhy</a> on <a href="https://www.github.com">GitHub</a></p>
+			</div>
+			<div class="creds">
+			  	<small>This page generated using <a href="http://pages.github.com/">GitHub Pages</a><br>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
+			</div>
+	    </footer>
+	</div>
+</body>
+</html>

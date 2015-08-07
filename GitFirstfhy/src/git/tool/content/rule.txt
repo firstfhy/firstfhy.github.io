@@ -10,6 +10,7 @@ java/java_encoding.html template.html content/java_encoding.txt [title]-深入�
 java/java_tomcat.html template.html content/java_tomcat.txt [title]-Tomcat系统架构与设计模式，第1部分:工作原理
 
 system/windows_subst.html template.html content/windows_subst.txt [title]-windows磁盘映射
+system/linux_sendMail.html template.html content/linux_sendMail.txt [title]-linux_sendmail总结
 
 sql/sql_15nosql.html template.html content/sql_15nosql.txt [title]-15个nosql数据库
 

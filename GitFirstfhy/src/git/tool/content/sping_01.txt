@@ -224,7 +224,7 @@ public class TestController{
 <pre name="code" class="java">SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 binder.registerCustomEditor(Date.class, new CustomDateEditor(sdf, false));</pre>
 <p> </p>
-<p><br><img src="../../images/program/java/3c4fce1b-0006-3b2c-81e7-a5d490d10447.jpg" alt=""></p>
+<p><br><img src="../../images/program/java/spring/3c4fce1b-0006-3b2c-81e7-a5d490d10447.jpg" alt=""></p>
 <p>当然也可以自定义属性编辑器，你只需继承PropertyEditorSupport类(推荐)或者实现PropertyEditor接口；然后实现其setAsText(String text)方法做自己的操作。</p>
 <div> </div>
 <p> </p>

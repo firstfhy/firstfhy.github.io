@@ -1,0 +1,242 @@
+<p><span style="color: #444444; font-family: 'Open Sans', Helvetica, Arial, sans-serif; line-height: 24px; background-color: #ffffff;">new Object()将占用多少bytes的内存空间?</span></p>
+<p><span style="color: #444444; font-family: 'Open Sans', Helvetica, Arial, sans-serif; line-height: 24px; background-color: #ffffff;"> 原生类型(primitive type)的内存占用</span><br style="color: #444444; font-family: 'Open Sans', Helvetica, Arial, sans-serif; line-height: 24px; background-color: #ffffff;"><span style="color: #444444; font-family: 'Open Sans', Helvetica, Arial, sans-serif; line-height: 24px; background-color: #ffffff;">Primitive Type             Memory Required(bytes)</span><br style="color: #444444; font-family: 'Open Sans', Helvetica, Arial, sans-serif; line-height: 24px; background-color: #ffffff;"><span style="color: #444444; font-family: 'Open Sans', Helvetica, Arial, sans-serif; line-height: 24px; background-color: #ffffff;">—————————————————————</span><br style="color: #444444; font-family: 'Open Sans', Helvetica, Arial, sans-serif; line-height: 24px; background-color: #ffffff;"><span style="color: #444444; font-family: 'Open Sans', Helvetica, Arial, sans-serif; line-height: 24px; background-color: #ffffff;">boolean                      1</span><br style="color: #444444; font-family: 'Open Sans', Helvetica, Arial, sans-serif; line-height: 24px; background-color: #ffffff;"><span style="color: #444444; font-family: 'Open Sans', Helvetica, Arial, sans-serif; line-height: 24px; background-color: #ffffff;">byte                            1</span><br style="color: #444444; font-family: 'Open Sans', Helvetica, Arial, sans-serif; line-height: 24px; background-color: #ffffff;"><span style="color: #444444; font-family: 'Open Sans', Helvetica, Arial, sans-serif; line-height: 24px; background-color: #ffffff;">short                           2</span><br style="color: #444444; font-family: 'Open Sans', Helvetica, Arial, sans-serif; line-height: 24px; background-color: #ffffff;"><span style="color: #444444; font-family: 'Open Sans', Helvetica, Arial, sans-serif; line-height: 24px; background-color: #ffffff;">char                            2</span><br style="color: #444444; font-family: 'Open Sans', Helvetica, Arial, sans-serif; line-height: 24px; background-color: #ffffff;"><span style="color: #444444; font-family: 'Open Sans', Helvetica, Arial, sans-serif; line-height: 24px; background-color: #ffffff;">int                               4</span><br style="color: #444444; font-family: 'Open Sans', Helvetica, Arial, sans-serif; line-height: 24px; background-color: #ffffff;"><span style="color: #444444; font-family: 'Open Sans', Helvetica, Arial, sans-serif; line-height: 24px; background-color: #ffffff;">float                            4</span><br style="color: #444444; font-family: 'Open Sans', Helvetica, Arial, sans-serif; line-height: 24px; background-color: #ffffff;"><span style="color: #444444; font-family: 'Open Sans', Helvetica, Arial, sans-serif; line-height: 24px; background-color: #ffffff;">long                            8</span><br style="color: #444444; font-family: 'Open Sans', Helvetica, Arial, sans-serif; line-height: 24px; background-color: #ffffff;"><span style="color: #444444; font-family: 'Open Sans', Helvetica, Arial, sans-serif; line-height: 24px; background-color: #ffffff;">double                        8</span></p>
+<p> </p>
+<p><span style="line-height: 25px; color: #4b4b4b; background-color: #ffffff;">对象在内存中存储的布局可以分为三块区域：<em>对象头（Header）、实例数据（Instance Data）和对齐填充（Padding）。 </em></span><span style="color: #4b4b4b; font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; font-size: 13px; line-height: 19px; background-color: #ffffff;"> </span><br style="color: #4b4b4b; font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; font-size: 13px; line-height: 19px; background-color: #ffffff;"><span style="line-height: 25px; color: #4b4b4b; background-color: #ffffff;"><span style="line-height: 21px; color: #ff0000;"><strong>HotSpot虚拟机的对象头包括两部分信息，第一部分用于存储<em>对象自身的运行时数据</em>， 如哈希码（HashCode）、GC分代年龄、锁状态标志、线程持有的锁、偏向线程ID、偏向时间戳等等，这部分数据的长度在32位和64位的虚拟机（暂 不考虑开启压缩指针的场景）中分别为32个和64个Bits，官方称它为“Mark Word”。</strong></span>对象需要存储的运行时数据很多，其实已经超出了32、64位Bitmap结构所能记录的限度，但是对象头信息是与对象自身定义的数据无关的额 外存储成本，考虑到虚拟机的空间效率，Mark Word被设计成一个非固定的数据结构以便在极小的空间内存储尽量多的信息，它会根据对象的状态复用自己的存储空间。例如在32位的HotSpot虚拟机 中对象未被锁定的状态下，Mark Word的32个Bits空间中的25Bits用于存储对象哈希码（HashCode），4Bits用于存储对象分代年龄，2Bits用于存储锁标志 位，1Bit固定为0，在其他状态（轻量级锁定、重量级锁定、GC标记、可偏向）下对象的存储内容如下表所示。 </span><span style="color: #4b4b4b; font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; font-size: 13px; line-height: 19px; background-color: #ffffff;"> </span><br style="color: #4b4b4b; font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; font-size: 13px; line-height: 19px; background-color: #ffffff;"><br style="color: #4b4b4b; font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; font-size: 13px; line-height: 19px; background-color: #ffffff;"><span style="line-height: 25px; color: #4b4b4b; background-color: #ffffff; font-size: x-small;"><strong>表1 HotSpot虚拟机对象头Mark Word</strong></span></p>
+<table style="border: 1px solid #c0c0c0; border-collapse: collapse; color: #4b4b4b; font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; font-size: 13px; line-height: 19px; background-color: #ffffff;">
+<tr>
+<td style="font-size: 12px; color: #454545; border: 1px solid #c0c0c0; border-collapse: collapse; padding: 3px;"><strong>存储内容</strong></td>
+<td style="font-size: 12px; color: #454545; border: 1px solid #c0c0c0; border-collapse: collapse; padding: 3px;"><strong>标志位</strong></td>
+<td style="font-size: 12px; color: #454545; border: 1px solid #c0c0c0; border-collapse: collapse; padding: 3px;"><strong>状态</strong></td>
+</tr>
+<tr>
+<td style="font-size: 12px; color: #454545; border: 1px solid #c0c0c0; border-collapse: collapse; padding: 3px;">对象哈希码、对象分代年龄</td>
+<td style="font-size: 12px; color: #454545; border: 1px solid #c0c0c0; border-collapse: collapse; padding: 3px;">01</td>
+<td style="font-size: 12px; color: #454545; border: 1px solid #c0c0c0; border-collapse: collapse; padding: 3px;">未锁定</td>
+</tr>
+<tr>
+<td style="font-size: 12px; color: #454545; border: 1px solid #c0c0c0; border-collapse: collapse; padding: 3px;">指向锁记录的指针</td>
+<td style="font-size: 12px; color: #454545; border: 1px solid #c0c0c0; border-collapse: collapse; padding: 3px;">00</td>
+<td style="font-size: 12px; color: #454545; border: 1px solid #c0c0c0; border-collapse: collapse; padding: 3px;">轻量级锁定</td>
+</tr>
+<tr>
+<td style="font-size: 12px; color: #454545; border: 1px solid #c0c0c0; border-collapse: collapse; padding: 3px;">指向重量级锁的指针</td>
+<td style="font-size: 12px; color: #454545; border: 1px solid #c0c0c0; border-collapse: collapse; padding: 3px;">10</td>
+<td style="font-size: 12px; color: #454545; border: 1px solid #c0c0c0; border-collapse: collapse; padding: 3px;">膨胀（重量级锁定）</td>
+</tr>
+<tr>
+<td style="font-size: 12px; color: #454545; border: 1px solid #c0c0c0; border-collapse: collapse; padding: 3px;">空，不需要记录信息</td>
+<td style="font-size: 12px; color: #454545; border: 1px solid #c0c0c0; border-collapse: collapse; padding: 3px;">11</td>
+<td style="font-size: 12px; color: #454545; border: 1px solid #c0c0c0; border-collapse: collapse; padding: 3px;">GC标记</td>
+</tr>
+<tr>
+<td style="font-size: 12px; color: #454545; border: 1px solid #c0c0c0; border-collapse: collapse; padding: 3px;">偏向线程ID、偏向时间戳、对象分代年龄</td>
+<td style="font-size: 12px; color: #454545; border: 1px solid #c0c0c0; border-collapse: collapse; padding: 3px;">01</td>
+<td style="font-size: 12px; color: #454545; border: 1px solid #c0c0c0; border-collapse: collapse; padding: 3px;">
+<p>可偏向</p>
+</td>
+</tr>
+</table>
+<p style="border: 0px; vertical-align: baseline; line-height: 24px; color: #444444; font-family: 'Open Sans', Helvetica, Arial, sans-serif; background-color: #ffffff;"> </p>
+<p style="border: 0px; vertical-align: baseline; line-height: 24px; color: #444444; font-family: 'Open Sans', Helvetica, Arial, sans-serif; background-color: #ffffff;"> </p>
+<p style="border: 0px; vertical-align: baseline; line-height: 24px; color: #444444; font-family: 'Open Sans', Helvetica, Arial, sans-serif; background-color: #ffffff;">1. 一个object header, 也称object overhead, 保存当前实例的type信息和内置monitor信息等, 32位系统上占用8bytes，64位系统上占用16bytes；<br>2. 0到多个fields, reference类型在32位系统上每个占用4bytes, 在64位系统上每个占用8bytes; primitive类型参考上面；<br>3. padding, 对步骤1、2之和的补长。CPU从内存中读取数据是以word为基本单位, 32位的系统中word宽度为32bits, 64位的系统中word宽度为64bits, 将整个Java对象占用内存补长为word的整倍数大大提高了CPU存取数据的性能，<a title="数据补长说明" target="_blank" href="http://en.wikipedia.org/wiki/Data_structure_alignment" style="margin: 0px; padding: 0px; border: 0px; vertical-align: baseline; color: #21759b;">参考维基百科关于数据alignment的说明</a>。 就Hotspot而言，不管是32位系统还是64位系统要求（步骤1 + 步骤2 + padding） % 8等于0且0 &lt;= padding &lt; 8。例如在64位系统上:</p>
+<pre>public class Student {
+    private int age;
+}</pre>
+<p style="border: 0px; vertical-align: baseline; line-height: 24px; color: #444444; font-family: 'Open Sans', Helvetica, Arial, sans-serif; background-color: #ffffff;">如new Student()则其占用内存: 16 + 4 = 20，按照3中的说明则padding为4bytes，这样整个内存占用为24bytes。</p>
+<p style="border: 0px; vertical-align: baseline; line-height: 24px; color: #444444; font-family: 'Open Sans', Helvetica, Arial, sans-serif; background-color: #ffffff;">六. 一维原生数组的内存占用<br>——————————————————————————————–<br>1. 在32位的系统中, 占用内存为: 型别占用内存 * 数组长度 + 8（数组在JVM中被当成特殊的对象, object overhead占用8bytes） + 4（数组长度） + padding。如：<br>byte[2], 型别占用内存，即byte型别占用1byte，数组长度为2，这样占用的总内存为1 * 2 + 8 + 4 = 14，padding上2bytes为16bytes，所以byte[2]占用内存为16bytes。<br>2. 在64位的系统中, 占用内存为: 型别占用内存 * 数组长度 + 16（object overhead占用16bytes） + 8（数组长度） + padding。如：<br>byte[2], 型别占用内存，即byte型别占用1byte，数组长度为2，这样占用的总内存为1 * 2 + 16 + 8 = 26，padding上6bytes，26 + 6 = 32bytes，所以byte[2]占用内存为32bytes</p>
+<p style="border: 0px; vertical-align: baseline; line-height: 24px; color: #444444; font-family: 'Open Sans', Helvetica, Arial, sans-serif; background-color: #ffffff;">七. 多维数组和一维对象数组<br>——————————————————————————————–<br>1. 在32位的系统中, 占用内存为: reference占用内存 * 数组第1维长度 +12(数组本身被当做reference占8bytes，数组长度占4bytes)。如：<br>byte[3][7], reference占用内存4byte，数组第1维长度为3，这样占用的总内存为4 * 3 + 12 = 24，所以byte[3][7]占用内存为24bytes。再如byte[7][3], reference占用内存4byte，数组第1维长度为7，这样占用的总内存为4 * 7 + 12 = 40，所以byte[7][3]占用内存为40bytes。再如new HashMap[7][6][4]，reference占用内存4byte，数组第1维长度为7，这样占用的总内存为4 * 7 + 12 = 40，所以HashMap[7][6][4]占用内存为40bytes。<br>2. 在64位的系统中, 占用内存为: reference占用内存 * 数组第1维长度 +24(数组本身被当做reference占16bytes，数组长度占8bytes)。如：<br>byte[3][7], reference占用内存8byte，数组第1维长度为3，这样占用的总内存为8 * 3 + 24 = 48，所以byte[3][7]占用内存为48bytes。</p>
+<p style="border: 0px; vertical-align: baseline; line-height: 24px; color: #444444; font-family: 'Open Sans', Helvetica, Arial, sans-serif; background-color: #ffffff;">八. 编码计算<br>——————————————————————————————–<br>1. java.lang.instrument.Instrumentation实例由JVM产生，我们需实现一个代理(agent)，根据java.lang.instrument的package specification说明，这个代理里需有个public static void premain(String agentArgs, Instrumentation inst); 方法，这样在JVM初始化后在调用应用程序main方法前，JVM将调用我们agent里的这个premain方法，这样就注入了Instrumentation实例。<br>2. 计算实例的内存大小，通过Instrumentation#getObjectSize(Object objectToSize)获得。<br>3. 注意: 如果有field是常量（如, Boolean.FALSE），因为多实例共享，所以算其占用内存为0。<br>4. 如计算对象Deep范围内存占用的话则需递归计算引用对象占用的内存，然后进行累加。<br>5. 代码实现如下MemoryCalculator.java：</p>
+<pre>/*
+ * @(#)MemoryCalculator.java	1.0 2010-11-8
+ *
+ * Copyright 2010 Richard Chen(utopia_rabbi@sse.buaa.edu.cn) All Rights Reserved.
+ * PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+ */
+package charpter.memory;
+
+import java.lang.instrument.Instrumentation;
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.IdentityHashMap;
+import java.util.Map;
+import java.util.Stack;
+
+/**
+ * 提供实例占用内存大小的计算功能. 内部借助JVM的{@link Instrumentation}实现.
+ *
+ * @author Rich, 2010-11-8.
+ * @version 1.0
+ * @since 1.0
+ */
+public final class MemoryCalculator {
+	/**
+	 * JVM在初始化后在调用应用程序main方法前将调用本方法, 本方法中可以写任何main方法中可写的代码.
+	 *
+	 * @param agentArgs 命令行传进行来的代理参数, 内部需自行解析.
+	 * @param inst JVM注入的句柄.
+	 */
+	public static void premain(String agentArgs, Instrumentation inst) {
+		instrumentation = inst;
+	}
+	/**
+	 * 计算实例本身占用的内存大小. 注意:
+	 * 1. 多次调用可能结果不一样, 主要跟实例的状态有关
+	 * 2. 实例中成员变量如果是reference类型, 则reference所指向的实例占用内存大小不统计在内
+	 *
+	 * @param obj 待计算内存占用大小的实例.
+	 * @return 内存占用大小, 单位为byte.
+	 */
+	public static long shallowSizeOf(Object obj) {
+		if (instrumentation == null) {
+			throw new IllegalStateException("Instrumentation initialize failed");
+		}
+		if (isSharedObj(obj)) {
+			return 0;
+		}
+		return instrumentation.getObjectSize(obj);
+	}
+	/**
+	 * 计算实例占用的内存大小, 含其成员变量所引用的实例, 递归计算.
+	 *
+	 * @param obj 待计算内存占用大小的实例.
+	 * @return 内存占用大小, 单位为byte.
+	 */
+	public static long deepSizeOf(Object obj) {
+		Map calculated = new IdentityHashMap();
+		Stack unCalculated = new Stack();
+		unCalculated.push(obj);
+		long result = 0;
+		do {
+			result += doSizeOf(unCalculated, calculated);
+		} while (!unCalculated.isEmpty());
+		return result;
+	}
+	/**
+	 * 判断obj是否是共享对象. 有些对象, 如interned Strings, Boolean.FALSE和Integer#valueOf()等.
+	 *
+	 * @param obj 待判断的对象.
+	 * @return true, 是共享对象, 否则返回false.
+	 */
+	private static boolean isSharedObj(Object obj) {
+		if (obj instanceof Comparable) {
+			if (obj instanceof Enum) {
+				return true;
+			} else if (obj instanceof String) {
+				return (obj == ((String) obj).intern());
+			} else if (obj instanceof Boolean) {
+				return (obj == Boolean.TRUE || obj == Boolean.FALSE);
+			} else if (obj instanceof Integer) {
+				return (obj == Integer.valueOf((Integer) obj));
+			} else if (obj instanceof Short) {
+				return (obj == Short.valueOf((Short) obj));
+			} else if (obj instanceof Byte) {
+				return (obj == Byte.valueOf((Byte) obj));
+			} else if (obj instanceof Long) {
+				return (obj == Long.valueOf((Long) obj));
+			} else if (obj instanceof Character) {
+				return (obj == Character.valueOf((Character) obj));
+			}
+		}
+		return false;
+	}
+	/**
+	 * 确认是否需计算obj的内存占用, 部分情况下无需计算.
+	 *
+	 * @param obj 待判断的对象.
+	 * @param calculated 已计算过的对象.
+	 * @return true, 意指无需计算, 否则返回false.
+	 */
+	private static boolean isEscaped(Object obj, Map calculated) {
+		return obj == null || calculated.containsKey(obj)
+				|| isSharedObj(obj);
+	}
+	/**
+	 * 计算栈顶对象本身的内存占用.
+	 *
+	 * @param unCalculated 待计算内存占用的对象栈.
+	 * @param calculated 对象图谱中已计算过的对象.
+	 * @return 栈顶对象本身的内存占用, 单位为byte.
+	 */
+	private static long doSizeOf(Stack unCalculated, Map calculated) {
+		Object obj = unCalculated.pop();
+		if (isEscaped(obj, calculated)) {
+			return 0;
+		}
+		Class clazz = obj.getClass();
+		if (clazz.isArray()) {
+			doArraySizeOf(clazz, obj, unCalculated);
+		} else {
+			while (clazz != null) {
+				Field[] fields = clazz.getDeclaredFields();
+				for (Field field : fields) {
+					if (!Modifier.isStatic(field.getModifiers())
+							&amp;&amp; !field.getType().isPrimitive()) {
+						field.setAccessible(true);
+						try {
+							unCalculated.add(field.get(obj));
+						} catch (IllegalAccessException ex) {
+							throw new RuntimeException(ex);
+						}
+					}
+				}
+				clazz = clazz.getSuperclass();
+			}
+		}
+		calculated.put(obj, null);
+		return shallowSizeOf(obj);
+	}
+	/**
+	 * 将数组中的所有元素加入到待计算内存占用的栈中, 等待处理.
+	 *
+	 * @param arrayClazz 数组的型别.
+	 * @param array 数组实例.
+	 * @param unCalculated 待计算内存占用的对象栈.
+	 */
+	private static void doArraySizeOf(Class arrayClazz, Object array,
+			Stack unCalculated) {
+		if (!arrayClazz.getComponentType().isPrimitive()) {
+			int length = Array.getLength(array);
+			for (int i = 0; i &lt; length; i++) {
+				unCalculated.add(Array.get(array, i));
+			}
+		}
+	}
+	/** JVM将在启动时通过{@link #premain}初始化此成员变量. */
+	private static Instrumentation instrumentation = null;
+}
+
+
+</pre>
+<p style="border: 0px; vertical-align: baseline; line-height: 24px; color: #444444; font-family: 'Open Sans', Helvetica, Arial, sans-serif; white-space: normal;">，从Java SE 6u23之后的64位版本就默认打开了对象指针压缩。</p>
+<p style="border: 0px; vertical-align: baseline; line-height: 24px; color: #444444; font-family: 'Open Sans', Helvetica, Arial, sans-serif; white-space: normal;">十. Compressed oops的内存占用<br>注意，Compressed oops只在64位的JVM中才会有，另外，在Java SE 6u23之前的1.6版本中需要通过-XX:+UseCompressedOops参数开启。压缩算法对对象内存占用计算的影响主要在于:<br>——————————————————————————————–<br>1. object header，未压缩前由一个native-sized mark word 8bytes加上一个class word 8bytes组成，共16bytes。采用压缩后，class word缩减为4bytes，现共占用12bytes；<br>2. reference类型，由8bytes缩减为4bytes；<br>3. 数组长度，由8bytes缩减为4bytes。</p>
+<p style="border: 0px; vertical-align: baseline; line-height: 24px; color: #444444; font-family: 'Open Sans', Helvetica, Arial, sans-serif; white-space: normal;">所以，上述测试案例中:<br>——————————————————————————————–<br>1. 原生类型，内存占用大小不变。<br>2. 对象类型，object header由16bytes变更为12bytes，reference类型的fields由8bytes变更为4bytes，primitive类型的fields保持不变，padding不变。<br>3. 一维原生数组，如new byte[2]占用内存的计算公式由：型别占用内存 * 数组长度 + 16 + 8 + padding变更为: 型别占用内存 * 数组长度 + 12 + 4 + padding，这样得到: 1byte * 2 + 12 + 4 = 18，padding上6bytes等于24bytes。<br>4. 多维数组和一维对象数组，如new byte[3][7]，计算公式由: reference占用内存 * 数组第1维长度 +24(数组本身被当做reference占16bytes，数组长度占8bytes) 变更为: reference占用内存 * 数组第1维长度 + 16(object header 12bytes，数组长度占4bytes) + padding，这样得到：4bytes * 3 + 16 = 28，padding上4bytes等于32bytes。 再如new HashMap[7]，7 * 4bytes + 16 = 44bytes，padding上4bytes为48bytes。</p>
+<p style="border: 0px; vertical-align: baseline; line-height: 24px; color: #444444; font-family: 'Open Sans', Helvetica, Arial, sans-serif; white-space: normal;">十一. 总结<br>通过上述Java内存占用大小的理论分析与实际测试，给我们实际开发带来几点重要的启发:<br>——————————————————————————————–<br>1. 同样的程序在不同环境下运行，占用的内存不一样大小，64位系统上占用的内存要比在32位系统上多1至1.5倍；<br>2. n个元素的数组要比n个单独元素占用更大的内存，特别是primitive类型的数组；<br>3. 定义多维数组时，要尽可能把长度小的放在第1维，即int[9][1]要比int[1][9]占用更多内存，Integer[1000][4][3]远比Integer[3][4][1000]占用的内存要多得多；<br>4. Java SE 6u23之后的64位版本要比之前的版本在对象内存占用方面小得多。</p>
+<p style="border: 0px; vertical-align: baseline; line-height: 24px; color: #444444; font-family: 'Open Sans', Helvetica, Arial, sans-serif; white-space: normal;"> </p>
+<ol style="margin-bottom: 0px; color: #666666; font-family: 宋体, Arial; font-size: 12px; line-height: 26px; background-color: #ffffff;">
+<li style="margin-bottom: 0px; margin-left: 0px;">
+<p style="margin-top: 5px; margin-bottom: 0cm;"><span style="font-size: small;"><span style="">jvm</span></span>对于对象会启用对齐优化，我们定义类时<span style="font-size: small;"><span style="">field</span></span>的顺序在运行期会被打乱</p>
+</li>
+<li style="margin-bottom: 0px; margin-left: 0px;">
+<p style="margin-top: 5px; margin-bottom: 0cm;">关闭了压缩指针模式后，<span style="font-size: small;"><span style="">Person</span></span>对象体偏移由 <span style="font-size: small;"><span style="">offset = 16</span></span>变成了 <span style="font-size: small;"><span style="">offset = 12</span></span></p>
+</li>
+</ol>
+<p style="margin-top: 5px; margin-bottom: 0cm; color: #666666; font-family: 宋体, Arial; font-size: 12px; line-height: 26px; background-color: #ffffff;"> </p>
+<p style="margin-top: 5px; margin-bottom: 0cm; color: #666666; font-family: 宋体, Arial; font-size: 12px; line-height: 26px; background-color: #ffffff;">所以开启压缩指针模式后，对象头的<span style="font-size: small;"><span style="">_klass</span></span>域得到了压缩，居然变成了<span style="font-size: small;"><span style="">32</span></span>位系统时的长度<span style="font-size: small;"><span style="">4</span></span>字节了，我们都知道<span style="font-size: small;"><span style="">32</span></span>位的长度最多只能表示<span style="font-size: small;"><span style="">4G</span></span>的内存，那么<span style="font-size: small;"><span style="">HostSpot </span></span>究竟是如何处理的呢</p>
+<p style="margin-top: 5px; margin-bottom: 0cm; color: #666666; font-family: 宋体, Arial; font-size: 12px; line-height: 26px; background-color: #ffffff;">我们引用官方文档：</p>
+<p style="margin-top: 5px; margin-bottom: 0cm; color: #666666; font-family: 宋体, Arial; font-size: 12px; line-height: 26px; background-color: #ffffff;"><span style="font-size: small;"><span style=""><a href="http://docs.oracle.com/javase/7/docs/technotes/guides/vm/performance-enhancements-7.html#compressedOop" style="color: #19599b;">Java HotSpot? Virtual Machine Performance Enhancements</a></span></span></p>
+<p style="margin-top: 5px; margin-bottom: 0cm; color: #666666; font-family: 宋体, Arial; font-size: 12px; line-height: 26px; background-color: #ffffff;">这就是面对对象的好处，我们面对的最小地址单元不是<span style="font-size: small;"><span style="">byte</span></span>，而是<span style="font-size: small;"><span style="">object</span></span>，也就是说在<span style="font-size: small;"><span style="">jvm</span></span>的世界里<span style="font-size: small;"><span style="">32</span></span>位地址表示的不是<span style="font-size: small;"><span style="">4GB</span></span>，而是<span style="font-size: small;"><span style="">4G</span></span>个对象的指针，大概是<span style="font-size: small;"><span style="">32GB</span></span>，解码过程就是把对象指针乘以<span style="font-size: small;"><span style="">8</span></span>加上<span style="font-size: small;"><span style="">GC</span></span>堆的初始地址就能得到操作系统本地<span style="font-size: small;"><span style="">64</span></span>位地址了，编码过程相反</p>
+<p style="margin-top: 5px; margin-bottom: 0cm; color: #666666; font-family: 宋体, Arial; font-size: 12px; line-height: 26px; background-color: #ffffff;">其中启用压指得有操作系统底层的支持：<span style="font-size: small;"><span style="">GC</span></span>堆从虚拟地址<span style="font-size: small;"><span style="">0</span></span>开始分配</p>
+<p style="margin-top: 5px; margin-bottom: 0cm; color: #666666; font-family: 宋体, Arial; font-size: 12px; line-height: 26px; background-color: #ffffff;">进而我们可以得到压指面对的所有场景：</p>
+<ul style="margin-bottom: 0px; color: #666666; font-family: 宋体, Arial; font-size: 12px; line-height: 26px; background-color: #ffffff;">
+<li style="margin-bottom: 0px; margin-left: 0px;">
+<p style="margin-top: 5px; margin-bottom: 0cm;">如果<span style="font-size: small;"><span style="">GC</span></span>堆大小在<span style="font-size: small;"><span style="">4G</span></span>以下，直接砍掉高<span style="font-size: small;"><span style="">32</span></span>位，避免了编码解码过程</p>
+</li>
+<li style="margin-bottom: 0px; margin-left: 0px;">
+<p style="margin-top: 5px; margin-bottom: 0cm;">如果<span style="font-size: small;"><span style="">GC</span></span>堆大小在<span style="font-size: small;"><span style="">4G</span></span>以上<span style="font-size: small;"><span style="">32G</span></span>以下，则启用<span style="font-size: small;"><span style="">UseCompressedOop</span></span></p>
+</li>
+<li style="margin-bottom: 0px; margin-left: 0px;">
+<p style="margin-top: 5px; margin-bottom: 0cm;">如果<span style="font-size: small;"><span style="">GC</span></span>堆大小大于<span style="font-size: small;"><span style="">32G</span></span>，压指失效（所以说服务器内存太大不好<span style="font-size: small;"><span style="">......</span></span>）</p>
+</li>
+</ul>
+<p style="margin-top: 5px; margin-bottom: 0cm; color: #666666; font-family: 宋体, Arial; font-size: 12px; line-height: 26px; background-color: #ffffff;">考虑到内存对齐，<span style="font-size: small;"><span style="">Person</span></span>对象开压指长度为<span style="font-size: small;"><span style="">32</span></span>字节，不开为<span style="font-size: small;"><span style="">40</span></span>字节</p>

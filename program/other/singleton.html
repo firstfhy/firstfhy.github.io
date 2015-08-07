@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>设计模式_小单例有大秘密</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	
+	<link rel="stylesheet" href="../../stylesheets/stylesheet.css" media="screen">
+	<link rel="stylesheet" href="../../stylesheets/pygment_trac.css"/>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script type="text/javascript" src="../../javascripts/script.js"></script>
+	
+	<meta name="description" content="firstfhy">
+	
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+<body>
+	<div class="wrapper">
+		<div id="container">
+		    <div id="main" role="main">
+		    	<div class="download-bar">
+			    	<div class="inner">
+			          	<a class="code">OTHER</a>
+			        </div>
+		        	<span class="blc"></span><span class="trc"></span>
+		        </div>
+		        <article class="markdown-body">
+					<h3>
+						设计模式_小单例有大秘密
+				   	</h3>
+<p><span style="font-family:Microsoft YaHei; font-size:16px">下面是一个简单的小实例：</span></p>
+<p></p>
+<pre code_snippet_id="156891" snippet_file_name="blog_20140114_1_2946833"  code_snippet_id="156891" snippet_file_name="blog_20140114_1_2946833" name="code" class="java">//简单懒汉式
+public class Singleton {
+	
+	//单例实例变量
+	private static Singleton instance = null;
+	
+	//私有化的构造方法，保证外部的类不能通过构造器来实例化
+	private Singleton() {}
+	
+	//获取单例对象实例
+	public static Singleton getInstance() {
+        
+	    if (instance == null) { 
+	        instance = new Singleton(); 
+	    }
+	    
+	    System.out.println(&quot;我是简单懒汉式单例！&quot;);
+	    return instance;
+    }
+}</pre><br>
+<span style="font-family:Microsoft YaHei; font-size:16px">很容易看出，上面这段代码在多线程的情况下是不安全的，当两个线程进入if (instance == null)时，两个线程都判断instance为空，接下来就会得到两个实例了。这不是我们想要的单例。</span>
+<p></p>
+<p><span style="font-family:Microsoft YaHei; font-size:16px"><br>
+</span></p>
+<p><span style="font-family:Microsoft YaHei; font-size:16px">接下来我们用加锁的方式来实现互斥，从而保证单例的实现。</span></p>
+<pre code_snippet_id="156891" snippet_file_name="blog_20140114_2_1027223"  code_snippet_id="156891" snippet_file_name="blog_20140114_2_1027223" name="code" class="java">//同步法懒汉式
+public class Singleton {
+	
+	//单例实例变量
+	private static Singleton instance = null;
+	
+	//私有化的构造方法，保证外部的类不能通过构造器来实例化
+	private Singleton() {}
+	
+	//获取单例对象实例
+	public static synchronized  Singleton getInstance() {
+        
+        if (instance == null) { 
+            instance = new Singleton(); 
+        }
+        
+        System.out.println(&quot;我是同步法懒汉式单例！&quot;);
+        return instance;
+    }
+}</pre>
+<p><span style="font-family:'Microsoft YaHei'; font-size:16px">加上</span><span style="font-family:'Microsoft YaHei'; font-size:16px">synchronized后确实保证了线程安全，但是这样就是最好的方法吗？很显然它不是，因为这样一来每次调用getInstance()方法是都会被加锁，而我们只需要在第一次调用getInstance()的时候加锁就可以了。这显然影响了我们程序的性能。我们继续寻找更好的方法。</span></p>
+<p><br>
+</p>
+<p><span style="font-family:Microsoft YaHei; font-size:16px">经过分析发现，只需要保证instance = new Singleton()是线程互斥就可以保证线程安全，所以就有了下面这个版本：</span></p>
+<pre code_snippet_id="156891" snippet_file_name="blog_20140114_3_885519"  code_snippet_id="156891" snippet_file_name="blog_20140114_3_885519" name="code" class="java">//双重锁定懒汉式
+public class Singleton {
+	
+	//单例实例变量
+	private static Singleton instance = null;
+	
+	//私有化的构造方法，保证外部的类不能通过构造器来实例化
+	private Singleton() {}
+	
+	//获取单例对象实例
+	public static Singleton getInstance() {
+        if (instance == null) { 
+            synchronized (Singleton.class) {
+                if (instance == null) { 
+                    instance = new Singleton(); 
+                }
+            }
+        }
+        System.out.println(&quot;我是双重锁定懒汉式单例！&quot;);
+        return instance;
+    }
+}</pre>
+<p><span style="font-family:Microsoft YaHei; font-size:16px">这次看起来既解决了线程安全问题，又不至于每次调用getInstance()都会加锁导致降低性能。看起来是一个完美的解决方案，事实上是这样的吗？</span></p>
+<p><span style="font-family:Microsoft YaHei; font-size:16px">很遗憾，事实并非我们想的那么完美。java平台内存模型中有一个叫“无序写”（out-of-order writes）的机制。正是这个机制导致了双重检查加锁方法的失效。这个问题的关键在上面代码上的第5行：instance = new Singleton(); 这行其实做了两个事情：1、调用构造方法，创建了一个实例。2、把这个实例赋&#20540;给instance这个实例变量。可问题就是，这两步jvm是不保证顺序的。也就是说。可能在调用构造方法之前，instance已经被设置为非空了。下面我们一起来分析一下：</span></p>
+<p><span style="font-family:Microsoft YaHei; font-size:16px"><br>
+</span></p>
+<p><span style="font-family:Microsoft YaHei; font-size:16px">假设有两个线程A、B</span></p>
+<p><span style="font-family:Microsoft YaHei; font-size:16px">1、线程A进入getInstance()方法。</span></p>
+<p><span style="font-family:Microsoft YaHei; font-size:16px">2、因为此时instance为空，所以线程A进入synchronized块。</span></p>
+<p><span style="font-family:Microsoft YaHei; font-size:16px">3、线程A执行 instance = new Singleton(); 把实例变量instance设置成了非空。（注意，是在调用构造方法之前。）</span></p>
+<p><span style="font-family:Microsoft YaHei; font-size:16px">4、线程A退出，线程B进入。</span></p>
+<p><span style="font-family:Microsoft YaHei; font-size:16px">5、线程B检查instance是否为空，此时不为空（第三步的时候被线程A设置成了非空）。线程B返回instance的引用。（问题出现了，这时instance的引用并不是Singleton的实例，因为没有调用构造方法。）&nbsp;</span></p>
+<p><span style="font-family:Microsoft YaHei; font-size:16px">6、线程B退出，线程A进入。</span></p>
+<p><span style="font-family:Microsoft YaHei; font-size:16px">7、线程A继续调用构造方法，完成instance的初始化，再返回。&nbsp;</span></p>
+<p><span style="font-family:Microsoft YaHei; font-size:16px"><br>
+</span></p>
+<p><span style="font-family:Microsoft YaHei; font-size:16px">难道就没有一个好方法了吗？好的方法肯定是有的，我们继续探索！</span></p>
+<pre code_snippet_id="156891" snippet_file_name="blog_20140114_4_536072"  code_snippet_id="156891" snippet_file_name="blog_20140114_4_536072" name="code" class="java">//解决无序写问题懒汉式
+public class Singleton {
+	
+	//单例实例变量
+	private static Singleton instance = null;
+	
+	//私有化的构造方法，保证外部的类不能通过构造器来实例化
+	private Singleton() {}
+	
+	//获取单例对象实例
+	public static Singleton getInstance() {
+		if (instance == null) { 
+			synchronized (Singleton.class) {                  //1
+				Singleton temp = instance;                //2
+				if (temp == null) {
+					synchronized (Singleton.class) {  //3 
+						temp = new Singleton();   //4    
+					}
+					instance = temp;                  //5      
+				}
+			}
+		}
+		System.out.println(&quot;我是解决无序写懒汉式单例！&quot;);
+		return instance;
+	}	
+}</pre><span style="font-family:Microsoft YaHei; font-size:16px"><br>
+1、线程A进入getInstance()方法。<br>
+</span>
+<p><span style="font-family:'Microsoft YaHei'; font-size:16px">2、因为instance是空的 ，所以线程A进入位置//1的第一个synchronized块。</span></p>
+<p><span style="font-family:'Microsoft YaHei'; font-size:16px">3、线程A执行位置//2的代码，把instance赋&#20540;给本地变量temp。instance为空，所以temp也为空。&nbsp;</span></p>
+<p><span style="font-family:'Microsoft YaHei'; font-size:16px">4、因为temp为空，所以线程A进入位置//3的第二个synchronized块。（后来想想这个锁有点多余）</span></p>
+<p><span style="font-family:'Microsoft YaHei'; font-size:16px">5、线程A执行位置//4的代码，把temp设置成非空，但还没有调用构造方法！（“无序写”问题）&nbsp;</span></p>
+<p><span style="font-family:'Microsoft YaHei'; font-size:16px">6、如果线程A阻塞，线程B进入getInstance()方法。</span></p>
+<p><span style="font-family:'Microsoft YaHei'; font-size:16px">7、因为instance为空，所以线程B试图进入第一个synchronized块。但由于线程A已经在里面了。所以无法进入。线程B阻塞。</span></p>
+<p><span style="font-family:'Microsoft YaHei'; font-size:16px">8、线程A激活，继续执行位置//4的代码。调用构造方法。生成实例。</span></p>
+<p><span style="font-family:'Microsoft YaHei'; font-size:16px">9、将temp的实例引用赋&#20540;给instance。退出两个synchronized块。返回实例。</span></p>
+<p><span style="font-family:'Microsoft YaHei'; font-size:16px">10、线程B激活，进入第一个synchronized块。</span></p>
+<p><span style="font-family:'Microsoft YaHei'; font-size:16px">11、线程B执行位置//2的代码，把instance实例赋&#20540;给temp本地变量。</span></p>
+<p><span style="font-family:'Microsoft YaHei'; font-size:16px">12、线程B判断本地变量temp不为空，所以跳过if块。返回instance实例。</span></p>
+<p><span style="font-family:'Microsoft YaHei'; font-size:16px"><br>
+</span></p>
+<p><span style="font-family:Microsoft YaHei; font-size:16px">到此为止，上面的问题我们是解决了，但是我们突然发现为了解决线程安全问题，但给人的感觉就像身上缠了很多毛线.... 乱糟糟的，所以我们要精简一下：</span></p>
+<pre code_snippet_id="156891" snippet_file_name="blog_20140114_5_8965908"  code_snippet_id="156891" snippet_file_name="blog_20140114_5_8965908" name="code" class="java">//饿汉式
+public class Singleton {
+	
+	//单例变量 ,static的，在类加载时进行初始化一次，保证线程安全 
+	private static Singleton instance = new Singleton();    
+	
+	//私有化的构造方法，保证外部的类不能通过构造器来实例化。     
+	private Singleton() {}
+	
+	//获取单例对象实例     
+	public static Singleton getInstance() {
+	    System.out.println(&quot;我是饿汉式单例！&quot;);
+	    return instance;
+	}
+}</pre>
+<p><span style="font-family:Microsoft YaHei; font-size:16px">看到上面的代码，瞬间觉得这个世界清静了。不过这种方式采用的是饿汉式的方法，就是预先声明Singleton对象，这样带来的一个缺点就是：如果构造的单例很大，构造完又迟迟不使用，会导致资源浪费。</span></p>
+<p><span style="font-family:Microsoft YaHei; font-size:16px"><br>
+</span></p>
+<p><span style="font-family:Microsoft YaHei; font-size:16px">到底有没有完美的方法呢？继续看：</span></p>
+<pre code_snippet_id="156891" snippet_file_name="blog_20140114_6_2171492"  code_snippet_id="156891" snippet_file_name="blog_20140114_6_2171492" name="code" class="java">//内部类实现懒汉式
+public class Singleton {
+	
+    private static class SingletonHolder{
+        //单例变量  
+        private static Singleton instance = new Singleton();
+    }
+    
+    //私有化的构造方法，保证外部的类不能通过构造器来实例化。
+    private Singleton() {
+        
+    }
+    
+    //获取单例对象实例
+    public static Singleton getInstance() {
+    	System.out.println(&quot;我是内部类单例！&quot;);
+        return SingletonHolder.instance;
+    }
+}</pre>
+<p><span style="font-family:Microsoft YaHei; font-size:16px">懒汉式（避免上面的资源浪费）、线程安全、代码简单。因为java机制规定，内部类SingletonHolder只有在getInstance()方法第一次调用的时候才会被加载（实现了lazy），而且其加载过程是线程安全的（实现线程安全）。内部类加载的时候实例化一次instance。</span></p>
+<p><span style="font-family:Microsoft YaHei; font-size:16px"><br>
+</span></p>
+<p><span style="font-family:Microsoft YaHei; font-size:16px">简单说一下上面提到的无序写，这是jvm的特性，比如声明两个变量，String a; String b; jvm可能先加载a也可能先加载b。同理，<span style="font-family:'Microsoft YaHei'; font-size:16px">instance = new Singleton();可能在调用Singleton的构造函数之前就把instance置成了非空。这是很多人会有疑问，说还没有实例化出Singleton的一个对象，那么instance怎么就变成非空了呢？它的&#20540;现在是什么呢？想了解这个问题就要明白<span style="font-family:'Microsoft YaHei'; font-size:16px">instance
+ = new Singleton();这句话是怎么执行的，下面用一段伪代码向大家解释一下：</span></span></span></p>
+<p></p>
+<pre code_snippet_id="156891" snippet_file_name="blog_20140114_7_2553176"  code_snippet_id="156891" snippet_file_name="blog_20140114_7_2553176" name="code" class="plain">mem = allocate();             //为Singleton对象分配内存。
+instance = mem;               //注意现在instance是非空的，但是还没有被初始化。
+
+ctorSingleton(instance);    //调用Singleton的构造函数，传递instance.</pre>
+<p></p>
+<p><br>
+</p>
+<p><span style="font-family:Microsoft YaHei; font-size:16px">由此可见当一个线程执行到instance = mem; 时instance已为非空，如果此时另一个线程进入程序判断instance为非空，那么直接就跳转到return instance;而此时Singleton的构造方法还未调用instance，现在的&#20540;为allocate();返回的内存对象。所以第二个线程得到的不是Singleton的一个对象，而是一个内存对象。</span></p>
+<p><span style="font-family:Microsoft YaHei; font-size:16px"><br>
+</span></p>
+
+				</article>
+			</div>
+		</div>
+	    <footer>
+			<div class="owner">
+				<p><a href="https://github.com/firstfhy" class="avatar"><img src="https://avatars0.githubusercontent.com/u/10542465?v=3&amp;s=60" width="48" height="48"></a>View <a href="https://github.com/firstfhy">firstfhy</a> on <a href="https://www.github.com">GitHub</a></p>
+			</div>
+			<div class="creds">
+			  	<small>This page generated using <a href="http://pages.github.com/">GitHub Pages</a><br>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
+			</div>
+	    </footer>
+	</div>
+</body>
+</html>

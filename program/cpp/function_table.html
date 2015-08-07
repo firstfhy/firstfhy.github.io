@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>VB连VC</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	
+	<link rel="stylesheet" href="../../stylesheets/stylesheet.css" media="screen">
+	<link rel="stylesheet" href="../../stylesheets/pygment_trac.css"/>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script type="text/javascript" src="../../javascripts/script.js"></script>
+	
+	<meta name="description" content="firstfhy">
+	
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+<body>
+	<div class="wrapper">
+		<div id="container">
+		    <div id="main" role="main">
+		    	<div class="download-bar">
+			    	<div class="inner">
+			          	<a class="code">CPP</a>
+			        </div>
+		        	<span class="blc"></span><span class="trc"></span>
+		        </div>
+		        <article class="markdown-body">
+					<h3>
+						VB连VC
+				   	</h3>
+<p>虚函数的定义：<br />　　虚函数必须是<span style="color: #ff0000;">类</span>的<span style="color: #ff0000;">非静态成员函数(且非构造函数)</span>，其访问权限是<span style="color: #ff0000;">public（可以定义为private or proteceted, 但是对于多态来说，没有意义。）</span>，在基类的类定义中定义虚函数的一般形式：<br />　　virtual 函数返回值类型 虚函数名（形参表）<br />　　{ 函数体 }<br />虚函数的作用是实现动态联编，也就是在程序的运行阶段动态地选择合适的成员函数，在定义了虚函数后，<br />可以在基类的派生类中对虚函数重新定义（<span style="color: #ff0000;">形式也是：virtual 函数返回值类型 虚函数名（形参表）<span style="color: #ff0000;">{ 函数体 }</span></span>），在派生类中重新定义的函数应与虚函数具有相同的形参个数和形参类型。以实现统一的接口，不同定义过程。如果在派生类中没有对虚函数重新定义，则它继承其基类的虚函数。当程序发现虚函数名前的关键字virtual后，会自动将其作为动态联编处理，即在程序运行时动态地选择合适的成员函数。</p>
+<p>实现动态联编需要三个条件：<br />　　1、 必须把需要动态联编的行为定义为类的<span style="color: #ff0000;">公共属性的虚函数</span>。<br />　　2、 类之间存在子类型关系，一般表现为一个类从另一个类<span style="color: #ff0000;">公有派生</span>而来。<br />　　3、 必须先使用基类指针指向子类型的对象，然后<span style="color: #ff0000;">直接或者间接使用基类指针</span>调用虚函数。<br /><br />定义虚函数的限制：</p>
+<p>　　（1）<span style="color: #ff0000;">非类的成员函数不能定义为虚函数，类的成员函数中静态成员函数和构造函数也不能定义为虚函数</span>，但可以将析构函数定义为虚函数。实际上，优秀的程序员常常把基类的析构函数定义为虚函数。因为，将基类的析构函数定义为虚函数后，当利用delete删除一个指向派生类定义的对象指针时，系统会调用相应的类的析构函数。而不将析构函数定义为虚函数时，只调用基类的析构函数。<br />　　（2）只需要在声明函数的类体中使用关键字&ldquo;virtual&rdquo;将函数声明为虚函数，<span style="color: #ff0000;">而定义函数时不需要使用关键字&ldquo;virtual&rdquo;。</span><br />　　（3）如果声明了某个成员函数为虚函数，则在该类中不能出现和这个成员函数同名并且返回值、参数个数、参数类型都相同的非虚函数。在以该类为基类的派生类中，也<span style="color: #ff0000;">不能出现这种非虚的同名同返回值同参数个数同参数类型函数</span>。</p>
+<p class="MsoNormal" style="MARGIN: 0in 0in 10pt">&nbsp;</p>
+<p><span style="FONT-SIZE: 7.5pt; COLOR: maroon; LINE-HEIGHT: 115%; FONT-FAMILY: 宋体; mso-bidi-font-family: 'Times New Roman'; mso-bidi-theme-font: minor-bidi" lang="ZH-CN"><span style="font-size: x-small;"><strong>为什么虚函数必须是类的成员函数：</strong></span></span></p>
+<p><span style="FONT-SIZE: 7.5pt; COLOR: maroon; LINE-HEIGHT: 115%; FONT-FAMILY: 宋体; mso-bidi-font-family: 'Times New Roman'; mso-bidi-theme-font: minor-bidi" lang="ZH-CN"><span style="font-size: x-small; color: #000000; font-family: Verdana;">虚函数诞生的目的就是为了实现多态，在类外定义虚函数毫无实际用处。</span></span></p>
+<p>&nbsp;</p>
+<p><span style="color: maroon; font-family: 宋体;"><strong>为什么类的静态成员函数不能为虚函数：</strong></span></p>
+<p><span style="font-family: 宋体;">如果定义为虚函数，那么它就是动态绑定的，也就是在派生类中可以被覆盖的，这与静态成员函数的定义（：在内存中只有一份拷贝；通过类名或对象引用访问静态成员）本身就是相矛盾的。</span></p>
+<p>&nbsp;</p>
+<p><span style="font-family: 宋体;"><span style="font-size: 7.5pt; color: maroon; font-family: 宋体;"><span style="font-size: x-small;"><strong>为什么构造函数不能为虚函数：</strong></span></span></span></p>
+<p><span lang="EN-US">&nbsp;</span> 因为如果构造函数为虚函数的话，它将在执行期间被构造，而执行期则需要对象已经建立，构造函数所完成的工作就是为了建立合适的对象，因此在没有构建好的对象上不可能执行多态（虚函数的目的就在于实现多态性）的工作。在继承体系中，构造的顺序就是从基类到派生类，其目的就在于确保对象能够成功地构建。构造函数同时承担着虚函数表的建立，如果它本身都是虚函数的话，如何确保vtbl的构建成功呢？</p>
+<p><strong><span style="font-size: x-small; color: #800000; font-family: 宋体;">注意：</span>当基类的构造函数内部有虚函数时</strong>，会出现什么情况呢？结果是在构造函数中，虚函数机制不起作用了，调用虚函数如同调用一般的成员函数一样。<strong>当基类的析构函数内部有虚函数时</strong>，又如何工作呢？与构造函数相同，只有&ldquo;局部&rdquo;的版本被调用。但是，行为相同，原因是不一样的。构造函数只能调用&ldquo;局部&rdquo;版本，是因为调用时还没有派生类版本的信息。析构函数则是因为派生类版本的信息已经不可靠了。我们知道，析构函数的调用顺序与构造函数相反，是从派生类的析构函数到基类的析构函数。当某个类的析构函数被调用时，其派生类的析构函数已经被调用了，相应的数据也已被丢失，如果再调用虚函数的派生类的版本，就相当于对一些不可靠的数据进行操作，这是非常危险的。因此，在析构函数中，虚函数机制也是不起作用的。 </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>C++中的虚函数的作用主要是实现了多态的机制。关于多态，简而言之就是用父类型别的指针指向其子类的实例，然后<span style="color: #ff0000;">通过父类的指针调用实际子类的成员函数</span>。这种技术可以让父类的指针有&ldquo;多种形态&rdquo;，这是一种泛型技术。所谓泛型技术，说白了就是试图使用不变的代码(Or 不变的 接口)来实现可变的算法。比如：模板技术，RTTI技术，虚函数技术，要么是试图做到在编译时决议，要么试图做到运行时决议。 </p>
+<p>关于虚函数的使用方法，我在这里不做过多的阐述。大家可以看看相关的C++的书籍。在这篇文章中，我只想从虚函数的实现机制上面为大家 一个清晰的剖析。 </p>
+<p>当然，相同的文章在网上也出现过一些了，但我总感觉这些文章不是很容易阅读，大段大段的代码，没有图片，没有详细的说明，没有比较，没有举一反三。不利于学习和阅读，所以这是我想写下这篇文章的原因。也希望大家多给我提意见。 </p>
+<p>言归正传，让我们一起进入虚函数的世界。 </p>
+<h3>虚函数表</h3>
+<p>对C++ 了解的人都应该知道虚函数（Virtual Function）是通过一张虚函数表（Virtual Table）来实现的。简称为V-Table。 在这个表中，主是要一个类的虚函数的地址表，这张表解决了继承、覆盖的问题，保证其容真实反应实际的函数。这样，在有虚函数的类的实例（<span style="color: #ff0000;">注：抽象类即有纯虚函数的类不能被实例化。</span>）中这个表被分配在了这个实例的内存中（<span style="color: #ff0000;">注：一个类的虚函数表是静态的，也就是说对这个类的每个实例，他的虚函数表的是固定的，不会为每个实例生成一个相应的虚函数表。</span>），所以，当我们用父类的指针来操作一个子类的时候，这张虚函数表就显得由为重要了，它就像一个地图一样，指明了实际所应该调用的函数。 </p>
+<p>这里我们着重看一下这张虚函数表。在C++的标准规格说明书中说到，编译器必需要保证虚函数表的指针存在于对象实例中最前面的位置（这是为了保证正确取到虚函数的偏移量）。 这意味着我们<span style="color: #ff0000;">通过对象实例的地址得到这张虚函数表</span>，然后就可以遍历其中函数指针，并调用相应的函数。 </p>
+<p>&nbsp;</p>
+<p>假设我们有这样的一个类： </p>
+<p>class Base { </p>
+<p>public: </p>
+<p>virtual void f() { cout &lt;&lt; "Base::f" &lt;&lt; endl; } </p>
+<p>virtual void g() { cout &lt;&lt; "Base::g" &lt;&lt; endl; } </p>
+<p>virtual void h() { cout &lt;&lt; "Base::h" &lt;&lt; endl; } </p>
+<p>}; </p>
+<p>按照上面的说法，我们可以通过Base的实例来得到Base的虚函数表。 下面是实际例程： </p>
+<p>{</p>
+<p>...</p>
+<p><span style="color: #ff0000;">typedef void(*Fun)(void);</span> </p>
+<p>Base b; </p>
+<p>Fun pFun = NULL; </p>
+<p>cout &lt;&lt; "虚函数表地址：" &lt;&lt; (int*)(&amp;b) &lt;&lt; endl; </p>
+<p>cout &lt;&lt; "虚函数表 &mdash; 第一个函数地址：" &lt;&lt; (int*)*(int*)(&amp;b) &lt;&lt; endl; </p>
+<p>// Invoke the first virtual function </p>
+<p>pFun = (Fun)*((int*)*(int*)(&amp;b)); </p>
+<p>pFun(); </p>
+<p>...</p>
+<p>}</p>
+<p>实际运行经果如下(Windows XP+VS2003, Linux 2.6.22 + GCC 4.1.3) ：</p>
+<p><span style="color: #ff0000;">虚函数表地址：0012FED4 </span></p>
+<p><span style="color: #ff0000;">虚函数表 &mdash; 第一个函数地址：0044F148 </span></p>
+<p><span style="color: #ff0000;">Base::f </span></p>
+<p>&nbsp;</p>
+<p>通过这个示例，我们可以看到，我们可以通过强行把&amp;b转成int *，取得虚函数表的地址，然后，再次取址就可以得到第一个虚函数的地址了，也就是Base::f()，这在上面的程序中得到了验证（把int* 强制转成了函数指针）。通过这个示例，我们就可以知道如果要调用Base::g()和Base::h()，其代码如下： </p>
+<p>(Fun)*((int*)*(int*)(&amp;b)+0); // Base::f() </p>
+<p>(Fun)*((int*)*(int*)(&amp;b)+1); // Base::g() </p>
+<p>(Fun)*((int*)*(int*)(&amp;b)+2); // Base::h() </p>
+<p>&nbsp;</p>
+<p>画个图解释一下。如下所示： </p>
+<p><img src="../../images/program/cpp/function_table/o_vtable1.jpg" border="0" alt="" /> </p>
+<p>注意：在上面这个图中，我在虚函数表的最后多加了一个结点，这是虚函数表的结束结点，就像字符串的结束符&ldquo;/0&rdquo;一样，其标志了虚函数表的结束。<span style="color: #ff0000;">这个结束标志的值在不同的编译器下是不同的。</span></p>
+<p>在WinXP+VS2003下，这个值是NULL。</p>
+<p>而在Ubuntu 7.10 + Linux 2.6.22 + GCC 4.1.3下，这个值是如果1，表示还有下一个虚函数表，如果值是0，表示是最后一个虚函数表。 </p>
+<p>&nbsp;</p>
+<p>下面，我将分别说明&ldquo;无覆盖&rdquo;和&ldquo;有覆盖&rdquo;时的<span style="color: #ff0000;">子类虚函数表</span>的样子。没有覆盖父类的虚函数是毫无意义的。我之所以要讲述没有覆盖的情况，主要目的是为了给一个对比。在比较之下，我们可以更加清楚地知道其内部的具体实现。 </p>
+<h3>一般继承（无虚函数覆盖）</h3>
+<p>下面，再让我们来看看继承时的虚函数表是什么样的。假设有如下所示的一个继承关系： </p>
+<p><img src="../../images/program/cpp/function_table/o_Drawing3.jpg" border="0" alt="" /> </p>
+<p>请注意，在这个继承关系中，子类没有重写任何父类的函数。那么，在<span style="color: #ff0000;">派生类的实例的虚函数表</span>如下所示： </p>
+<p>对于实例：Derive d; 的虚函数表如下： （overload（重载） 和 override（重写），重载就是所谓的名同而签名不同，重写就是对子类对虚函数的重新实现。）</p>
+<p><img src="../../images/program/cpp/function_table/o_vtable2.JPG" border="0" alt="" /> </p>
+<p>我们可以看到下面几点： </p>
+<p>1）虚函数按照其声明顺序放于表中。 </p>
+<p>2）父类的虚函数在子类的虚函数前面。 </p>
+<p>&nbsp;</p>
+<h3>一般继承（有虚函数覆盖）</h3>
+<p>覆盖父类的虚函数是很显然的事情，不然，虚函数就变得毫无意义。下面，我们来看一下，如果子类中有虚函数重载了父类的虚函数，会是一个什么样子？假设，我们有下面这样的一个继承关系。 </p>
+<p><img src="../../images/program/cpp/function_table/o_Drawing4.jpg" border="0" alt="" /> </p>
+<p>为了让大家看到被继承过后的效果，在这个类的设计中，我只覆盖了父类的一个函数：f()。那么，对于派生类的实例的虚函数表会是下面的样子： </p>
+<p><img src="../../images/program/cpp/function_table/o_vtable3.JPG" border="0" alt="" /> </p>
+<p>我们从表中可以看到下面几点， </p>
+<p>1）覆盖的f()函数被放到了子类虚函数表中原来父类虚函数的位置。 </p>
+<p>2）没有被覆盖的函数依旧。 </p>
+<p>这样，我们就可以看到对于下面这样的程序， </p>
+<p>Base *b = new Derive(); </p>
+<p>b-&gt;f(); </p>
+<p>由b所指的内存中的虚函数表（<span style="color: #ff0000;">子类的虚函数表</span>）的f()的位置已经被Derive::f()函数地址所取代，于是在实际调用发生时，是Derive::f()被调用了。这就实现了多态。 </p>
+<h3>多重继承（无虚函数覆盖）</h3>
+<p>下面，再让我们来看看多重继承中的情况，假设有下面这样一个类的继承关系。注意：子类并没有覆盖父类的函数。 </p>
+<p><img src="../../images/program/cpp/function_table/o_Drawing1.jpg" border="0" alt="" /> </p>
+<p>对于子类实例中的虚函数表，是下面这个样子： </p>
+<p><img src="../../images/program/cpp/function_table/o_vtable4.JPG" border="0" alt="" /> </p>
+<p>我们可以看到： </p>
+<p>1） 每个父类都有自己的虚表。 </p>
+<p>2） 子类的成员函数被放到了第一个父类的表中。（所谓的第一个父类是按照声明顺序来判断的） </p>
+<p>这样做就是为了解决不同的父类类型的指针指向同一个子类实例，而能够调用到实际的函数。 </p>
+<h3>多重继承（有虚函数覆盖）</h3>
+<p>下面我们再来看看，如果发生虚函数覆盖的情况。 </p>
+<p><span style="color: #ff0000;">下图中，我们在子类中覆盖了父类的f()函数。 </span></p>
+<p><img src="../../images/program/cpp/function_table/o_Drawing2.jpg" border="0" alt="" /> </p>
+<p>下面是对于子类实例中的虚函数表的图： </p>
+<p><img src="../../images/program/cpp/function_table/o_vtable5.jpg" border="0" alt="" /> </p>
+<p>我们可以看见，<span style="color: #ff0000;">三个父类虚函数表中的f()的位置被替换成了子类的函数指针</span>。这样，<span style="color: #ff0000;">我们就可以用任一个父类指针来指向子类，并调用子类的f()了。</span>如： </p>
+<p>Derive d; </p>
+<p>Base1 *b1 = &amp;d; </p>
+<p>Base2 *b2 = &amp;d; </p>
+<p>Base3 *b3 = &amp;d; </p>
+<p>b1-&gt;f(); //Derive::f() </p>
+<p>b2-&gt;f(); //Derive::f() </p>
+<p>b3-&gt;f(); //Derive::f() </p>
+<p>b1-&gt;g(); //Base1::g() </p>
+<p>b2-&gt;g(); //Base2::g() </p>
+<p>b3-&gt;g(); //Base3::g() </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<h3>安全性</h3>
+<p>每次写C++的文章，总免不了要批判一下C++。这篇文章也不例外。通过上面的讲述，相信我们对虚函数表有一个比较细致的了解了。水可载舟，亦可覆舟。下面，让我们来看看我们可以用虚函数表来干点什么坏事吧。 </p>
+<p>&nbsp;</p>
+<p><span style="color: #ff0000;"><strong>一、尝试：通过父类型的指针（指向子类对象）访问子类自己的虚函数</strong> </span></p>
+<p>我们知道，子类没有重载父类的虚函数是一件毫无意义的事情。因为多态也是要基于函数重载的。虽然在上面的图中我们可以看到子类的虚表中有Derive自己的虚函数，<span style="color: #ff0000;">但我们根本不可能使用基类的指针来调用子类的自有虚函数</span>： </p>
+<p>Base1 *b1 = new Derive(); </p>
+<p>b1-&gt;f1(); //编译出错 </p>
+<p>任何妄图使用父类指针想调用子类中的<strong>未覆盖父类的成员函数</strong>的行为都会被编译器视为非法，所以，这样的程序根本无法编译通过。</p>
+<p><span style="color: #ff0000;">但在运行时，我们可以通过指针的方式访问虚函数表来达到违反C++语义的行为。</span></p>
+<p>&nbsp;</p>
+<p><strong><span style="color: #ff0000;">二、尝试：<span style="color: #ff0000;">通过父类型的指针（指向子类对象）</span>访问父类的non-public</span></strong><span style="color: #ff0000;"><strong><span style="color: #ff0000;">虚函数</span></strong> </span></p>
+<p>另外，如果父类的虚函数是private或是protected的，但这些非public的虚函数同样会存在于子类虚函数表中，所以我们同样可以使用访问虚函数表的方式来访问这些non-public的虚函数，这是很容易做到的。 </p>
+<p>如： </p>
+<p>class Base { </p>
+<p>private: </p>
+<p>virtual void f() { cout &lt;&lt; "Base::f" &lt;&lt; endl; } </p>
+<p>}; </p>
+<p>&nbsp;</p>
+<p>class Derive : public Base{ </p>
+<p>}; </p>
+<p>typedef void(*Fun)(void); </p>
+<p>void main() { </p>
+<p>Derive d; </p>
+<p>Fun pFun = (Fun)*((int*)*(int*)(&amp;d)+0); </p>
+<p>pFun(); </p>
+<p>} </p>
+<h3>结束语</h3>
+<p>C++这门语言是一门Magic的语言，对于程序员来说，我们似乎永远摸不清楚这门语言背着我们在干了什么。需要熟悉这门语言，我们就必需要了解C++里面的那些东西，需要去了解C++中那些危险的东西。不然，这是一种搬起石头砸自己脚的编程语言。</p>
+
+				</article>
+			</div>
+		</div>
+	    <footer>
+			<div class="owner">
+				<p><a href="https://github.com/firstfhy" class="avatar"><img src="https://avatars0.githubusercontent.com/u/10542465?v=3&amp;s=60" width="48" height="48"></a>View <a href="https://github.com/firstfhy">firstfhy</a> on <a href="https://www.github.com">GitHub</a></p>
+			</div>
+			<div class="creds">
+			  	<small>This page generated using <a href="http://pages.github.com/">GitHub Pages</a><br>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
+			</div>
+	    </footer>
+	</div>
+</body>
+</html>

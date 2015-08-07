@@ -1,5 +1,6 @@
 cpp/cpp_dll.html template.html content/program/cpp/cpp_dll.txt [title]-标准C/C++的DLL编写
 cpp/vc_link_vb.html template.html content/program/cpp/vc_link_vb.txt [title]-VB连VC
+cpp/function_table.html template.html content/program/cpp/function_table.txt [title]-VB连VC
 
 nginx/nginx_reload.html template.html content/program/nginx/nginx_reload.txt [title]-nginx的平滑重启
 
@@ -30,3 +31,4 @@ other/track_expression.html template.html content/program/other/track_expression
 other/2-5dtitle.html template.html content/program/other/2-5dtitle.txt [title]-全45度角2.5D游戏如何计算该被显示出的tile地形图片
 other/net_session.html template.html content/program/other/net_session.txt [title]-Session的生命周期
 other/protobuf_01.html template.html content/program/other/protobuf_01.txt [title]-Protobuf语言指南
+other/singleton.html template.html content/program/other/singleton.txt [title]-设计模式_小单例有大秘密

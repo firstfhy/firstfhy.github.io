@@ -14,3 +14,4 @@ system/windows_subst.html template.html content/windows_subst.txt [title]-window
 protobuf/protobuf_01.html template.html content/protobuf_01.txt [title]-Protobuf语言指南
 
 other/track_expression.html template.html content/track_expression.txt [title]-利用堆栈解析算术表达式
+other/2-5dtitle.html template.html content/2-5dtitle.txt [title]-全45度角2.5D游戏如何计算该被显示出的tile地形图片

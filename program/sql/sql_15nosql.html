@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>15个nosql数据库</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	
+	<link rel="stylesheet" href="../../stylesheets/stylesheet.css" media="screen">
+	<link rel="stylesheet" href="../../stylesheets/pygment_trac.css"/>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script type="text/javascript" src="../../javascripts/script.js"></script>
+	
+	<meta name="description" content="firstfhy">
+	
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+<body>
+	<div class="wrapper">
+		<div id="container">
+		    <div id="main" role="main">
+		    	<div class="download-bar">
+			    	<div class="inner">
+			          	<a class="code">SQL</a>
+			        </div>
+		        	<span class="blc"></span><span class="trc"></span>
+		        </div>
+		        <article class="markdown-body">
+					<h3>
+						15个nosql数据库
+				   	</h3>
+<h1 STYLE="margin: 0px; padding: 5px; color: white; background-color: rgb(165, 165, 165); font-family: Verdana, Arial, Helvetica, sans-serif;">
+1、MongoDB</H1>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">介绍</STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+MongoDB是一个基于分布式文件存储的数据库。由C++语言编写。主要解决的是海量数据的访问效率问题，为WEB应用提供可扩展的高性能数据存储解决方案。当数据量达到50GB以上的时候，MongoDB的数据库访问速度是MySQL的10倍以上。MongoDB的并发读写效率不是特别出色，根据官方提供的性能测试表明，大约每秒可以处理0.5万~1.5万次读写请求。MongoDB还自带了一个出色的分布式文件系统GridFS，可以支持海量的数据存储。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+MongoDB也有一个Ruby的项目MongoMapper，是模仿Merb的DataMapper编写的MongoDB接口，使用起来非常简单，几乎和DataMapper一模一样，功能非常强大。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+MongoDB是一个介于关系数据库和非关系数据库之间的产品，是非关系数据库当中功能最丰富，最像关系数据库的。他支持的数据结构非常松散，是类似json的bjson格式，因此可以存储比较复杂的数据类型。Mongo最大的特点是他支持的查询语言非常强大，其语法有点类似于面向对象的查询语言，几乎可以实现类似关系数据库单表查询的绝大部分功能，而且还支持对数据建立索引。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+所谓“面向集合”（Collenction-Orented），意思是数据被分组存储在数据集中，被称为一个集合（Collenction)。每个
+集合在数据库中都有一个唯一的标识名，并且可以包含无限数目的文档。集合的概念类似关系型数据库（RDBMS）里的表（table），不同的是它不需要定
+义任何模式（schema)。<br STYLE="margin: 0px; padding: 0px;" />
+模式自由（schema-free)，意味着对于存储在mongodb数据库中的文件，我们不需要知道它的任何结构定义。如果需要的话，你完全可以把不同结构的文件存储在同一个数据库里。<br STYLE="margin: 0px; padding: 0px;" />
+
+存储在集合中的文档，被存储为键-值对的形式。键用于唯一标识一个文档，为字符串类型，而值则可以是各中复杂的文件类型。我们称这种存储形式为BSON（Binary
+Serialized dOcument Format）。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+MongoDB服务端可运行在Linux、Windows或OS
+X平台，支持32位和64位应用，默认端口为27017。推荐运行在64位平台，因为MongoDB在32位模式运行时支持的最大文件尺寸为2GB。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+MongoDB把数据存储在文件中（默认路径为：/data/db），为提高效率使用内存映射文件进行管理。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">特性<br STYLE="margin: 0px; padding: 0px;" /></STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+它的特点是高性能、易部署、易使用，存储数据非常方便。主要功能特性有：</P>
+<ol STYLE="margin: 0px; padding: 0px 0px 0px 50px; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 13px; line-height: 19px; background-color: rgb(254, 254, 242);">
+<li STYLE="margin: 0px 0px 1em; padding: 0px; list-style: decimal;">
+面向集合存储，易存储对象类型的数据。</LI>
+<li STYLE="margin: 0px 0px 1em; padding: 0px; list-style: decimal;">
+模式自由。</LI>
+<li STYLE="margin: 0px 0px 1em; padding: 0px; list-style: decimal;">支持动态查询。
+　　</LI>
+<li STYLE="margin: 0px 0px 1em; padding: 0px; list-style: decimal;">
+支持完全索引，包含内部对象。 　　</LI>
+<li STYLE="margin: 0px 0px 1em; padding: 0px; list-style: decimal;">支持查询。
+　　</LI>
+<li STYLE="margin: 0px 0px 1em; padding: 0px; list-style: decimal;">
+支持复制和故障恢复。 　　</LI>
+<li STYLE="margin: 0px 0px 1em; padding: 0px; list-style: decimal;">
+使用高效的二进制数据存储，包括大型对象（如视频等）。 　　</LI>
+<li STYLE="margin: 0px 0px 1em; padding: 0px; list-style: decimal;">
+自动处理碎片，以支持云计算层次的扩展性。 　　</LI>
+<li STYLE="margin: 0px 0px 1em; padding: 0px; list-style: decimal;">
+支持RUBY，PYTHON，JAVA，C++，PHP,C#等多种语言。 　　</LI>
+<li STYLE="margin: 0px 0px 1em; padding: 0px; list-style: decimal;">
+文件存储格式为BSON（一种JSON的扩展）。 　　</LI>
+<li STYLE="margin: 0px 0px 1em; padding: 0px; list-style: decimal;">
+可通过网络访问。</LI>
+</OL>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">官方网站<br STYLE="margin: 0px; padding: 0px;" /></STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<a HREF="http://www.mongodb.org/">http://www.mongodb.org/</A></P>
+<h1 STYLE="margin: 0px; padding: 5px; color: white; background-color: rgb(165, 165, 165); font-family: Verdana, Arial, Helvetica, sans-serif;">
+2、CouchDB</H1>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">介绍</STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+Apache CouchDB 是一个面向文档的数据库管理系统。它提供以 JSON 作为数据格式的 REST
+接口来对其进行操作，并可以通过视图来操纵文档的组织和呈现。 CouchDB 是 Apache 基金会的顶级开源项目。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+CouchDB是用Erlang开发的面向文档的数据库系统，其数据存储方式类似Lucene的Index文件格式。CouchDB最大的意义在于它是一个面向Web应用的新一代存储系统，事实上，CouchDB的口号就是：下一代的Web应用存储系统。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">特性<br STYLE="margin: 0px; padding: 0px;" /></STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+主要功能特性有：</P>
+<ol STYLE="margin: 0px; padding: 0px 0px 0px 50px; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 13px; line-height: 19px; background-color: rgb(254, 254, 242);">
+<li STYLE="margin: 0px 0px 1em; padding: 0px; list-style: decimal;">
+CouchDB是分布式的数据库，他可以把存储系统分布到n台物理的节点上面，并且很好的协调和同步节点之间的数据读写一致性。这当然也得以于Erlang无与伦比的并发特性才能做到。对于基于web的大规模应用文档应用，然的分布式可以让它不必像传统的关系数据库那样分库拆表，在应用代码层进行大量的改动。</LI>
+<li STYLE="margin: 0px 0px 1em; padding: 0px; list-style: decimal;">
+CouchDB是面向文档的数据库，存储半结构化的数据，比较类似lucene的index结构，特别适合存储文档，因此很适合CMS，电话本，地址本等应用，在这些应用场合，文档数据库要比关系数据库更加方便，性能更好。
+　</LI>
+<li STYLE="margin: 0px 0px 1em; padding: 0px; list-style: decimal;">
+CouchDB支持REST
+API，可以让用户使用JavaScript来操作CouchDB数据库，也可以用JavaScript编写查询语句，我们可以想像一下，用AJAX技术结合CouchDB开发出来的CMS系统会是多么的简单和方便。其实CouchDB只是Erlang应用的冰山一角，在最近几年，基于Erlang的应用也得到的蓬勃的发展，特别是在基于web的大规模，分布式应用领域，几乎都是Erlang的优势项目。</LI>
+</OL>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">官方网站</STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<a HREF="http://couchdb.apache.org/">http://couchdb.apache.org/</A></P>
+<h1 STYLE="margin: 0px; padding: 5px; color: white; background-color: rgb(165, 165, 165); font-family: Verdana, Arial, Helvetica, sans-serif;">
+3、Hbase</H1>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">介绍</STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+HBase是一个分布式的、面向列的开源数据库，该技术来源于Chang et
+al所撰写的Google论文“Bigtable：一个结构化数据的分布式存储系统”。就像Bigtable利用了Google文件系统（File
+System）所提供的分布式数据存储一样，HBase在Hadoop之上提供了类似于Bigtable的能力。HBase是Apache的Hadoop项目的子项目。HBase不同于一般的关系数据库,它是一个适合于非结构化数据存储的数据库.另一个不同的是HBase基于列的而不是基于行的模式。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+HBase &ndash; Hadoop Database，是一个高可靠性、高性能、面向列、可伸缩的分布式存储系统，利用HBase技术可在廉价PC
+Server上搭建起大规模结构化存储集群。 　　HBase是Google Bigtable的开源实现，类似Google
+Bigtable利用GFS作为其文件存储系统，HBase利用Hadoop
+HDFS作为其文件存储系统；Google运行MapReduce来处理Bigtable中的海量数据，HBase同样利用Hadoop
+MapReduce来处理HBase中的海量数据；Google Bigtable利用
+Chubby作为协同服务，HBase利用Zookeeper作为对应。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<img ALT="" STYLE="margin: 0px; padding: 0px;"  TITLE="15个nosql数据库" /></P>
+<h1 STYLE="margin: 0px; padding: 5px; color: white; background-color: rgb(165, 165, 165); font-family: Verdana, Arial, Helvetica, sans-serif;">
+<span STYLE="margin: 0px; padding: 0px; font-size: 16px;">HBase访问接口</SPAN></H1>
+<ol STYLE="margin: 0px; padding: 0px 0px 0px 50px; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 13px; line-height: 19px; background-color: rgb(254, 254, 242);">
+<li STYLE="margin: 0px 0px 1em; padding: 0px; list-style: decimal;">Native
+Java API，最常规和高效的访问方式，适合Hadoop MapReduce Job并行批处理HBase表数据</LI>
+<li STYLE="margin: 0px 0px 1em; padding: 0px; list-style: decimal;">HBase
+Shell，HBase的命令行工具，最简单的接口，适合HBase管理使用</LI>
+<li STYLE="margin: 0px 0px 1em; padding: 0px; list-style: decimal;">Thrift
+Gateway，利用Thrift序列化技术，支持C++，PHP，Python等多种语言，适合其他异构系统在线访问HBase表数据</LI>
+<li STYLE="margin: 0px 0px 1em; padding: 0px; list-style: decimal;">REST
+Gateway，支持REST 风格的Http API访问HBase, 解除了语言限制</LI>
+<li STYLE="margin: 0px 0px 1em; padding: 0px; list-style: decimal;">
+Pig，可以使用Pig Latin流式编程语言来操作HBase中的数据，和Hive类似，本质最终也是编译成MapReduce
+Job来处理HBase表数据，适合做数据统计</LI>
+<li STYLE="margin: 0px 0px 1em; padding: 0px; list-style: decimal;">
+Hive，当前Hive的Release版本尚没有加入对HBase的支持，但在下一个版本Hive
+0.7.0中将会支持HBase，可以使用类似SQL语言来访问HBase</LI>
+</OL>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">特性<br STYLE="margin: 0px; padding: 0px;" /></STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+主要功能特性有：</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+支持数十亿行X上百万列</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+采用分布式架构 Map/reduce</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+对实时查询进行优化</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+高性能 Thrift网关</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+通过在server端扫描及过滤实现对查询操作预判</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+支持 XML, Protobuf, 和binary的HTTP</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+基于 Jruby（ JIRB）的shell</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+对配置改变和较小的升级都会重新回滚</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+不会出现单点故障</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+堪比MySQL的随机访问性能</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;"><span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;"><span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">官方网站</STRONG></SPAN></STRONG></SPAN><br STYLE="margin: 0px; padding: 0px;" />
+</STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<a HREF="http://hbase.apache.org/">http://hbase.apache.org/</A></P>
+<h1 STYLE="margin: 0px; padding: 5px; color: white; background-color: rgb(165, 165, 165); font-family: Verdana, Arial, Helvetica, sans-serif;">
+4、cassandra</H1>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">介绍</STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+Cassandra是一个混合型的非关系的数据库，类似于Google的BigTable。其主要功能比Dynomite（分布式的Key-Value存储系统）更丰富，但支持度却不如文档存储MongoDB（介于关系数据库和非关系数据库之间的开源产品，是非关系数据库当中功能最丰富，最像关系数据库的。支持的数据结构非常松散，是类似json的bjson格式，因此可以存储比较复杂的数据类型。）Cassandra最初由Facebook开发，后转变成了开源项目。它是一个网络社交云计算方面理想的数据库。以Amazon专有的完全分布式的Dynamo为基础，结合了Google
+BigTable基于列族（Column Family）的数据模型。P2P去中心化的存储。很多方面都可以称之为Dynamo
+2.0。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">特性<br STYLE="margin: 0px; padding: 0px;" /></STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+和其他数据库比较，有几个突出特点：</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+模式灵活
+：使用Cassandra，像文档存储，你不必提前解决记录中的字段。你可以在系统运行时随意的添加或移除字段。这是一个惊人的效率提升，特别是在大型部
+署上。&nbsp;<wbr><br STYLE="margin: 0px; padding: 0px;" />
+真正的可扩展性
+：Cassandra是纯粹意义上的水平扩展。为给集群添加更多容量，可以指向另一台电脑。你不必重启任何进程，改变应用查询，或手动迁移任何数据。&nbsp;<wbr><br STYLE="margin: 0px; padding: 0px;" />
+
+多数据中心识别 ：你可以调整你的节点布局来避免某一个数据中心起火，一个备用的数据中心将至少有每条记录的完全复制。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+一些使Cassandra提高竞争力的其他功能：</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+范围查询 ：如果你不喜欢全部的键值查询，则可以设置键的范围来查询。&nbsp;<wbr><br STYLE="margin: 0px; padding: 0px;" />
+列表数据结构
+：在混合模式可以将超级列添加到5维。对于每个用户的索引，这是非常方便的。&nbsp;<wbr><br STYLE="margin: 0px; padding: 0px;" />
+分布式写操作 ：有可以在任何地方任何时间集中读或写任何数据。并且不会有任何单点失败。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">官方网站</STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<a HREF="http://cassandra.apache.org/">http://cassandra.apache.org/</A></P>
+<h1 STYLE="margin: 0px; padding: 5px; color: white; background-color: rgb(165, 165, 165); font-family: Verdana, Arial, Helvetica, sans-serif;">
+5、Hypertable<br STYLE="margin: 0px; padding: 0px;" /></H1>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">介绍</STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+Hypertable是一个开源、高性能、可伸缩的数据库，它采用与Google的Bigtable相似的模型。在过去数年中，Google为在
+PC集群 上运行的可伸缩计算基础设施设计建造了三个关键部分。第一个关键的基础设施是Google File
+System（GFS），这是一个高可用的文件系统，提供了一个全局的命名空间。它通过跨机器（和跨机架）的文件数据复制来达到高可用性，并因此免受传统
+文件存储系统无法避免的许多失败的影响，比如电源、内存和网络端口等失败。第二个基础设施是名为Map-Reduce的计算框架，它与GFS紧密协作，帮
+助处理收集到的海量数据。第三个基础设施是Bigtable，它是传统数据库的替代。Bigtable让你可以通过一些主键来组织海量数据，并实现高效的
+查询。Hypertable是Bigtable的一个开源实现，并且根据我们的想法进行了一些改进。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">特性<br STYLE="margin: 0px; padding: 0px;" /></STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+主要功能特点：</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+负载均衡的处理</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+版本控制和一致性</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+可靠性</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+分布为多个节点</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">官方网站</STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<a HREF="http://hypertable.org/">http://hypertable.org/</A></P>
+<h1 STYLE="margin: 0px; padding: 5px; color: white; background-color: rgb(165, 165, 165); font-family: Verdana, Arial, Helvetica, sans-serif;">
+6、Redis<br STYLE="margin: 0px; padding: 0px;" /></H1>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">介绍</STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+redis是一个key-value存储系统。和Memcached类似，它支持存储的value类型相对更多，包括string(字符串)、list(链表)、set(集合)和zset(有序集合)。这些数据类型都支持push/pop、add/remove及取交集并集和差集及更丰富的操作，而且这些操作都是原子性的。在此基础上，redis支持各种不同方式的排序。与memcached一样，为了保证效率，数据都是缓存在内存中。区别的是redis会周期性的把更新的数据写入磁盘或者把修改操作写入追加的记录文件，并且在此基础上实现了master-slave(主从)同步。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+性能测试结果：</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+SET操作每秒钟 110000 次，GET操作每秒钟 81000 次，服务器配置如下：</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<strong STYLE="margin: 0px; padding: 0px;">Linux
+2.6</STRONG>,&nbsp;<wbr><strong STYLE="margin: 0px; padding: 0px;">Xeon X3320 2.5Ghz</STRONG>.</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+stackoverflow 网站使用 Redis 做为缓存服务器。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">特点<br STYLE="margin: 0px; padding: 0px;" /></STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+主要功能特点：</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+安全性</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+主从复制</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+运行异常快</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+支持 sets（同时也支持 union/diff/inter）</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+支持列表（同时也支持队列；阻塞式 pop操作）</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+支持哈希表（带有多个域的对象）</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+支持排序 sets（高得分表，适用于范围查询）</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+Redis支持事务</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+支持将数据设置成过期数据（类似快速缓冲区设计）</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+Pub/Sub允许用户实现消息机制</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">官方网站</STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<a HREF="http://redis.io/">http://redis.io/</A></P>
+<h1 STYLE="margin: 0px; padding: 5px; color: white; background-color: rgb(165, 165, 165); font-family: Verdana, Arial, Helvetica, sans-serif;">
+7、Tokyo Cabinet/Tokyo Tyant<br STYLE="margin: 0px; padding: 0px;" /></H1>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">介绍</STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+Tokyo Cabinet（TC）和Tokyo Tyrant（TT）的开发者是日本人Mikio
+Hirabayashi，主要用于日本最大的SNS网站mixi.jp。TC出现的时间最早，现在已经是一个非常成熟的项目，也是Key-Value数据库领域最大的热点，现在广泛应用于网站。TC是一个高性能的存储引擎，而TT提供了多线程高并发服务器，性能也非常出色，每秒可以处理4万~5万次读写操作。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+TC除了支持Key-Value存储之外，还支持Hashtable数据类型，因此很像一个简单的数据库表，并且还支持基于Column的条件查询、分页查询和排序功能，基本上相当于支持单表的基础查询功能，所以可以简单地替代关系数据库的很多操作，这也是TC受到大家欢迎的主要原因之一。有一个Ruby项目miyazakiresistance将TT的Hashtable的操作封装成和ActiveRecord一样的操作，用起来非常高效。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">特性<br STYLE="margin: 0px; padding: 0px;" /></STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+TC/TT在Mixi的实际应用当中，存储了2000万条以上的数据，同时支撑了上万个并发连接，是一个久经考验的项目。TC在保证了极高的并发读写性能的同时，还具有可靠的数据持久化机制，同时还支持类似关系数据库表结构的Hashtable以及简单的条件、分页和排序操作，是一个很优越的NoSQL数据库。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+TC的主要缺点是，在数据量达到上亿级别以后，并发写数据性能会大幅度下降，开发人员发现在TC里面插入1.6亿条2KB~20KB数据的时候，写入性能开始急剧下降。即当数据量达到上亿条的时候，TC性能便开始大幅度下降，从TC作者自己提供的Mixi数据来看，至少上千万条数据量的时候还没有遇到这么明显的写入性能瓶颈。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">官方网站</STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<a HREF="http://fallabs.com/tokyocabinet/">http://fallabs.com/tokyocabinet/</A></P>
+<h1 STYLE="margin: 0px; padding: 5px; color: white; background-color: rgb(165, 165, 165); font-family: Verdana, Arial, Helvetica, sans-serif;">
+8、Flare<br STYLE="margin: 0px; padding: 0px;" /></H1>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">介绍</STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+TC是日本第一大SNS网站mixi.jp开发的，而Flare是日本第二大SNS网站green.jp开发的。简单地说，Flare就是给TC添加了scale（可扩展）功能。它替换了TT部分，自己另外给TC写了网络服务器。Flare的主要特点就是支持scale能力，它在网络服务端之前添加了一个Node
+Server，用来管理后端的多个服务器节点，因此可以动态添加数据库服务节点、删除服务器节点，也支持Failover。如果你的使用场景必须让TC可以scale，那么可以考虑Flare。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+flare唯一的缺点就是他只支持memcached协议，因此当你使用flare的时候，就不能使用TC的table数据结构了，只能使用TC的key-value数据结构存储。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">特性<br STYLE="margin: 0px; padding: 0px;" /></STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+没找到相关的介绍。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">官方网站</STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<a HREF="http://flare.prefuse.org/">http://flare.prefuse.org/</A></P>
+<h1 STYLE="margin: 0px; padding: 5px; color: white; background-color: rgb(165, 165, 165); font-family: Verdana, Arial, Helvetica, sans-serif;">
+9、Berkeley DB<br STYLE="margin: 0px; padding: 0px;" /></H1>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">介绍</STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+Berkeley DB
+(DB)是一个高性能的，嵌入数据库编程库，和C语言，C++，Java，Perl，Python，PHP，Tcl以及其他很多语言都有绑定。Berkeley
+DB可以保存任意类型的键/值对，而且可以为一个键保存多个数据。Berkeley
+DB可以支持数千的并发线程同时操作数据库，支持最大256TB的数据，广泛&nbsp;<wbr>&nbsp;<wbr>
+用于各种操作系统包括大多数Unix类操作系统和Windows操作系统以及实时操作系统。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+Berkeley
+DB最初开发的目的是以新的HASH访问算法来代替旧的hsearch函数和大量的dbm实现（如AT&amp;T的dbm，Berkeley的
+ndbm，GNU项目的gdbm），Berkeley
+DB的第一个发行版在1991年出现，当时还包含了B+树数据访问算法。在1992年，BSD
+UNIX第4.4发行版中包含了Berkeley DB1.85版。基本上认为这是Berkeley
+DB的第一个正式版。在1996年中期，Sleepycat软件公司成立，提供对Berkeley
+DB的商业支持。在这以后，Berkeley
+DB得到了广泛的应用，成为一款独树一帜的嵌入式数据库系统。2006年Sleepycat公司被Oracle 公司收购，Berkeley
+DB成为Oracle数据库家族的一员，Sleepycat原有开发者继续在Oracle开发Berkeley
+DB，Oracle继续原来的授权方式并且加大了对Berkeley DB的开发力度，继续提升了Berkeley
+DB在软件行业的声誉。Berkeley DB的当前最新发行版本是4.7.25。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">特性<br STYLE="margin: 0px; padding: 0px;" /></STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+主要特点：</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+访问速度快</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+省硬盘空间</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">官方网站</STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<a HREF="http://www.oracle.com/us/products/database/overview/index.html?origref=http://www.oschina.net/p/berkeley+db">http://www.oracle.com/us/products/database/overview/index.html?origref=http://www.oschina.net/p/berkeley+db</A></P>
+<h1 STYLE="margin: 0px; padding: 5px; color: white; background-color: rgb(165, 165, 165); font-family: Verdana, Arial, Helvetica, sans-serif;">
+<span STYLE="margin: 0px; padding: 0px;">10、memcachedb</SPAN><br STYLE="margin: 0px; padding: 0px;" /></H1>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">介绍</STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+MemcacheDB是一个分布式、key-value形式的持久存储系统。它不是一个缓存组件，而是一个基于对象存取的、可靠的、快速的持久存储引擎。协议跟memcache一致（不完整），所以很多memcached客户端都可以跟它连接。MemcacheDB采用Berkeley
+DB作为持久存储组件，故很多Berkeley DB的特性的他都支持。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">特性<br STYLE="margin: 0px; padding: 0px;" /></STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+MemcacheDB是一个分布式、key-value形式的持久存储系统。它不是一个缓存组件，而是一个基于对象存取的、可靠的、快速的持久存储引擎。
+协议跟memcache一致（不完整），所以很多memcached客户端都可以跟它连接。MemcacheDB采用Berkeley
+DB作为持久存储组件，故很多Berkeley DB的特性的他都支持。
+　　我们是站在巨人的肩膀上的。MemcacheDB的前端缓存是Memcached 　　前端：memcached的网络层
+　　后端：BerkeleyDB存储 　　</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+写速度：从本地服务器通过memcache客户端（libmemcache）set2亿条16字节长的key，10字节长的Value的记录，耗时
+16572秒，平均速度12000条记录/秒。 　　</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+读速度：从本地服务器通过memcache客户端（libmemcache）get100万条16字节长的key，10字节长的Value的记录，耗
+时103秒，平均速度10000条记录/秒。 　　·支持的memcache命令</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">官方网站</STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<a HREF="http://memcachedb.org/">http://memcachedb.org/</A><br STYLE="margin: 0px; padding: 0px;" />
+</P>
+<h1 STYLE="margin: 0px; padding: 5px; color: white; background-color: rgb(165, 165, 165); font-family: Verdana, Arial, Helvetica, sans-serif;">
+<span STYLE="margin: 0px; padding: 0px;">11、</SPAN>Memlink<br STYLE="margin: 0px; padding: 0px;" /></H1>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">介绍</STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+Memlink
+是天涯社区开发的一个高性能、持久化、分布式的Key-list/queue数据引擎。正如名称中的memlink所示，所有数据都建构在内存中，保证了
+系统的高性能
+(大约是redis几倍)，同时使用了redo-log技术保证数据的持久化。Memlink还支持主从复制、读写分离、List过滤操作等功能。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+与Memcached不同的是，它的value是一个list/queue。并且提供了诸如持久化，分布式的功能。听起来有点像Redis，但它号称比Redis更好，在很多Redis做得还不好的地方进行了改进和完善。提供的客户端开发包包括&nbsp;<wbr><span STYLE="margin: 0px; padding: 0px; line-height: normal; font-family: arial, sans-serif;">c,python,php,java
+四种语言。</SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">特性<br STYLE="margin: 0px; padding: 0px;" /></STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+特点：</P>
+<ul STYLE="margin: 0px 0px 0px 45px; padding: 0px; word-break: break-all; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 13px; line-height: 19px; background-color: rgb(254, 254, 242);">
+<li STYLE="margin: 0px 0px 1em; padding: 0px; list-style: inherit !important;">
+内存数据引擎，性能极为高效</LI>
+<li STYLE="margin: 0px 0px 1em; padding: 0px; list-style: inherit !important;">
+List块链结构，精简内存，优化查找效率</LI>
+<li STYLE="margin: 0px 0px 1em; padding: 0px; list-style: inherit !important;">
+Node数据项可定义，支持多种过滤操作</LI>
+<li STYLE="margin: 0px 0px 1em; padding: 0px; list-style: inherit !important;">
+支持redo-log，数据持久化，非Cache模式</LI>
+<li STYLE="margin: 0px 0px 1em; padding: 0px; list-style: inherit !important;">
+分布式，主从同步</LI>
+</UL>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">官方网站</STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<a HREF="http://code.google.com/p/memlink/">http://code.google.com/p/memlink/</A><br STYLE="margin: 0px; padding: 0px;" />
+</P>
+<h1 STYLE="margin: 0px; padding: 5px; color: white; background-color: rgb(165, 165, 165); font-family: Verdana, Arial, Helvetica, sans-serif;">
+<span STYLE="margin: 0px; padding: 0px;">12、db4o</SPAN><br STYLE="margin: 0px; padding: 0px;" /></H1>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">介绍</STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+“利用表格存储对象，就像是将汽车开回家，然后拆成零件放进车库里，早晨可以再把汽车装配起来。但是人们不禁要问，这是不是泊车的最有效的方法呢。”
+&ndash; Esther Dyson 　　db4o 是一个开源的纯面向对象数据库引擎，对于 Java 与 .NET
+开发者来说都是一个简单易用的对象持久化工具，使用简单。同时，db4o 已经被第三方验证为具有优秀性能的面向对象数据库，
+下面的基准测试图对 db4o 和一些传统的持久方案进行了比较。db4o 在这次比较中排名第二，仅仅落后于JDBC。通过图 1
+的基准测试结果，值得我们细细品味的是采用 Hibernate/HSQLDB 的方案和 JDBC/HSQLDB
+的方案在性能方面有着显著差距，这也证实了业界对 Hibernate 的担忧。而 db4o 的优异性能，让我们相信： 更 OO
+并不一定会牺牲性能。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+同时，db4o 的一个特点就是无需 DBA 的管理，占用资源很小，这很适合嵌入式应用以及 Cache 应用， 所以自从 db4o
+发布以来，迅速吸引了大批用户将 db4o 用于各种各样的嵌入式系统，包括流动软件、医疗设备和实时控制系统。 　　db4o
+由来自加州硅谷的开源数据库公司 db4objects 开发并负责商业运营和支持。db4o 是基于 GPL 协议。db4objects
+于 2004 年在 CEO Christof Wittig 的领导下组成，资金背景包括 Mark Leslie 、 Veritas
+软件公司 CEO 、 Vinod Khosla （ Sun 公司创始人之一）、 Sun 公司 CEO
+在内的硅谷高层投资人组成。毫无疑问，今天 db4objects 公司是硅谷炙手可热的技术创新者之一。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">特性<br STYLE="margin: 0px; padding: 0px;" /></STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+db4o 的目标是提供一个功能强大的，适合嵌入的数据库引擎，可以工作在设备，移动产品，桌面以及服务器等各种平台。主要特性如下：
+　　开源模式。与其他 ODBMS 不同，db4o 为开源软件，通过开源社区的力量驱动开发 db4o 产品。 　　原生数据库。db4o
+是 100% 原生的面向对象数据库，直接使用编程语言来操作数据库。程序员无需进行 OR
+映射来存储对象，大大节省了程序员在存储数据的开发时间。 　　高性能。 下图为 db4o 官方公布的基准测试数据，db4o 比采用
+Hibernate/MySQL 方案在某些测试线路上速度高出 44 倍之多！并且安装简单，仅仅需要 400Kb 左右的 .jar 或
+.dll 库文件。在接下来的系列文章中，我们将只关注在 Java 平台的应用，但是实际上 db4o 毫无疑问会很好地在
+.NET平台工作。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<img ALT="" STYLE="margin: 0px; padding: 0px;"  TITLE="15个nosql数据库" /></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>
+图：官方测试数据</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+易嵌入。使用 db4o 仅需引入 400 多 k 的 jar 文件或是 dll 文件，内存消耗极小。 　　零管理。使用 db4o 无需
+DBA，实现零管理。 　　支持多种平台。db4o 支持从 Java 1.1 到 Java 5.0，此外还支持 .NET 、
+CompactFramework 、 Mono 等 .NET 平台，也可以运行在 CDC 、 PersonalProfile 、
+Symbian 、 Savaje 以及 Zaurus 这种支持反射的 J2ME 方言环境中，还可以运行在 CLDC 、 MIDP 、
+RIM/Blackberry 、 Palm OS 这种不支持反射的 J2ME 环境中。
+　　或许开发者会问，如果现有的应用环境已经有了关系型数据库怎么办？没关系，db4o 的 dRS（db4o Replication
+System）可实现 db4o 与关系型数据库的双向同步（复制），如图 3 。 dRS 是基于 Hibernate 开发，目前的版本是
+1.0 ，并运行在 Java 1.2 或更高版本平台上，基于 dRS 可实现 db4o 到 Hibernate/RDBMS 、
+db4o 到 db4o 以及 Hibernate/RDBMS 到 Hibernate/RDBMS 的双向复制。dRS 模型如图</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<img ALT="" STYLE="margin: 0px; padding: 0px;"  TITLE="15个nosql数据库" /></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>
+图：DRS模型</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">官方网站</STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<a HREF="http://www.db4o.com/china/">http://www.db4o.com/china/</A><br STYLE="margin: 0px; padding: 0px;" />
+</P>
+<h1 STYLE="margin: 0px; padding: 5px; color: white; background-color: rgb(165, 165, 165); font-family: Verdana, Arial, Helvetica, sans-serif;">
+<span STYLE="margin: 0px; padding: 0px;">13、</SPAN>Versant<br STYLE="margin: 0px; padding: 0px;" /></H1>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">介绍</STRONG></SPAN></P>
+<div STYLE="margin: 0px; padding: 0px; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 13px; line-height: 19px; background-color: rgb(254, 254, 242);">
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em;">
+Versant Object Database (V/OD) 提供强大的数据管理，面向 C++, Java or .NET
+的对象模型，支持大并发和大规模数据集合。</P>
+</DIV>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+Versant对象数据库是一个对象数据库管理系统(ODBMS：Object Database Management
+System)。它主要被用在复杂的、分布式的和异构的环境中，用来减少开发量和提高性能。尤其当程序是使用Java和（或）C＋＋语言编写的时候，尤其有用。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+它是一个完整的，电子基础设施软件，简化了事务的构建和部署的分布式应用程序。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+作为一个卓越的数据库产品，Versant
+ODBMS在设计时的目标就是为了满足客户在异类处理平台和企业级信息系统中对于高性能、可量测性、可靠性和兼容性方面的需求。&nbsp;<wbr></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+Versant对象数据库已经在为企业业务应用提供可靠性、完整性和高性能方面获得了建树，Versant
+ODBMS所表现出的高效的多线程架构、internal parallelism
+、平稳的Client－Server结构和高效的查询优化，都体现了其非常卓越的性能和可扩展性。&nbsp;<wbr></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+Versant对象数据库包括Versant ODBMS，C++和Java语言接口，XML工具包和异步复制框架。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">特性<br STYLE="margin: 0px; padding: 0px;" /></STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+一、强有力的优势</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+Versant Object
+Database8.0，适用于应用环境中包含复杂对象模型的数据库，其设计目标是能够处理这些应用经常需要的导航式访问，无缝的数据分发，和企业级的规模。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+对于很多应用程序而言，最具挑战性的方面是控制业务模型本身的内在复杂性。
+电信基础设施，交通运输网络，仿真，金融工具以及其它领域的复杂性必须得到支持，
+而且这种支持复杂性的方式还要能够随着环境和需求变化而不断地改进应用程序。 这些应用程序的重点是领域和这些领域的逻辑。
+复杂的设计应当以对象模型为基础。将技术需求例如持久性（和SQL）与领域模型混合在一起的架构会带来灾难性的后果。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+Versant对象数据库使您可以使用那些只含有域行为信息的对象，而不用考虑持久性。同时，Versant对象数据库还能提供跨多个数据库的无缝的数据分发，高并发性，细粒度锁，顶级性能，
+以及通过复制和其它技术提供的高可用性。现代Java中的对象关系映射工具已经简化了很多映射的问题，
+但是它们还不能提供Versant所能提供的无缝数据分发的功能和高性能。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+二、主要特性</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+C++、Java及.NET 的透明对象持久</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+支持对象持久标准，如JDO</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+跨多数据库的无缝数据分发</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+企业级的高可用性选项</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+动态模式更新</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+管理工作量少（或不需要）</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+端到端的对象支持架构</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+细粒度并发控制</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+多线程，多会话</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+支持国际字符集</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+高速数据采集</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+三、优势</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+对象层次结构的快速存储、检索和浏览</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+性能高于关系型数据库10 倍以上</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+减少开发时间</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+四、8.0的新特性</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+增强的多核线性扩展能力</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+增强的数据库管理工具（监控、数据库检查、数据重组）</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+支持基于LINQ的.NET绑定机制</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+支持.NET和JDO应用的FTS基于“Black Box”工具的数据库活动记录与分析</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+五、Versant对象数据库特性</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+动态模式更新</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+Versant支持缓慢模式更新，这意味着当被使用时，对象才会从旧的模式转为新的模式，就不需要映射了。所有这些都支持数据库模式的更新与敏捷开发。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+跨多数据库的无缝数据分发</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+客户端与一个或多个数据库进行无缝交互。单个的数据库无缝地联合在一起，使您能够给数据分区，提高读写能力，增大总体的数据库的大小。这些数据库上的数据分发是透明的。它们被结合在一起形成一个</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+无缝的数据库，提供巨大的可扩展性。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+并发控制</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+对象级锁确保只有在两个应用程序试图更新同一对象时才会有冲突的发生，这与基于页的锁机制不同。基于页的锁机制可能会导致并发热点的假象。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+透明的C++对象持久性</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+C++对象，STL类，标准C++集合如字典，映射，映射的映射，诸如此类，以原样保存在数据库中。状态变化在后台被自动追踪。当相关的事务提交后，所有的变化将会被自动发送到数据库。因此就能形成一种非常自然的，低干扰的编程风格，这样，就能实现应用程序的快速开发，同时当需求发生变化时，应用程序就能够灵活地修改。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+透明的Java对象持久性</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+V/OD的JVI &amp; JDO 2.0 API 提供了透明的简单对象（POJO）的持久性，包括 Java 2
+持久类，接口，以及任何用户定义的类。状态变化</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+在后台被自动追踪。事务提交后，自动把所有变化写入数据库。因此，对于托管和非托管部署，您都能获得轻量级的编程风格。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+可完全嵌入Versant 可以被嵌入到应用程序中，数据库规模可以达到TB 级别。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+并且可以自主运行，不需要任何管理。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+六、企业级的特性</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+对象端到端</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+对象端到端意味着你的应用对象存在于客户端，网络上，以及数据库中。与关系型数据库不同的是，对象在内存中和数据库中的表示之间不需要任何映射或转换。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+应用的客户端缓存透明地缓存对象以提高速度。数据库支持对象，它能执行查询，建立索引，使应用能够平衡它和数据库间的进程执行。XA的支持使与其它事务数据源协调成为可能。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+七、V/OD 8数据库体系架构</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+高可用性</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+通过在线进行数据库管理实现数据库的高可用性。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+容错服务器</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+容错服务器选项可以在Versant数据库的硬件或是软件出现故障的时候，自动进行失效转移和数据恢复。容错服务器使用的是在两个数据库实例之间进行同步复制，一旦出现故障，容错服务器也会支持透明重同步。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+异步数据复制</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+异步数据复制选项支持多个对象服务器之间的主从异步复制和点对点异步复制。可以使用异步数据复制将数据复制到一个分布式恢复站点或者将数据在多个本地的对象数据库之间进行复制，以提高性能和可靠性。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+高可用性备份</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+高可用性数据备份选项使Versant可以使用EMC
+Symmetrix或其它企业级存储系统的磁盘镜像的特性，来对很大的数据卷进行在线备份，同时又不会影响到可用性。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+在线再组织</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+Versant
+数据库再组织选项为了会删除大量对象的应用而设计的。它使用户能够收回数据库中未使用的空间，同时使数据库保持正常运作，增加可用空间，改善数据库的性能。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+八、为什么要使用Versant面向对象数据库？</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+通过缩短研发时间来加速上市</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+对象关系映射代码可能占用了你的应用的40%或更多。有了Versant面向对象数据库，映射代码就不再需要了。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+极大地提高了性能和数据吞吐能力</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+当应用中涉及到复杂的内存对象模式，尤其是关联访问时，对象数据库要比映射到关系数据库表现得更好。例如，当应用程序需要从对象数据库里检索一个对象时，只要执行单条查询即可找到该对象。当映射到一个关系数据库时，如果对象包含多对多关联，那么就必须通过一个或多个连接才能检索到关联表中的数据。使用了对象数据库，对于一般复杂性的对象的检索，速度则提高了三倍，对于复杂性很高的对象的检索，例如多对多关联，搜索的速度则提高了三十倍。而对于集合的集合和递归联系，检索的速度有可能提高五十倍。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+根据需求的变化，快速改进应用</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+今天，商业进程、结构和应用要求的变化的速度使得适应变化的能力变得极为重要。对象关系映射和其它适用于刚性存储结构的方法，让变化变得困难。而Versant对象数据库极大的提升了你的应用满足当前和未来的商业需求的能力。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+投资回报率</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+当用户遇到了复杂的对象模型和大的数据集，对象数据库就是首选的解决方案。对象数据库主要的优点在于，它能够缩小代码的规模，降低研发成本，缩短上市的时间，减少或根本没有管理的要求以及降低购置硬件和服务器软件许可证的成本。性能上的优势还可以大大降低高负载动作应用所消耗的成本。大型的关系数据库成本高非常昂贵，还需要昂贵的硬件支持</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">官方网站</STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<a HREF="http://www.versant.com/index.aspx">http://www.versant.com/index.aspx</A></P>
+<h1 STYLE="margin: 0px; padding: 5px; color: white; background-color: rgb(165, 165, 165); font-family: Verdana, Arial, Helvetica, sans-serif;">
+<span STYLE="margin: 0px; padding: 0px;">14、</SPAN>Neo4j<br STYLE="margin: 0px; padding: 0px;" /></H1>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">介绍</STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+Neo4j是一个嵌入式，基于磁盘的，支持完整事务的Java持久化引擎，它在图像中而不是表中存储数据。Neo4j提供了大规模可扩展性，在一台机器上可以处理数十亿节点/关系/属性的图像，可以扩展到多台机器并行运行。相对于关系数据库来说，图形数据库善于处理大量复杂、互连接、低结构化的数据，这些数据变化迅速，需要频繁的查询——在关系数据库中，这些查询会导致大量的表连接，因此会产生性能上的问题。Neo4j重点解决了拥有大量连接的传统RDBMS在查询时出现的性能衰退问题。通过围绕图形进行数据建模，Neo4j会以相同的速度遍历节点与边，其遍历速度与构成图形的数据量没有任何关系。此外，Neo4j还提供了非常快的图形算法、推荐系统和OLAP风格的分析，而这一切在目前的RDBMS系统中都是无法实现的。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+Neo是一个网络——面向网络的数据库——也就是说，它是一个嵌入式的、基于磁盘的、具备完全的事务特性的Java持久化引擎，但是它将结构化数据存储在网络上而不是表中。网络（从数学角度叫做图）是一个灵活的数据结构，可以应用更加敏捷和快速的开发模式。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+你可以把Neo看作是一个高性能的图引擎，该引擎具有成熟和健壮的数据库的所有特性。程序员工作在一个面向对象的、灵活的网络结构下而不是严格、静态的表中——但是他们可以享受到具备完全的事务特性、企业级的数据库的所有好处。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+由于使用了“面向网络的数据库”，人们对Neo充满了好奇。在该模型中，以“节点空间”来表达领域数据——相对于传统的模型表、行和列来说，节点空间是很多节点、关系和属性（键值对）构成的网络。关系是第一级对象，可以由属性来注解，而属性则表明了节点交互的上下文。网络模型完美的匹配了本质上就是继承关系的问题域，例如语义Web应用。Neo的创建者发现继承和结构化数据并不适合传统的关系数据库模型：</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+　　1.对象关系的不匹配使得把面向对象的“圆的对象”挤到面向关系的“方的表”中是那么的困难和费劲，而这一切是可以避免的。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+　　2.关系模型静态、刚性、不灵活的本质使得改变schemas以满足不断变化的业务需求是非常困难的。由于同样的原因，当开发小组想应用敏捷软件开发时，数据库经常拖后腿。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+　　3.关系模型很不适合表达半结构化的数据——而业界的分析家和研究者都认为半结构化数据是信息管理中的下一个重头戏。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+　　4.网络是一种非常高效的数据存储结构。人脑是一个巨大的网络，万维网也同样构造成网状，这些都不是巧合。关系模型可以表达面向网络的数据，但是在遍历网络并抽取信息的能力上关系模型是非常弱的。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+虽然Neo是一个比较新的开源项目，但它已经在具有1亿多个节点、关系和属性的产品中得到了应用，并且能满足企业的健壮性和性能的需求：</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+完全支持JTA和JTS、2PC分布式ACID事务、可配置的隔离级别和大规模、可测试的事务恢复。这些不仅仅是口头上的承诺：Neo已经应用在高请求的24/7环境下超过3年了。它是成熟、健壮的，完全达到了部署的门槛。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">特性<br STYLE="margin: 0px; padding: 0px;" /></STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+Neo4j是一个用Java实现、完全兼容ACID的图形数据库。数据以一种针对图形网络进行过优化的格式保存在磁盘上。Neo4j的内核是一种极快的图形引擎，具有数据库产品期望的所有特性，如恢复、两阶段提交、符合XA等。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+Neo4j既可作为无需任何管理开销的内嵌数据库使用；也可以作为单独的服务器使用，在这种使用场景下，它提供了广泛使用的REST接口，能够方便地集成到基于PHP、.NET和JavaScript的环境里。但本文的重点主要在于讨论Neo4j的直接使用。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+Neo4j的典型数据特征：</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+&bull;数据结构不是必须的，甚至可以完全没有，这可以简化模式变更和延迟数据迁移。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+&bull;可以方便建模常见的复杂领域数据集，如CMS里的访问控制可被建模成细粒度的访问控制表，类对象数据库的用例、TripleStores以及其他例子。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+&bull;典型使用的领域如语义网和RDF、LinkedData、GIS、基因分析、社交网络数据建模、深度推荐算法以及其他领域。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+围绕内核，Neo4j提供了一组可选的组件。其中有支持通过元模型构造图形结构、SAIL - 一种SparQL兼容的RDF
+TripleStore实现或一组公共图形算法的实现。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+高性能？</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+要给出确切的性能基准数据很难，因为它们跟底层的硬件、使用的数据集和其他因素关联很大。自适应规模的Neo4j无需任何额外的工作便可以处理包含数十亿节点、关系和属性的图。它的读性能可以很轻松地实现每毫秒（大约每秒1-2百万遍历步骤）遍历2000关系，这完全是事务性的，每个线程都有热缓存。使用最短路径计算，Neo4j在处理包含数千个节点的小型图时，甚至比MySQL快1000倍，随着图规模的增加，差距也越来越大。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+这其中的原因在于，在Neo4j里，图遍历执行的速度是常数，跟图的规模大小无关。不象在RDBMS里常见的联结操作那样，这里不涉及降低性能的集合操作。Neo4j以一种延迟风格遍历图
+- 节点和关系只有在结果迭代器需要访问它们的时候才会被遍历并返回，对于大规模深度遍历而言，这极大地提高了性能。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+写速度跟文件系统的查找时间和硬件有很大关系。Ext3文件系统和SSD磁盘是不错的组合，这会导致每秒大约100,000写事务操作。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">官方网站</STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<a HREF="http://neo4j.org/">http://neo4j.org/</A></P>
+<h1 STYLE="margin: 0px; padding: 5px; color: white; background-color: rgb(165, 165, 165); font-family: Verdana, Arial, Helvetica, sans-serif;">
+<span STYLE="margin: 0px; padding: 0px;">15、</SPAN>BaseX<br STYLE="margin: 0px; padding: 0px;" /></H1>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">介绍</STRONG></SPAN></P>
+<div STYLE="margin: 0px; padding: 0px; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 13px; line-height: 19px; background-color: rgb(254, 254, 242);">
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em;">
+BaseX 是一个XML数据库，用来存储紧缩的XML数据，提供了高效的 XPath 和 XQuery
+的实现，还包括一个前端操作界面。</P>
+</DIV>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">特性<br STYLE="margin: 0px; padding: 0px;" /></STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+BaseX一个比较显著地优点是有了GUI，界面中有查询窗口，可采用XQuery查询相关数据库中的XML文件；也有能够动态展示xml文件层次和节点关系的图。但我感觉也就这点好处了，编程时和GUI无关了。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+和Xindice相比，BaseX更能支持大型XML文档的存储，而Xindice对大型xml没有很好的支持，为管理中小型文档的集合而设计。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+BaseX 是一个XML数据库，用来存储紧缩的XML数据，提供了高效的 XPath 和 XQuery
+的实现，还包括一个前端操作界面。</P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<span STYLE="margin: 0px; padding: 0px;"><strong STYLE="margin: 0px; padding: 0px;">官方网站</STRONG></SPAN></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+<a HREF="http://basex.org/">http://basex.org/</A></P>
+<p STYLE="margin: 10px auto; padding: 5px 0px; line-height: 24px; color: rgb(51, 51, 51); font-size: 16px; text-indent: 2em; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(254, 254, 242);">
+原文链接：<a HREF="http://www.cnblogs.com/skyme/archive/2012/07/26/2609835.html">http://www.cnblogs.com/skyme/archive/2012/07/26/2609835.html</A></P>
+
+				</article>
+			</div>
+		</div>
+	    <footer>
+			<div class="owner">
+				<p><a href="https://github.com/firstfhy" class="avatar"><img src="https://avatars0.githubusercontent.com/u/10542465?v=3&amp;s=60" width="48" height="48"></a>View <a href="https://github.com/firstfhy">firstfhy</a> on <a href="https://www.github.com">GitHub</a></p>
+			</div>
+			<div class="creds">
+			  	<small>This page generated using <a href="http://pages.github.com/">GitHub Pages</a><br>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
+			</div>
+	    </footer>
+	</div>
+</body>
+</html>

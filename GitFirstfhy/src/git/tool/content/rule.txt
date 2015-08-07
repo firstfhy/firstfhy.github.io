@@ -10,7 +10,7 @@ java/java_encoding.html template.html content/java_encoding.txt [title]-深入�
 java/java_tomcat.html template.html content/java_tomcat.txt [title]-Tomcat系统架构与设计模式，第1部分:工作原理
 java/java_objectsize.html template.html content/java_objectsize.txt [title]-Java对象占用内存大小
 java/java_joda.html template.html content/java_joda.txt [title]-joda_time的使用
-java/java_lock.html template.html content/java_lock.txt [title]-joda_time的使用
+java/java_lock.html template.html content/java_lock.txt [title]-Java的Lock小结
 
 system/windows_subst.html template.html content/windows_subst.txt [title]-windows磁盘映射
 system/linux_sendMail.html template.html content/linux_sendMail.txt [title]-linux_sendmail总结
@@ -19,6 +19,8 @@ system/linux_fileInfo.html template.html content/linux_fileInfo.txt [title]-llin
 sql/sql_15nosql.html template.html content/sql_15nosql.txt [title]-15个nosql数据库
 
 javascript/javascript_wscript.html template.html content/javascript_wscript.txt [title]-WScript.Shell对象的run和exec
+
+blizzard/blizzard_mpq.html template.html content/blizzard_mpq.txt [title]-进军暴雪---MPQ技术内幕
 
 other/track_expression.html template.html content/track_expression.txt [title]-利用堆栈解析算术表达式
 other/2-5dtitle.html template.html content/2-5dtitle.txt [title]-全45度角2.5D游戏如何计算该被显示出的tile地形图片

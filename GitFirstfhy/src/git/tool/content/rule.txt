@@ -22,6 +22,7 @@ system/linux_sendMail.html template.html content/program/system/linux_sendMail.t
 system/linux_fileInfo.html template.html content/program/system/linux_fileInfo.txt [title]-llinux下查看文件信息
 
 sql/sql_15nosql.html template.html content/program/sql/sql_15nosql.txt [title]-15个nosql数据库
+sql/sql_performance.html template.html content/program/sql/sql_performance.txt [title]-浅析如何定位，排除和避免MySQL性能故障
 
 ide/ide_vistual_studio_01.html template.html content/program/ide/ide_vistual_studio_01.txt [title]-Visual_Studio原生开发的调试技巧(上)
 ide/ide_vistual_studio_02.html template.html content/program/ide/ide_vistual_studio_02.txt [title]-Visual_Studio原生开发的调试技巧(下)

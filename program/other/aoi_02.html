@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>游戏服务器场景管理AOI方案</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	
+	<link rel="stylesheet" href="../../stylesheets/stylesheet.css" media="screen">
+	<link rel="stylesheet" href="../../stylesheets/pygment_trac.css"/>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script type="text/javascript" src="../../javascripts/script.js"></script>
+	
+	<meta name="description" content="firstfhy">
+	
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+<body>
+	<div class="wrapper">
+		<div id="container">
+		    <div id="main" role="main">
+		    	<div class="download-bar">
+			    	<div class="inner">
+			          	<a class="code">OTHER</a>
+			        </div>
+		        	<span class="blc"></span><span class="trc"></span>
+		        </div>
+		        <article class="markdown-body">
+					<h3>
+						游戏服务器场景管理AOI方案
+				   	</h3>
+<p>---------------------------------------------------------------------</p>
+<p>&nbsp; AOI(Area Of Interest)在MMOPRG游戏服务器上是不可或缺的技术，广义上，<br />AOI系统支持任何游戏世界中的物体个体对一定半径范围内发生的事件进行处理；<br />但MMOPRG上绝大多数需求只是对半径范围内发生的物体离开/进入事件进行处理。<br />当你进入一个游戏场景时，如果你能看到其他玩家，那背后AOI系统就正在运作。<br />显然,AOI实现方案的好坏直接决定了服务器能够承载的同时在线人数上限，<br />也决定了策划对游戏玩法的发挥程度。回合制和即时制的MMOPRG通常选用不同<br />的AOI方案。<br />&nbsp;<br />---------------------------------------------------------------------<br />&nbsp;&nbsp;<br />&nbsp; 严格来说，AOI是碰撞检测的一种特例，除了碰撞集本身，它还包括两状态间<br />的碰撞集差异报告；也就是说，如果物体P在[A位置]物体可见集为[Old]，当物体<br />P从[A位置]移动到[B位置]，它的可见集会变成[New]，而[Old]和[New]之间的<br />差异有两种可能性：<br />&nbsp; (1)有物体ObjOld原来在[Old]中，但是并不在[New]中<br />&nbsp; (2)有物体ObjNew在[New]中，但是原来并不在[Old]中<br />为方便理解，下文中将物体特殊化为玩家，<br />上述两种差异的直接表现通常是：<br />&nbsp; (1)玩家P的客户端画面会删除玩家ObjOld显示<br />&nbsp;&nbsp;&nbsp; （如果所有玩家的AOI半径一致，那玩家ObjOld的客户端画面会删除玩家P）<br />&nbsp; (2)玩家P的客户端画面会添加玩家ObjNew显示<br />&nbsp;&nbsp;&nbsp; （如果所有玩家的AOI半径一致，那玩家ObjNew的客户端画面会添加玩家P）</p>
+<p>---------------------------------------------------------------------</p>
+<p>&nbsp; 很容易想象，AOI的需求最简单的做法是全世界玩家信息全部同步给客户端。<br />这个方案是O(n^2)的复杂度，对服务器来说是不能承受之重。但如果是超小地图<br />十人以下的特殊需求倒可能是个简洁的方案。</p>
+<p>---------------------------------------------------------------------<br />&nbsp;&nbsp;<br />&nbsp; 比较流行的方案是网格法，简单，高效：将地图按设定的格子大小划分为网格，<br />设玩家移动到某坐标，我们很容易地将玩家归入该坐标所属的网格G的玩家链中，<br />而这个玩家的可见集可以简单地将以网格G为中心的九宫格中的玩家链聚合而得到。<br />而要获得两次移动间的可见集差异，也非难事。但网格法也有一些弊端：<br />&nbsp; (1)格子宽度常比地图最小单位尺度要大不少，在要求精确距离触发的需求上，<br />&nbsp;&nbsp;&nbsp;&nbsp; 需要使用定时器等方案实现。<br />&nbsp; (2)大场景地图上，网格数量过多。<br />&nbsp; (3)在面临不同对象拥有不同AOI半径的需求，可能要引入其他方案夹杂完成。<br />但若非必要，网格法还是极理想的AOI方案之一。简单，高效，还求什么呢？</p>
+<p>&nbsp;---------------------------------------------------------------------<br />&nbsp;<br />&nbsp; 提到碰撞检测，直觉上便联想到利用空间划分来剔除远距离物体的多余运算。<br />显然，QuadTree/Octree/BSPTree等都是可用的方案。但对于MMORPG大量玩家的<br />移动行为特殊性而言，使用Sweep and Prune方案更加高效，该想法最初由：</p>
+<p>D. Baraff. Dynamic Simulation of Non-Penetrating Rigid Bodies. PhD<br />thesis, Cornell University, 1992</p>
+<p>Paper提出，而</p>
+<p>I-COLLIDE: An Interactive and Exact Collision Detection System for&nbsp;<br />Large-Scale Environments, 1995</p>
+<p>这个Paper则给出了一个改进的src实现。这两个Paper都可以直接google得到。<br />(BTW: GPG2中Steven.Rabin提出的RDC(递归聚维?)其实核心原理应该来源于此)</p>
+<p>Sweep and Prune的优点是对凸多边形的大规模实时小步长运动系统支持的很好，<br />相对于传统空间划分方法的时间复杂度O(n * log2n)，它几乎减低到O(n + s)!<br />达到优点的前提是场景中物体虽是无限制地移动，但[移动步长相对短]，<br />利用这个短步长的特性，可以假设<br />[每个物体在下一帧中的移动对整个排序好的interval N维链表来说，变化甚小]<br />所以它的移动是基于前一个有序状态的小范围轴向比较，复杂度几乎线性可控。<br />而MMORPG玩家就是小步长运动。跳转场景所导致的节点增加，删除是小概率事件。</p>
+<p>而如果连节点增加，删除这个Sweep and Prune的弱点也避免，也可以引入<br />系列unrolled linked list(松散链表)来对interval链表来做分段，从而在删除<br />和增加节点事件发生时，使用二分查找法定位到指定的unrolled link list来做<br />可控链表段之间的增删。Sweep and Prune方案甚至可以演化为很有意思的多线程<br />版本的方案。具体的实现可以参考：</p>
+<p><br />Efficient Large-Scale Sweep and Prune Methods with AABB Insertion and<br />Removal, 2008</p>
+<p>但非海量物体，似乎杀鸡用牛刀了?</p>
+<p>---------------------------------------------------------------------</p>
+<p>&nbsp; 最后，还有一些可行的做法可以简单有效地提高AOI系统的运行效率：<br />(1)对场景中的物体特性作出区分<br />&nbsp;&nbsp; 比如售卖NPC / 玩家 / 有AI自动攻击范围内玩家的怪物 这三种就区别对待，<br />&nbsp;&nbsp; 因为售卖NPC显然不需要看到任何物体，但是它需要被玩家看到；<br />&nbsp;&nbsp; 而玩家需要看到所有物体；<br />&nbsp;&nbsp; 而怪物则只需要看到玩家，不需要看到其他怪物，也不需要看到NPC。<br /><br />&nbsp;&nbsp; 而区分特性的做法也很简单，引入一个简单的Interest机制即可。<br />&nbsp;&nbsp; 比如InterestMask，只需要一个 &amp; 操作便可能跳过大量的后续处理；<br />&nbsp;&nbsp; 又比如使用更通用的InterestFilterCallback。<br /><br />(2)合理利用网络延时<br />&nbsp;&nbsp; 我们的MMORPG运行在一个非即时的网络环境下，公网上120~200ms的延时通常<br />&nbsp;&nbsp; 对玩家而言是可接受的，而我们在接受这个事实的同时也应该利用这个事实。<br />&nbsp;&nbsp; 虽然我们实现上可以完全实现移动的同时进行可见集的差异广播，但是，即使<br />&nbsp;&nbsp; 服务器每隔200ms向某个玩家同步一次可见集信息，在很多MMORPG的玩法上，<br />&nbsp;&nbsp; 也是可以接受的，而该方案下便可引入其他一些特别的优化了。</p>
+<p>(3)基于聚集点做局部优化处理<br />&nbsp; 因为一个在线游戏中，玩家并不是理想地平均分布的，<br />&nbsp; 玩家集中的点大部分都受到玩法的影响，比如功能性NPC的周围、刷怪区域、摆摊区域等，<br />&nbsp; 上述等方法在这种密集玩家聚集的区域，算法时间复杂度都向O(n平方)靠拢。<br />&nbsp; 此时可以考虑达到一定的阈值区域特殊处理。</p>
+<p>(4)根据可操作距离区分同步频率/区分同步信息层次细节度(LOD)<br />&nbsp; 这个方法是在一个paper上看到的，具体做法是当我们要同步A物体的AOI信息时，<br />&nbsp; 对AOI范围内的物体按距离远近做出信息同步频率的区分；<br />&nbsp; 假设按远近对A的AOI范围物体分为近（可操作）、中（不可操作，但影响游戏感受）、<br />&nbsp; 远（不可操作，且不精确移动也无所谓）三级。近的物体是实时同步的/LOD高，<br />&nbsp; 中的物体按照较高频率同步/LOD中，远的物体则低频率同步/LOD低。<br />&nbsp; 物体移动时，原来的中、远距离物体会依次变成近的物体，所以逻辑上是准确无误的。<br />&nbsp; 但是可能会有一些跑动后的拉扯行为，如果觉得不可接受，引入了dead reckoning做行为预测。&nbsp;</p>
+<p>(5)策划应该参与优化<br />&nbsp; 列在最后但是并不是最不重要的。<br />&nbsp; 其实，无论怎么优化AOI算法，最有效的优化还是策划设置玩法上尽量避免单点<br />&nbsp; （小区域）大量聚合玩家，单点聚合后接近O(n^2)是少不了的。非常不明智。<br />&nbsp; 所以大家也看到为什么很多MMORPG会分门派，每个门派的场景一般不同。<br />&nbsp; 程序的优化相对于策划的优化来说，是下策。<br />&nbsp;&nbsp;<br />---------------------------------------------------------------------</p>
+
+				</article>
+			</div>
+		</div>
+	    <footer>
+			<div class="owner">
+				<p><a href="https://github.com/firstfhy" class="avatar"><img src="https://avatars0.githubusercontent.com/u/10542465?v=3&amp;s=60" width="48" height="48"></a>View <a href="https://github.com/firstfhy">firstfhy</a> on <a href="https://www.github.com">GitHub</a></p>
+			</div>
+			<div class="creds">
+			  	<small>This page generated using <a href="http://pages.github.com/">GitHub Pages</a><br>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
+			</div>
+	    </footer>
+	</div>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>精彩讲解java接口的概念</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	
+	<link rel="stylesheet" href="../../stylesheets/stylesheet.css" media="screen">
+	<link rel="stylesheet" href="../../stylesheets/pygment_trac.css"/>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script type="text/javascript" src="../../javascripts/script.js"></script>
+	
+	<meta name="description" content="firstfhy">
+	
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+<body>
+	<div class="wrapper">
+		<div id="container">
+		    <div id="main" role="main">
+		    	<div class="download-bar">
+			    	<div class="inner">
+			          	<a class="code">JAVA</a>
+			        </div>
+		        	<span class="blc"></span><span class="trc"></span>
+		        </div>
+		        <article class="markdown-body">
+					<h3>
+						精彩讲解java接口的概念
+				   	</h3>
+对初学者来说，接口不是很好理解。 <br/>我们来看一个类 <br/><br/>class A { <br/>private int a; <br/>public int getA() { <br/>return a; <br/>} <br/>} <br/><br/>这个类的属性是私有的，外界不能访问，而外界可以通过公有方法来访问这个类。我们说一个类的公有方法就是这个类的对外接口。通常一个类的属性都是私有的，方法大多是公有的。外界只能过个这些公有方法来访问类。这也是Java封装性的体现。如果一个类没有公有属性，也没有公有方法，这个类就是无法使用的类了。所以我们需要为一个类提供对外接口。一个类中的方法，不只是说明了它要“做什么”，而且方法的内容也说明了“怎么做”。打个不太恰当的例子，一个杀人方法。从名字上看，你知道了“做什么”，但没有办法看到“怎么做”。而方法的内容说明了“怎么做”。 <br/><br/>class killer { <br/>private String name; <br/>private int age; <br/>private String phone; <br/>private String addr; <br/><br/>...... <br/><br/>public void kill(Person p) { <br/>Qiang qiang = new Qiang(&quot;ak47&quot;); <br/>qiang.fire(p); <br/>} <br/>} <br/><br/>这个类的kill方法内容说明了杀人的过程。如果你不想用这种方式杀人。因为你很BT，你想用毒药杀人。那么这个类的内容就需要改。但是，还有很多其它的“客户”，需要用不同的方式杀人。怎么办呢？一个很好的办法就是，我们只定义“做什么”，而不定义“怎么做”。 <br/><br/>interface Killer { <br/>public void kill(Person p); <br/>} <br/><br/>接口说明了“做什么”，而实现这个接口的类，也就是实现类需要说明“怎么做”。 <br/><br/>class Killer1 implements Killer { <br/>public void kill(Person p) { <br/>Qiang qiang = new Qiang(&quot;ak47&quot;); <br/>qiang.fire(p); <br/>} <br/>} <br/><br/>class Killer2 implements Killer { <br/>public void kill(Person p) { <br/>Bane bane = new Bane(); <br/>p.eat(bane); <br/>} <br/>} <br/><br/>public class Test { <br/>public static void main(String[] args) { <br/>Killer jingKe = new Killer1(); <br/>Person yingZheng = new Person(); <br/>jingKe.kill(yingZheng); <br/>} <br/>} <br/><br/>接口可以把“做什么”和“怎么做”分离开来。这给Java带来了很多好处。虽然代码量增加了，可我们的程序的可维护性加强了。我们的程序是可以拆分的。就象电脑一样，可以拆分成很多组件。我一直在想，如果我的MP3耳机可以拆分就好了，那样在耳机只坏掉一个的时候就不用重新买一个了。 不过上面的例子看不到什么太大的好处。你可能会说，如果你 的目的是为了不修改代码，那么，如果我想使用Killer2来完成任务，还是需要修改main方法为：Killer jingKe = new Killer2();。没有错，不过你可以通过一个工厂来完成上面的任务。也就是说，不通过new语句来获得Killer对象，而是通过工厂来获得Killer对象。 <br/><br/>public class KillerFactory { <br/>public static killer getKiller() { <br/>return new Killer1(); <br/>} <br/><br/>public static Killer getKiller(String path) throws Exception { <br/>Properties prop = new Properties(); <br/>prop.load(new FileInputStream(path)); <br/>String className = prop.getProperty(&quot;killer&quot;); <br/>Class clazz = Class.forName(className); <br/>return (Killer)clazz.newInstance(); <br/>} <br/>} <br/><br/>代码确实增加了很多，可是这对后期的系统维修和系统升级带来了很多好处。水龙头与出水管的关系，我们需要把水龙头安装到出水管上。如果有一天我们需要更换水龙头时，只需要把老的水龙头拆卸下来，把新的水龙头安装到出水管上既可。如果水龙头与出水管是一体的，就是无法拆卸的怎么办呢？或是说出水管只能安装水龙头，而不能安装淋浴器，这就使我们生活很不方便。我们可以理解为出水管的连接方法，连接的对象是“出水设备”，而这个“出水设备”是一个接口。而水龙头与淋浴器都是这个接口的实现类。但是接口在哪里呢？它长什么样子？我们没看到。它是一个标准，连接处的内径与外径。螺丝抠的密度等。这就和你的电脑上为什么可以连接USB设备一样。如果电脑和某一个USB设备电焊到一起，那么其它的USB设备就无法使用了。电脑使用的是实现了USB接口的电子设备，而我们的U盘、MP3、移动硬盘及鼠标都是USB接口的实现类。用Java写出来的程序也和我们现实生活中的设备一样。如电脑，我们希望电脑的所有部件都可以更换，如果主板上的内存插槽与内存条不 附。我们说，内存条没有实现某某接口。Java是完全面向对象的，而面向对象是我们最为熟悉的东东。面向对象并不简单，而是我们太熟悉它 了。所以我们学习Java会很方便。在现实社会中，所有的标准到了Java中都是接口。一盒香烟多少支烟，烟的长度等都是标准。一个光盘的大小。Java中的JDBC就是一个标准，而各大数据库厂商及第三方厂商实现了这一标准。JDBC只说明了目的，没有说明怎么完成的目的。面向对象就在我们眼前，不过我们有时不太注意它。希望你在今后学习Java时，多与现实社会联系。这样可以有利与你的理解。代码量加大了，但对后期的维护与升级提供了方便。软件公司卖给客户的是class文件，而不是java文件。如果你的客户需要更换Killer对象，只需修改资源文件既可。下面我们来看一个定时器类。现在什么都是自动化的，如空调、电视、洗衣机等等。都要用到定时器这个类。对了，还有定时炸弹也要用它。那我们可不可以只写一个定时器类，应用到所有的需要定时器的设备上呢？答案是肯定的，我们需要这个类。好了，我们来分析一下定时器需要完成什么工作吧。定时器应该有启动、停止方法。定时器启动之后，每过一定时间就执行某个动作。其中时间间隔为long型，而要执行的动作可能是输出一个字符串，也可能是打印作业。具体要干什么由使用定时器的用户来完成。而定义定时器时，根本就不知道要干什么。 <br/><br/>public class Timmer { <br/>private long time; <br/>private Action action; <br/><br/>public Timmer() {} <br/><br/>public Timmer(long time, Action action) { <br/>this.time = time; <br/>this.action = action; <br/>} <br/><br/>public void start() { <br/>state = START; <br/>if(th == null) { <br/>th = new Thread() { <br/>public void run() { <br/>while(state == START) { <br/>try { <br/>Thread.sleep(time); <br/>action.action(); <br/>} catch(Exception e) { <br/>} <br/>} <br/>} <br/>}; <br/>} <br/>th.start(); <br/>} <br/><br/>public void stop() { <br/>state = STOP; <br/>} <br/><br/>public void setTime(long time) { <br/>this.time = time; <br/>} <br/><br/>public void setAction(Action action) { <br/>this.action = action; <br/>} <br/><br/>public long getTime() { <br/>return (this.time); <br/>} <br/><br/>public Action getAction() { <br/>return (this.action); <br/>} <br/>} <br/><br/>Action是一个接口，它只有一个方法，就是要完成的任务。我们在定时器启动时调用这个接口的方法。而这个Action接口的对象，代表一个动作，这个动作就是用户要完成的动作。 <br/><br/>public interface Action { <br/>public void action(); <br/>} <br/><br/>public static void main(String[] args) { <br/>Timer t = new Timer(2000, new Action() { <br/>public void action() { <br/>System.out.println(&quot;Hello World!&quot;); <br/>} <br/>}); <br/>t.start(); <br/>javax.swing.JOptionPane.showMessageDialog(null, &quot;点击确定按钮停止定时器&quot;); <br/>t.stop(); <br/>System.exit(0); <br/>} <br/><br/>这是一个典型的回调方法例子。在AWT中，java使用了大量的监听器。这些监听器都是回调方法。在XML解析器SAX中，也使用了回调方法来解析XML文档。接口要比抽象类还要抽象。抽象类需要子类继承，而Java是单继承，所以抽象类被限制了。而接口不同，一个类可以实现多个接口。好比人类与程序员类之间的关系。可以说程序员是人类的子类，如果程序员是一个接口。用人类的子类来实现它就会更好。这个子类还可以去实现会计接口、音乐家接口等等。 <br/><br/>在struts2.0、spring、hibernate等框架中，都大量使用接口。我们关心的是某个接口与另一个接口之间的关系。而不关心某个实现类与另一个接口实现类的关系。在客观世界中，我们交谈时都大量使用接口，只是我们没有注意罢了。如：我公司需要一个程序员(一个实现了程序员接口的对象)。上课时，讲师有一台计算机，用白板笔在白板上写字(计算机是接口，白板及白板笔也是接口)。讲师希望学生能学会所有的知识(讲师及学生都是接口)。 
+
+				</article>
+			</div>
+		</div>
+	    <footer>
+			<div class="owner">
+				<p><a href="https://github.com/firstfhy" class="avatar"><img src="https://avatars0.githubusercontent.com/u/10542465?v=3&amp;s=60" width="48" height="48"></a>View <a href="https://github.com/firstfhy">firstfhy</a> on <a href="https://www.github.com">GitHub</a></p>
+			</div>
+			<div class="creds">
+			  	<small>This page generated using <a href="http://pages.github.com/">GitHub Pages</a><br>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
+			</div>
+	    </footer>
+	</div>
+</body>
+</html>

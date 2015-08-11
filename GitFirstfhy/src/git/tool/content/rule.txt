@@ -16,6 +16,8 @@ java/memory.html template.html content/program/java/memory.txt [title]-深度解
 java/serial.html template.html content/program/java/serial.txt [title]-Java序列化的机制和原理
 java/eight_queens_java.html template.html content/program/java/eight_queens_java.txt [title]-八皇后问题JAVA版回溯法
 java/fckeditor.html template.html content/program/java/fckeditor.txt [title]-FCKeditor2.6.3与FCKeditor.java2.4在JSP中配置
+java/interface.html template.html content/program/java/interface.txt [title]-精彩讲解java接口的概念 
+java/fbnx_java.html template.html content/program/java/fbnx_java.txt [title]-java之斐波那契数列
 
 system/windows_subst.html template.html content/program/system/windows_subst.txt [title]-windows磁盘映射
 system/linux_sendMail.html template.html content/program/system/linux_sendMail.txt [title]-linux_sendmail总结

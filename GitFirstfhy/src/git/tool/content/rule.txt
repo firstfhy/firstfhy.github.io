@@ -36,3 +36,4 @@ other/singleton.html template.html content/program/other/singleton.txt [title]-�
 other/aoi_01.html template.html content/program/other/aoi_01.txt [title]-AOI服务器的实现
 other/aoi_02.html template.html content/program/other/aoi_02.txt [title]-游戏服务器场景管理AOI方案
 other/sort.html template.html content/program/other/sort.txt [title]-程序员必知的8大排序
+other/trie_tree.html template.html content/program/other/trie_tree.txt [title]-程序员必知的8大排序

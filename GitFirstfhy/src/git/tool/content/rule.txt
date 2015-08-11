@@ -14,6 +14,7 @@ java/java_joda.html template.html content/program/java/java_joda.txt [title]-jod
 java/java_lock.html template.html content/program/java/java_lock.txt [title]-Java的Lock小结
 java/memory.html template.html content/program/java/memory.txt [title]-深度解析Java内存的原型
 java/serial.html template.html content/program/java/serial.txt [title]-Java序列化的机制和原理
+java/eight_queens_java.html template.html content/program/java/eight_queens_java.txt [title]-八皇后问题JAVA版回溯法
 
 system/windows_subst.html template.html content/program/system/windows_subst.txt [title]-windows磁盘映射
 system/linux_sendMail.html template.html content/program/system/linux_sendMail.txt [title]-linux_sendmail总结

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>八皇后问题JAVA版回溯法</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	
+	<link rel="stylesheet" href="../../stylesheets/stylesheet.css" media="screen">
+	<link rel="stylesheet" href="../../stylesheets/pygment_trac.css"/>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script type="text/javascript" src="../../javascripts/script.js"></script>
+	
+	<meta name="description" content="firstfhy">
+	
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+<body>
+	<div class="wrapper">
+		<div id="container">
+		    <div id="main" role="main">
+		    	<div class="download-bar">
+			    	<div class="inner">
+			          	<a class="code">JAVA</a>
+			        </div>
+		        	<span class="blc"></span><span class="trc"></span>
+		        </div>
+		        <article class="markdown-body">
+					<h3>
+						八皇后问题JAVA版回溯法
+				   	</h3>
+<p>public class EightQueens {<br/>&nbsp;<br/>&nbsp;public static void run(int row, int col,int n, int r[]){<br/>&nbsp;&nbsp;if(row == 0){<br/>&nbsp;&nbsp;&nbsp;for(int i = 0;i &lt; n;i ++){<br/>&nbsp;&nbsp;&nbsp;&nbsp;r[row] = i;<br/>&nbsp;&nbsp;&nbsp;&nbsp;run(1, 0, n, r);<br/>&nbsp;&nbsp;&nbsp;&nbsp;r = formatArray(n);<br/>&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;}<br/>&nbsp;&nbsp;else{<br/>&nbsp;&nbsp;&nbsp;if(check(row, col, r)){<br/>&nbsp;&nbsp;&nbsp;&nbsp;r[row] = col;<br/>&nbsp;&nbsp;&nbsp;&nbsp;if(row &lt; n - 1){//不是最后一行<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;run(row + 1, 0, n, r);<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(col &lt; n - 1){//不是最后一列<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;run(row, col + 1, n, r);<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;&nbsp;&nbsp;else{//最后一行<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(r);<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(col &lt; n - 1){//不是最后一列<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;run(row, col + 1, n, r);<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;&nbsp;else{<br/>&nbsp;&nbsp;&nbsp;&nbsp;if(row &lt; n - 1){//不是最后一行<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(col &lt; n - 1){//不是最后一列<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;run(row, col + 1, n, r);<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;&nbsp;&nbsp;else{//最后一行<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(col &lt; n - 1){//不是最后一列<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;run(row, col + 1, n, r);<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else{//最后一列<br/>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(k);<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;}<br/>&nbsp;}<br/>&nbsp;<br/>&nbsp;private static boolean check(int row, int col, int r[]){<br/>&nbsp;&nbsp;for(int i = 0;i &lt; row;i ++){<br/>&nbsp;&nbsp;&nbsp;if(col == r[i] + row - i || col == r[i] - (row - i) || col == r[i]){//不满足条件<br/>&nbsp;&nbsp;&nbsp;&nbsp;return false;<br/>&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;}<br/>&nbsp;&nbsp;return true;<br/>&nbsp;}<br/>&nbsp;<br/>&nbsp;private static int N = 0;<br/>&nbsp;<br/>&nbsp;private static void print(int k[]){<br/>&nbsp;&nbsp;String s = "";<br/>&nbsp;&nbsp;N ++;<br/>&nbsp;&nbsp;if(N &gt; 9){<br/>&nbsp;&nbsp;&nbsp;System.out.println("=========解法" + N +"========");<br/>&nbsp;&nbsp;}<br/>&nbsp;&nbsp;else{<br/>&nbsp;&nbsp;&nbsp;System.out.println("=========解法0" + N +"========");<br/>&nbsp;&nbsp;}<br/>&nbsp;&nbsp;for(int a = 0;a &lt; k.length;a ++){<br/>&nbsp;&nbsp;&nbsp;s = "";<br/>&nbsp;&nbsp;&nbsp;for(int i = 0;i &lt; k.length;i ++){<br/>&nbsp;&nbsp;&nbsp;&nbsp;if(i != k[a]){<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s += "□";<br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;&nbsp;&nbsp;else{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s += "■";<br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;&nbsp;System.out.println(s);<br/>&nbsp;&nbsp;}<br/>&nbsp;&nbsp;System.out.println("=======================");<br/>&nbsp;}<br/>&nbsp;<br/>&nbsp;public static int[] formatArray(int n){<br/>&nbsp;&nbsp;int[] k = new int[n];<br/>&nbsp;&nbsp;for(int i = 0;i &lt; n;i ++){<br/>&nbsp;&nbsp;&nbsp;k[i] = 0;<br/>&nbsp;&nbsp;}<br/>&nbsp;&nbsp;return k;<br/>&nbsp;}<br/>&nbsp;<br/>&nbsp;public static void main(String[] arg0){<br/>&nbsp;&nbsp;int n = 8;//改变这个值可以解决不同数量的皇后问题<br/>&nbsp;&nbsp;int[] r = new int[n];<br/>&nbsp;&nbsp;for(int i = 0;i &lt; n;i ++){<br/>&nbsp;&nbsp;&nbsp;r[i] = 0;<br/>&nbsp;&nbsp;}<br/>&nbsp;&nbsp;System.out.println("BEGIN!");<br/>&nbsp;&nbsp;run(0, 0, n, r);<br/>&nbsp;}<br/>}<br/></p>
+
+				</article>
+			</div>
+		</div>
+	    <footer>
+			<div class="owner">
+				<p><a href="https://github.com/firstfhy" class="avatar"><img src="https://avatars0.githubusercontent.com/u/10542465?v=3&amp;s=60" width="48" height="48"></a>View <a href="https://github.com/firstfhy">firstfhy</a> on <a href="https://www.github.com">GitHub</a></p>
+			</div>
+			<div class="creds">
+			  	<small>This page generated using <a href="http://pages.github.com/">GitHub Pages</a><br>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
+			</div>
+	    </footer>
+	</div>
+</body>
+</html>

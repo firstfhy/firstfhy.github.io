@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>C++回溯法实例2</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	
+	<link rel="stylesheet" href="../../stylesheets/stylesheet.css" media="screen">
+	<link rel="stylesheet" href="../../stylesheets/pygment_trac.css"/>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script type="text/javascript" src="../../javascripts/script.js"></script>
+	
+	<meta name="description" content="firstfhy">
+	
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+<body>
+	<div class="wrapper">
+		<div id="container">
+		    <div id="main" role="main">
+		    	<div class="download-bar">
+			    	<div class="inner">
+			          	<a class="code">CPP</a>
+			        </div>
+		        	<span class="blc"></span><span class="trc"></span>
+		        </div>
+		        <article class="markdown-body">
+					<h3>
+						C++回溯法实例2
+				   	</h3>
+设有A、B、C、D、E五人从事J1、J2、J3、J4、J5五项工作，每人只能从事一项，他们的效益如图所示，求最佳安排使效益最高。<br/>&nbsp;&nbsp;J1&nbsp;&nbsp;J2&nbsp;&nbsp;J3&nbsp;&nbsp;J4&nbsp;&nbsp;J5<br/>A 13&nbsp;&nbsp;11&nbsp;&nbsp;10&nbsp;&nbsp; 4&nbsp;&nbsp; 7<br/>B 13&nbsp;&nbsp;10&nbsp;&nbsp;10&nbsp;&nbsp; 8&nbsp;&nbsp; 5<br/>C&nbsp;&nbsp;5&nbsp;&nbsp; 9&nbsp;&nbsp; 7&nbsp;&nbsp; 7&nbsp;&nbsp; 4<br/>D 15&nbsp;&nbsp;12&nbsp;&nbsp;10&nbsp;&nbsp;11&nbsp;&nbsp; 5<br/>E 10&nbsp;&nbsp;11&nbsp;&nbsp; 8&nbsp;&nbsp; 8&nbsp;&nbsp; 4<br/> <br/>#include &lt;iostream.h&gt;<br/>int a[5],b[5],cheap,xiaoyi;<br/>int e[5][5]={{13,11,10,4,7},{13,10,10,8,5},{5,9,7,7,4},{15,12, 10,11,5},{10,11,8,8,4}};<br/>void gongzuo(int i,int j);<br/><br/>void jianzhi()<br/>{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(xiaoyi&lt;cheap)<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;xiaoyi=cheap;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for(int l=0;l&lt;5;l++)<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b[l]=a[l];<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for(int i=4;i&gt;-1;i--)//回溯<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(a<span style="font-style:italic"><wbr/>&lt;4) <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cheap-=e<span style="font-style:italic"><wbr/>[a<span style="font-style:italic"><wbr/>];<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gongzuo(i,a<span style="font-style:italic"><wbr/>+1);<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else cheap-=e<span style="font-style:italic"><wbr/>[a<span style="font-style:italic"><wbr/>];<br/>}<br/><br/>void gongzuo(int i,int j)<br/>{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int flage=0;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(i&gt;0)<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{//不能同列<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for(int k=0;k&lt;i;k++)<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(a[k]==j) flage=1;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(flage==0)<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cheap+=e<span style="font-style:italic"><wbr/>[j];<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a<span style="font-style:italic"><wbr/>=j;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(i&lt;4)<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gongzuo(i+1,0);<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cheap-=e<span style="font-style:italic"><wbr/>[j];<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else jianzhi(); <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(j&lt;4) gongzuo(i,j+1);<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else if(i&gt;0)<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{//寻找可以符合条件的节点<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for(int l=i-1;l&gt;-1;l--)<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(a[l]&lt;4) <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cheap-=e[l][a[l]];<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gongzuo(l,a[l]+1);<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else cheap-=e[l][a[l]];<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>}<br/><br/>void main()<br/>{<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;xiaoyi=0;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&lt;&lt;&quot;最高效益安排为:&quot;;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gongzuo(0,0);<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&lt;&lt;xiaoyi&lt;&lt;endl;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for(int i=0;i&lt;5;i++)<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&lt;&lt;&quot;第&quot;&lt;&lt;char(i+65)&lt;&lt;&quot;个人做第&quot;&lt;&lt;b<span style="font-style:italic"><wbr/>+1&lt;&lt;&quot;个任务&quot;&lt;&lt;endl;<br/>}</span></span></span></span></span></span></span></span></span></span>
+
+				</article>
+			</div>
+		</div>
+	    <footer>
+			<div class="owner">
+				<p><a href="https://github.com/firstfhy" class="avatar"><img src="https://avatars0.githubusercontent.com/u/10542465?v=3&amp;s=60" width="48" height="48"></a>View <a href="https://github.com/firstfhy">firstfhy</a> on <a href="https://www.github.com">GitHub</a></p>
+			</div>
+			<div class="creds">
+			  	<small>This page generated using <a href="http://pages.github.com/">GitHub Pages</a><br>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
+			</div>
+	    </footer>
+	</div>
+</body>
+</html>

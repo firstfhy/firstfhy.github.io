@@ -35,3 +35,4 @@ other/protobuf_01.html template.html content/program/other/protobuf_01.txt [titl
 other/singleton.html template.html content/program/other/singleton.txt [title]-设计模式_小单例有大秘密
 other/aoi_01.html template.html content/program/other/aoi_01.txt [title]-AOI服务器的实现
 other/aoi_02.html template.html content/program/other/aoi_02.txt [title]-游戏服务器场景管理AOI方案
+other/sort.html template.html content/program/other/sort.txt [title]-程序员必知的8大排序

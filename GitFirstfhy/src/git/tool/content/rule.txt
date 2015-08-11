@@ -1,8 +1,9 @@
 cpp/cpp_dll.html template.html content/program/cpp/cpp_dll.txt [title]-标准C/C++的DLL编写
 cpp/vc_link_vb.html template.html content/program/cpp/vc_link_vb.txt [title]-VB连VC
 cpp/function_table.html template.html content/program/cpp/function_table.txt [title]-C++虚函数及虚函数表解析
-cpp/rpn_cpp.html template.html content/program/cpp/rpn_cpp.txt [title]-C++逆波兰式的实现
+cpp/cpp_rpn.html template.html content/program/cpp/cpp_rpn.txt [title]-C++逆波兰式的实现
 cpp/string_match.html template.html content/program/cpp/string_match.txt [title]-C++串的简单模式匹配
+cpp/cpp_linkedlist.html template.html content/program/cpp/cpp_linkedlist.txt [title]-C++串的简单模式匹配
 
 nginx/nginx_reload.html template.html content/program/nginx/nginx_reload.txt [title]-nginx的平滑重启
 

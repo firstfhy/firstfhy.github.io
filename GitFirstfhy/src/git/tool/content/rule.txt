@@ -13,6 +13,7 @@ java/java_objectsize.html template.html content/program/java/java_objectsize.txt
 java/java_joda.html template.html content/program/java/java_joda.txt [title]-joda_time的使用
 java/java_lock.html template.html content/program/java/java_lock.txt [title]-Java的Lock小结
 java/memory.html template.html content/program/java/memory.txt [title]-深度解析Java内存的原型
+java/serial.html template.html content/program/java/serial.txt [title]-Java序列化的机制和原理
 
 system/windows_subst.html template.html content/program/system/windows_subst.txt [title]-windows磁盘映射
 system/linux_sendMail.html template.html content/program/system/linux_sendMail.txt [title]-linux_sendmail总结

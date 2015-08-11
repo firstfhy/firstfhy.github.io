@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Java序列化的机制和原理</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	
+	<link rel="stylesheet" href="../../stylesheets/stylesheet.css" media="screen">
+	<link rel="stylesheet" href="../../stylesheets/pygment_trac.css"/>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script type="text/javascript" src="../../javascripts/script.js"></script>
+	
+	<meta name="description" content="firstfhy">
+	
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+<body>
+	<div class="wrapper">
+		<div id="container">
+		    <div id="main" role="main">
+		    	<div class="download-bar">
+			    	<div class="inner">
+			          	<a class="code">JAVA</a>
+			        </div>
+		        	<span class="blc"></span><span class="trc"></span>
+		        </div>
+		        <article class="markdown-body">
+					<h3>
+						Java序列化的机制和原理
+				   	</h3>
+<p>&nbsp;<strong><span>Java</span></strong><strong><span>序列化算法透析</span></strong></p> <p><strong><span></span></strong><span>&nbsp; Serialization</span><span>（序列化）是一种将对象以一连串的字节描述的过程；反序列化</span><span><span>deserialization</span></span><span>是一种将这些字节重建成一个对象的过程。</span><span>Java</span><span>序列化</span><span>API</span><span>提供一种处理对象序列化的标准机制。在这里你能学到如何序列化一个对象，什么时候需要序列化以及</span><span>Java</span><span>序列化的算法，我们用一个实例来示范序列化以后的字节是如何描述一个对象的信息的。</span></p> <p><span></span><strong><span>序列化的必要性</span></strong></p> <p><strong><span></span></strong><span>Java</span><span>中，一切都是对象，在分布式环境中经常需要将</span><span>Object</span><span>从这一端网络或设备传递到另一端。 <br>这就需要有一种可以在两端传输数据的协议。</span><span>Java</span><span>序列化机制就是为了解决这个问题而产生。</span></p> <p><span></span><strong><span>如何序列化一个对象</span></strong></p> <p><strong><span></span></strong><span>一个对象能够序列化的前提是实现</span><span><span>Serializable</span></span><span>接口，</span><span><span>Serializable</span></span><span>接口没有方法，更像是个标记。 <br>有了这个标记的</span><span>Class</span><span>就能被序列化机制处理。</span></p> <div style="border-bottom: silver 1px solid; text-align: left; border-left: silver 1px solid; padding-bottom: 4px; line-height: 12pt; background-color: #f4f4f4; margin: 20px 0px 10px; padding-left: 4px; width: 97.5%; padding-right: 4px; font-family: 'Courier New', courier, monospace; direction: ltr; max-height: 200px; font-size: 8pt; overflow: auto; border-top: silver 1px solid; cursor: text; border-right: silver 1px solid; padding-top: 4px" id="codeSnippetWrapper"><pre style="border-bottom-style: none; text-align: left; padding-bottom: 0px; line-height: 12pt; border-right-style: none; background-color: #f4f4f4; margin: 0em; padding-left: 0px; width: 100%; padding-right: 0px; font-family: 'Courier New', courier, monospace; direction: ltr; border-top-style: none; color: black; font-size: 8pt; border-left-style: none; overflow: visible; padding-top: 0px" id="codeSnippet"><span style="color: #006080">import java.io.Serializable;</span>   <br>class TestSerial implements Serializable {          <br>    public byte version <span style="color: #006080">= 100;</span>         <br>    public byte count <span style="color: #006080">= 0;</span>   <br>} </pre><br></div>
+<p><span>然后我们写个程序将对象序列化并输出。</span><span><span>ObjectOutputStream</span></span><span>能把</span><span>Object</span><span>输出成</span><span>Byte</span><span>流。 <br>我们将</span><span>Byte</span><span>流暂时存储到</span><span><span>temp.out</span></span><span>文件里。</span><span>&nbsp;</span></p>
+<div style="border-bottom: silver 1px solid; text-align: left; border-left: silver 1px solid; padding-bottom: 4px; line-height: 12pt; background-color: #f4f4f4; margin: 20px 0px 10px; padding-left: 4px; width: 97.5%; padding-right: 4px; font-family: 'Courier New', courier, monospace; direction: ltr; max-height: 200px; font-size: 8pt; overflow: auto; border-top: silver 1px solid; cursor: text; border-right: silver 1px solid; padding-top: 4px" id="codeSnippetWrapper"><pre style="border-bottom-style: none; text-align: left; padding-bottom: 0px; line-height: 12pt; border-right-style: none; background-color: #f4f4f4; margin: 0em; padding-left: 0px; width: 100%; padding-right: 0px; font-family: 'Courier New', courier, monospace; direction: ltr; border-top-style: none; color: black; font-size: 8pt; border-left-style: none; overflow: visible; padding-top: 0px" id="codeSnippet">public static void main(String args[]) throws IOException {          <br>    FileOutputStream fos = new FileOutputStream("temp<span style="color: #cc6633">.out</span>");         <br>    ObjectOutputStream oos = new ObjectOutputStream(fos);          <br>    TestSerial ts = new TestSerial();          <br>    oos<span style="color: #cc6633">.writeObject</span>(ts);          <br>    oos<span style="color: #cc6633">.flush</span>();          <br>    oos<span style="color: #cc6633">.close</span>(); <br>}</pre><br></div>
+<ul class="con"><pre><span>如果要从持久的文件中读取</span><span>Bytes</span><span>重建对象，我们可以使用</span><span><span>ObjectInputStream</span></span><span>。</span>  </pre>
+<div style="border-bottom: silver 1px solid; text-align: left; border-left: silver 1px solid; padding-bottom: 4px; line-height: 12pt; background-color: #f4f4f4; margin: 20px 0px 10px; padding-left: 4px; width: 97.5%; padding-right: 4px; font-family: 'Courier New', courier, monospace; direction: ltr; max-height: 200px; font-size: 8pt; overflow: auto; border-top: silver 1px solid; cursor: text; border-right: silver 1px solid; padding-top: 4px" id="codeSnippetWrapper"><pre style="border-bottom-style: none; text-align: left; padding-bottom: 0px; line-height: 12pt; border-right-style: none; background-color: #f4f4f4; margin: 0em; padding-left: 0px; width: 100%; padding-right: 0px; font-family: 'Courier New', courier, monospace; direction: ltr; border-top-style: none; color: black; font-size: 8pt; border-left-style: none; overflow: visible; padding-top: 0px" id="codeSnippet">public static void main(String args[]) throws IOException {     <br>    FileInputStream fis = new FileInputStream("temp<span style="color: #cc6633">.out</span>");          <br>    ObjectInputStream oin = new ObjectInputStream(fis);           <br>    TestSerial ts = (TestSerial) oin<span style="color: #cc6633">.readObject</span>();           <br>    System<span style="color: #cc6633">.out</span><span style="color: #cc6633">.println</span>("version="+ts<span style="color: #cc6633">.version</span>);    <br>} </pre><br></div><pre>执行结果为 <span>100.</span> </pre><pre><strong><span>对象的序列化格式</span></strong></pre><pre><span>将一个对象序列化后是什么样子呢？打开刚才我们将对象序列化输出的</span><span><span>temp.out</span></span><span>文件</span></pre><pre><span></span><span>以</span><span>16</span><span>进制方式显示。内容应该如下：</span> </pre><pre><span>AC ED 00 05 73 72 00 0A 53 65 72 69 61 6C 54 65
+73 74 A0 0C 34 00 FE B1 DD F9 02 00 02 42 00 05
+63 6F 75 6E 74 42 00 07 76 65 72 73 69 6F 6E 78
+70 00 64
+</span><span><span></span></span></pre><pre><span><span>这一坨字节就是用来描述序列化以后的</span><span><span>TestSerial</span></span><span>对象的，我们注意到</span><span><span>TestSerial</span></span><span>类中只有两个域：</span></span></pre><pre><span><span></span></span><em><span><span>public</span></span><span><span>&nbsp;</span>byte version = 100;</span></em></pre><pre><em><span></span></em><em><span><span>public</span></span><span><span>&nbsp;</span>byte count = 0;</span></em></pre><pre><span>且都是</span><span>byte</span><span>型，理论上存储这两个域只需要</span><span>2</span><span>个</span><span>byte</span><span>，但是实际上</span><span><span>temp.out</span></span><span>占据空间为</span><span>51bytes</span><span>，也就是说除了数据以外，还包括了对序列化对象的其他描述</span></pre><pre><span></span><strong><span>Java</span></strong><strong><span>的序列化算法</span></strong></pre><pre><strong><span></span></strong><span>序列化算法一般会按步骤做如下事情：</span></pre><pre><span></span><span><span>◆</span></span><span>将对象实例相关的类元数据输出。</span></pre><pre><span></span><span><span>◆</span></span><span>递归地输出类的超类描述直到不再有超类。</span></pre><pre><span></span><span><span>◆</span></span><span>类元数据完了以后，开始从最顶层的超<span>类开始</span>输出对象实例的实际数据值。</span></pre><pre><span></span><span><span>◆</span></span><span>从上至下递归输出实例的数据</span></pre><pre><span></span><span>我们用另一个更完整覆盖所有可能出现的情况的例子来说明：</span></pre>
+<ol class="dp-j">
+<div style="border-bottom: silver 1px solid; text-align: left; border-left: silver 1px solid; padding-bottom: 4px; line-height: 12pt; background-color: #f4f4f4; margin: 20px 0px 10px; padding-left: 4px; width: 97.5%; padding-right: 4px; font-family: 'Courier New', courier, monospace; direction: ltr; max-height: 200px; font-size: 8pt; overflow: auto; border-top: silver 1px solid; cursor: text; border-right: silver 1px solid; padding-top: 4px" id="codeSnippetWrapper"><pre style="border-bottom-style: none; text-align: left; padding-bottom: 0px; line-height: 12pt; border-right-style: none; background-color: #f4f4f4; margin: 0em; padding-left: 0px; width: 100%; padding-right: 0px; font-family: 'Courier New', courier, monospace; direction: ltr; border-top-style: none; color: black; font-size: 8pt; border-left-style: none; overflow: visible; padding-top: 0px" id="codeSnippet">class parent implements Serializable {          <br>    int parentVersion <span style="color: #006080">= 10;</span>   <br>} </pre><br></div><span class="keyword"><strong><span style="color: #006699"></span></strong></span></ol></ul>
+<ul class="con">
+<div style="border-bottom: silver 1px solid; text-align: left; border-left: silver 1px solid; padding-bottom: 4px; line-height: 12pt; background-color: #f4f4f4; margin: 20px 0px 10px; padding-left: 4px; width: 97.5%; padding-right: 4px; font-family: 'Courier New', courier, monospace; direction: ltr; max-height: 200px; font-size: 8pt; overflow: auto; border-top: silver 1px solid; cursor: text; border-right: silver 1px solid; padding-top: 4px" id="codeSnippetWrapper"><pre style="border-bottom-style: none; text-align: left; padding-bottom: 0px; line-height: 12pt; border-right-style: none; background-color: #f4f4f4; margin: 0em; padding-left: 0px; width: 100%; padding-right: 0px; font-family: 'Courier New', courier, monospace; direction: ltr; border-top-style: none; color: black; font-size: 8pt; border-left-style: none; overflow: visible; padding-top: 0px" id="codeSnippet">class contain implements Serializable{          <br>    Int containVersion <span style="color: #006080">= 11;</span>   <br>}  </pre><br></div><pre style="border-bottom-style: none; text-align: left; padding-bottom: 0px; line-height: 12pt; border-right-style: none; background-color: #f4f4f4; margin: 0em; padding-left: 0px; width: 100%; padding-right: 0px; font-family: 'Courier New', courier, monospace; direction: ltr; border-top-style: none; height: 244px; color: black; font-size: 8pt; border-left-style: none; overflow: visible; padding-top: 0px" id="codeSnippet">public class SerialTest extends parent implements Serializable {   <br>       int version <span style="color: #006080">= 66;</span>   <br>       contain con = new contain();   <br>       public int getVersion() <span style="color: #006080">{  <br>              return version;</span>   <br>       }  <br>       public static void main(String args[]) throws IOException {  <br>              FileOutputStream fos = new FileOutputStream("temp<span style="color: #cc6633">.out</span>");  <br>              ObjectOutputStream oos = new ObjectOutputStream(fos);  <br>              SerialTest st = new SerialTest();  <br>              oos<span style="color: #cc6633">.writeObject</span>(st);  <br>              oos<span style="color: #cc6633">.flush</span>();  <br>              oos<span style="color: #cc6633">.close</span>();  <br>       }  <br>}  </pre>
+<li>&nbsp; <ol>
+<li>
+<div><span>AC ED: STREAM_MAGIC.<span>&nbsp;</span></span><span>声明使用了序列化协议</span><span>.</span></div>
+<li>
+<div><span>00 05: STREAM_VERSION.<span>&nbsp;</span></span><span>序列化协议版本</span><span>.</span></div>
+<li>
+<div><span><span>0x73: TC_OBJECT.</span></span><span><span>&nbsp;</span></span><span>声明这是一个新的对象</span><span>.</span>&nbsp;<span>&nbsp;</span></div></li></ol>
+<ol>
+<li>
+<div><span><span>0x72: TC_CLASSDESC.</span><span>&nbsp;</span></span><span>声明这里开始一个新</span><span>Class</span><span>。</span></div>
+<li>
+<div><span>00 0A: Class</span><span>名字的长度</span><span>.</span></div>
+<li>
+<div><span>53 65 72 69 61 6c 54 65 73 74:<span>&nbsp;</span><span>SerialTest,Class</span></span><span>类名</span><span>.</span></div>
+<li>
+<div><span>05 52 81 5A AC 66 02 F6:<span>&nbsp;</span><span>SerialVersionUID</span>,<span>&nbsp;</span></span><span>序列化</span><span>ID</span><span>，如果没有指定， <br>则会由算法随机生成一个</span><span>8byte</span><span>的</span><span>ID.</span></div>
+<li>
+<div><span>0x02:<span>&nbsp;</span></span><span>标记号</span><span>.<span>&nbsp;</span></span><span>该值声明该对象支持序列化。</span></div>
+<li>
+<div><span>00 02:<span>&nbsp;</span></span><span>该类所包含的域个数。</span></div></li></ol>
+<ol>
+<li>
+<div><span>0x49:<span>&nbsp;</span></span><span>域类型</span><span>. 49<span>&nbsp;</span></span><span>代表</span><span>"I",<span>&nbsp;</span></span><span>也就是</span><span>Int.</span></div>
+<li>
+<div><span>00 07:<span>&nbsp;</span></span><span>域名字的长度</span><span>.</span></div>
+<li>
+<div><span>76 65 72 73 69 6F 6E: version,</span><span>域名字描述</span><span>.</span></div></li></ol>
+<ol>
+<li>
+<div><span>0x4C:<span>&nbsp;</span></span><span>域的类型</span><span>.</span></div>
+<li>
+<div><span>00 03:<span>&nbsp;</span></span><span>域名字长度</span><span>.</span></div>
+<li>
+<div><span>63 6F 6E:<span>&nbsp;</span></span><span>域名字描述，</span><span>con</span></div>
+<li>
+<div><span><span>0x74: TC_STRING.</span><span>&nbsp;</span></span><span>代表一个</span><span>new String.</span><span>用</span><span>String</span><span>来引用对象。</span></div>
+<li>
+<div><span>00 09:<span>&nbsp;</span></span><span>该</span><span>String</span><span>长度</span><span>.</span></div>
+<li>
+<div><span>4C 63 6F 6E 74 61 69 6E 3B:<span>&nbsp;</span><span>Lcontain</span>;, JVM</span><span>的标准对象签名表示法</span><span>.</span></div>
+<li>
+<div><span>0x78: TC_ENDBLOCKDATA,</span><span>对象数据块结束的标志</span></div></li></ol>
+<ol>
+<li>
+<div><span><span>0x72: TC_CLASSDESC.</span><span>&nbsp;</span></span><span>声明这个是个新类</span><span>.</span></div>
+<li>
+<div><span>00 06:<span>&nbsp;</span></span><span>类名长度</span><span>.</span></div>
+<li>
+<div><span>70 61 72 65 6E 74: parent,</span><span>类名描述。</span></div>
+<li>
+<div><span>0E DB D2 BD 85 EE 63 7A:<span>&nbsp;</span><span>SerialVersionUID</span>,<span>&nbsp;</span></span><span>序列化</span><span>ID.</span></div>
+<li>
+<div><span>0x02:<span>&nbsp;</span></span><span>标记号</span><span>.<span>&nbsp;</span></span><span>该值声明该对象支持序列化</span><span>.</span></div>
+<li>
+<div><span>00 01:<span>&nbsp;</span></span><span>类中域的个数</span><span>.</span></div></li></ol>
+<ol>
+<li>
+<div><span>0x49:<span>&nbsp;</span></span><span>域类型</span><span>. 49<span>&nbsp;</span></span><span>代表</span><span>"I",<span>&nbsp;</span></span><span>也就是</span><span>Int.</span></div>
+<li>
+<div><span>00 0D:<span>&nbsp;</span></span><span>域名字长度</span><span>.</span></div>
+<li>
+<div><span>70 61 72 65 6E 74 56 65 72 73 69 6F 6E:<span>&nbsp;</span><span>parentVersion</span></span><span>，域名字描述。</span></div>
+<li>
+<div><span>0x78: TC_ENDBLOCKDATA,</span><span>对象块结束的标志。</span></div>
+<li>
+<div><span>0x70: TC_NULL,<span>&nbsp;</span></span><span>说明没有其他超类的标志。</span><span>.</span></div></li></ol>
+<ol>
+<li>
+<div><span><span>00<span>&nbsp;</span><span>00</span><span>&nbsp;</span></span></span><span><span>00</span></span><span><span>&nbsp;</span>0A: 10,<span>&nbsp;</span><span>parentVersion</span></span><span>域的值</span><span>.</span></div></li></ol>
+<ol>
+<li>
+<div><span><span>00<span>&nbsp;</span><span>00</span><span>&nbsp;</span></span></span><span><span>00</span></span><span><span>&nbsp;</span>42: 66, version</span><span>域的值</span><span>.</span></div></li></ol>
+<ol>
+<li>
+<div><span>0x73: TC_OBJECT,<span>&nbsp;</span></span><span>声明这是一个新的对象</span><span>.</span></div>
+<li>
+<div><span>0x72: TC_CLASSDESC</span><span>声明这里开始一个新</span><span>Class.</span></div>
+<li>
+<div><span>00 07:<span>&nbsp;</span></span><span>类名的长度</span><span>.</span></div>
+<li>
+<div><span>63 6F 6E 74 61 69 6E: contain,</span><span>类名描述</span><span>.</span></div>
+<li>
+<div><span>FC BB E6 0E FB CB 60 C7:<span>&nbsp;</span><span>SerialVersionUID</span>,<span>&nbsp;</span></span><span>序列化</span><span>ID.</span></div>
+<li>
+<div><span><span>0x02: Various flags.</span><span>&nbsp;</span></span><span>标记号</span><span>.<span>&nbsp;</span></span><span>该值声明该对象支持序列化</span></div>
+<li>
+<div><span>00 01:<span>&nbsp;</span></span><span>类内的域个数。</span></div></li></ol>
+<ol>
+<li>
+<div><span>0x49:<span>&nbsp;</span></span><span>域类型</span><span>. 49<span>&nbsp;</span></span><span>代表</span><span>"I",<span>&nbsp;</span></span><span>也就是</span><span>Int..</span></div>
+<li>
+<div><span>00 0E:<span>&nbsp;</span></span><span>域名字长度</span><span>.</span></div>
+<li>
+<div><span>63 6F 6E 74 61 69 6E 56 65 72 73 69 6F 6E:<span>&nbsp;</span><span>containVersion</span>,<span>&nbsp;</span></span><span>域名字描述</span><span>.</span></div>
+<li>
+<div><span>0x78: TC_ENDBLOCKDATA</span><span>对象块结束的标志</span><span>.</span></div></li></ol>
+<ol>
+<li>
+<div><span>0x70:TC_NULL</span><span>，没有超类了。</span></div></li></ol>
+<ol>
+<li>
+<div><span><span>00<span>&nbsp;</span><span>00</span><span>&nbsp;</span></span></span><span><span>00</span></span><span><span>&nbsp;</span>0B: 11,<span>&nbsp;</span><span>containVersion</span></span><span>的值</span><span>.</span></div></li></ol>
+<p><span>这个例子是相当的直白啦。</span><span><span>SerialTest</span></span><span><span>类实现</span></span><span>了</span><span>Parent</span><span>超类，内部还持有一个</span><span>Container</span><span>对象。</span></p>
+<p><span>序列化后的格式如下：</span></p>
+<p><span style="background-color: yellow; background-origin: initial; background-clip: initial">AC ED 00 05 73</span><span><span>&nbsp;</span><span style="background-color: lime; background-origin: initial; background-clip: initial">72 00 0A 53 65 72 69 61 6C 54 65</span></span></p>
+<p><span style="background-color: lime; background-origin: initial; background-clip: initial">73 74 05 52 81 5A AC 66 02 F6 02 00 02</span><span><span>&nbsp;</span><span style="background-color: aqua; background-origin: initial; background-clip: initial">49 00 07</span></span></p>
+<p><span style="background-color: aqua; background-origin: initial; background-clip: initial">76 65 72 73 69 6F 6E</span><span><span>&nbsp;</span><span style="background-color: silver; background-origin: initial; background-clip: initial">4C</span><span style="background-color: silver; background-origin: initial; background-clip: initial"><span>&nbsp;</span>00 03 63 6F 6E</span><span>&nbsp;</span><span style="background-color: silver; background-origin: initial; background-clip: initial">74 00 09</span></span></p>
+<p><span style="background-color: silver; background-origin: initial; background-clip: initial">4C</span><span style="background-color: silver; background-origin: initial; background-clip: initial"><span>&nbsp;</span>63 6F 6E 74 61 69 6E 3B 78</span><span><span>&nbsp;</span><span style="background-color: red; background-origin: initial; background-clip: initial">72 00 06 70 61 72</span></span></p>
+<p><span style="background-color: red; background-origin: initial; background-clip: initial">65 6E 74 0E DB D2 BD 85 EE 63 7A 02 00 01</span><span><span>&nbsp;</span><span style="background-color: red; background-origin: initial; background-clip: initial">49 00</span></span></p>
+<p><span style="background-color: red; background-origin: initial; background-clip: initial">0D 70 61 72 65 6E 74 56 65 72 73 69 6F 6E 78 70</span></p>
+<p><span style="background-color: teal; background-origin: initial; background-clip: initial">00<span>&nbsp;</span><span>00</span><span>&nbsp;</span><span>00</span><span>&nbsp;</span>0A 00<span>&nbsp;</span><span>00</span><span>&nbsp;</span><span>00</span><span>&nbsp;</span>42</span><span><span>&nbsp;</span><span style="background-color: green; background-origin: initial; background-clip: initial">73 72 00 07 63 6F 6E 74</span></span></p>
+<p><span style="background-color: green; background-origin: initial; background-clip: initial">61 69 6E FC BB E6 0E FB CB 60 C7 02 00 01</span><span><span>&nbsp;</span><span style="background-color: green; background-origin: initial; background-clip: initial">49 00</span></span></p>
+<p><span style="background-color: green; background-origin: initial; background-clip: initial">0E 63 6F 6E 74 61 69 6E 56 65 72 73 69 6F 6E 78</span></p>
+<p><span style="background-color: green; background-origin: initial; background-clip: initial">70</span><span><span>&nbsp;</span><span style="background-color: green; background-origin: initial; background-clip: initial">00<span>&nbsp;</span><span>00</span><span>&nbsp;</span><span>00</span><span>&nbsp;</span>0B</span></span></p>
+<p><span>我们来仔细看看这些字节都代表了啥。开头部分，见<span style="background-color: yellow; background-origin: initial; background-clip: initial">颜色</span>：</span></p>
+<p><span>序列化算法的第一步就是输出对象相关类的描述。例子所示对象为</span><span><span>SerialTest</span></span><span>类实例， <br>因此接下来输出</span><span><span>SerialTest</span></span><span>类的描述。见<span style="background-color: lime; background-origin: initial; background-clip: initial">颜色</span>：</span></p>
+<p><span>接下来，算法输出其中的一个域，</span><span><span>int</span></span><span><span>&nbsp;</span>version=66</span><span>；见<span style="background-color: aqua; background-origin: initial; background-clip: initial">颜色</span>：</span></p>
+<p><span>然后，算法输出下一个域，</span><span>contain con = new contain();</span><span>这个有点特殊，是个对象。 <br>描述对象类型引用时需要使用</span><span>JVM</span><span>的标准对象签名表示法，见<span style="background-color: silver; background-origin: initial; background-clip: initial">颜色</span>：</span></p>
+<p><span>.</span><span>接下来算法就会输出超类也就是</span><span>Parent</span><span>类描述了，见<span style="background-color: red; background-origin: initial; background-clip: initial">颜色</span>：</span></p>
+<p><span>下一步，输出</span><span>parent</span><span>类的域描述，</span><span><span>int</span></span><span><span>&nbsp;</span><span>parentVersion</span>=100;</span><span>同见<span style="background-color: red; background-origin: initial; background-clip: initial">颜色</span>：</span></p>
+<p><span>到此为止，算法已经对所有的类的描述都做了输出。下一步就是把实例对象的实际值输出了。这时候是从</span><span>parent Class</span><span>的域开始的，见<span style="background-color: teal; background-origin: initial; background-clip: initial">颜色</span>：</span></p>
+<p><span>还有</span><span><span>SerialTest</span></span><span>类的域：</span></p>
+<p><span>再往后的</span><span>bytes</span><span>比较有意思，算法需要描述</span><span>contain</span><span>类的信息，要记住， <br>现在还没有对</span><span>contain</span><span>类进行过描述，见<span style="background-color: green; background-origin: initial; background-clip: initial">颜色</span>：</span></p>
+<p><span>.</span><span>输出</span><span>contain</span><span>的唯一的域描述，</span><span><span>int</span></span><span><span>&nbsp;</span><span>containVersion</span>=11</span><span>；</span></p>
+<p><span>这时，序列化算法会检查</span><span>contain</span><span>是否有超类，如果有的话会接着输出。</span></p>
+<p><span>最后，将</span><span>contain</span><span>类实际域值输出。</span></p>
+<p><span>OK,</span><span>我们讨论了</span><span>java</span><span>序列化的机制和原理，希望能对同学们有所帮助。</span></p>
+
+				</article>
+			</div>
+		</div>
+	    <footer>
+			<div class="owner">
+				<p><a href="https://github.com/firstfhy" class="avatar"><img src="https://avatars0.githubusercontent.com/u/10542465?v=3&amp;s=60" width="48" height="48"></a>View <a href="https://github.com/firstfhy">firstfhy</a> on <a href="https://www.github.com">GitHub</a></p>
+			</div>
+			<div class="creds">
+			  	<small>This page generated using <a href="http://pages.github.com/">GitHub Pages</a><br>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
+			</div>
+	    </footer>
+	</div>
+</body>
+</html>

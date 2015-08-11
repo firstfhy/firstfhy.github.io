@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>CPP</title>
+	<title>C++动态分配空间实例</title>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	
 	<link rel="stylesheet" href="../../stylesheets/stylesheet.css" media="screen">
@@ -26,18 +26,10 @@
 		        </div>
 		        <article class="markdown-body">
 					<h3>
-						CPP
+						C++动态分配空间实例
 				   	</h3>
-<ol>
-	<li><a href="cpp_dll.html">标准C/C++的DLL编写</a></li>
-	<li><a href="cpp_linkedlist.html">C++串的简单模式匹配</a></li>
-	<li><a href="cpp_rpn.html">C++逆波兰式的实现</a></li>
-	<li><a href="cpp_sequence.html">C++动态分配空间实例</a></li>
-	<li><a href="dynamic_malloc.html">C++动态分配空间实例</a></li>
-	<li><a href="function_table.html">C++虚函数及虚函数表解析</a></li>
-	<li><a href="string_match.html">C++串的简单模式匹配</a></li>
-	<li><a href="vc_link_vb.html">VB连VC</a></li>
-</ol>
+#include &lt;iostream.h&gt;<br/>int a[100],max=1,min=1;<br/>void paixu(int m)<br/>{<br/>int i,j,t;<br/>for(i=0;i&lt;m-1;i++)<br/>for(j=i+1;j&lt;m;j++)<br/>if(a<span style="font-style:italic"><wbr/>&gt;a[j])<br/>{<br/>t=a<span style="font-style:italic"><wbr/>;<br/>a<span style="font-style:italic"><wbr/>=a[j];<br/>a[j]=t;<br/>}<br/>}<br/>void charu(int m)<br/>{<br/>int i;<br/>for(i=0;i&lt;m;i++)<br/>a<span style="font-style:italic"><wbr/>=a<span style="font-style:italic"><wbr/>;<br/>}<br/>void maxsum(int n)<br/>{<br/>max=a[1]*a[0]+1;<br/>if(n&gt;2)<br/>{<br/>a[1]=max;<br/>a[0]=0;<br/>charu(--n);<br/>paixu(n);<br/>maxsum(n);<br/>}<br/>}<br/>void main()<br/>{<br/>int n,i;<br/>cout&lt;&lt;&quot;请输入数据个数:&quot;;<br/>cin&gt;&gt;n;<br/>for(i=0;i&lt;n;i++)<br/>{<br/>cout&lt;&lt;&quot;请输入数据&quot;&lt;&lt;i&lt;&lt;&quot;:&quot;;<br/>cin&gt;&gt;a<span style="font-style:italic"><wbr/>;<br/>}<br/>paixu(n);<br/>min=a[n-1];<br/>for(i=n-2;i&gt;-1;i--)<br/>min=min*a<span style="font-style:italic"><wbr/>+1;<br/>maxsum(n);<br/>cout&lt;&lt;&quot;数列极差为:&quot;&lt;&lt;max-min&lt;&lt;endl;<br/>}</span></span></span></span></span></span></span>
+
 				</article>
 			</div>
 		</div>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>C++串的简单模式匹配</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	
+	<link rel="stylesheet" href="../../stylesheets/stylesheet.css" media="screen">
+	<link rel="stylesheet" href="../../stylesheets/pygment_trac.css"/>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script type="text/javascript" src="../../javascripts/script.js"></script>
+	
+	<meta name="description" content="firstfhy">
+	
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+<body>
+	<div class="wrapper">
+		<div id="container">
+		    <div id="main" role="main">
+		    	<div class="download-bar">
+			    	<div class="inner">
+			          	<a class="code">CPP</a>
+			        </div>
+		        	<span class="blc"></span><span class="trc"></span>
+		        </div>
+		        <article class="markdown-body">
+					<h3>
+						C++串的简单模式匹配
+				   	</h3>
+先依次输入主串S及模式串T的值，然后调用子串的定位函数Index( )进行模式匹配。匹配成功后返回T在S中第pos个字符之后的位置，否则返回0。<br/>#include &lt;stdio.h&gt; <br/>#define MAXSTRLEN 255 <br/>typedef unsigned char sstring[MAXSTRLEN+1]; <br/>int Index(sstring &amp;S,sstring T,int pos) <br/>{&nbsp;&nbsp;//返回子串T在主串中第pos个字符之后的位置 <br/>&nbsp;&nbsp; //若不返回，返回0。其中T非空，1&lt;=pos&lt;=strlength(s) <br/>&nbsp;&nbsp;&nbsp;&nbsp;int i,j; <br/>i=pos; <br/>j=1; <br/>while(i&lt;=S[0]&amp;&amp;j&lt;=T[0]) <br/>{ <br/>&nbsp;&nbsp;&nbsp;&nbsp;if(S<span style="font-style:italic"><wbr/>==T[j]) <br/>&nbsp;&nbsp;&nbsp;&nbsp;{ <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ++i; <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ++j; <br/>&nbsp;&nbsp;&nbsp;&nbsp;} <br/>&nbsp;&nbsp;&nbsp;&nbsp;else <br/>&nbsp;&nbsp;&nbsp;&nbsp;{ <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; i=i-j+2; <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; j=1; <br/>&nbsp;&nbsp;&nbsp;&nbsp;} <br/>} <br/>if(j&gt;T[0]) return i-T[0]; <br/>else&nbsp;&nbsp;&nbsp;&nbsp;return 0; <br/>} <br/>void main() <br/>{ <br/>int re,i,pos; <br/>sstring S1,S2; <br/>printf(&quot;\nEnter length of the string S1 and the string S1:\n&quot;); <br/>scanf(&quot;%d&quot;,&amp;S1[0]); <br/>for(i=1;i&lt;=S1[0];i++) <br/>{ <br/>&nbsp;&nbsp;scanf(&quot;%c&quot;,&amp;S1<span style="font-style:italic"><wbr/>); <br/>} <br/>printf(&quot;\nEnter length of the string S2 and the string S2:\n&quot;); <br/>scanf(&quot;%d&quot;,&amp;S2[0]); <br/>for(i=1;i&lt;=S2[0];i++) <br/>{ <br/>scanf(&quot;%c&quot;,&amp;S2<span style="font-style:italic"><wbr/>); <br/>} <br/>printf(&quot;\nInput positionof beginning:&quot;); <br/>scanf(&quot;%d&quot;,&amp;pos); <br/>re=Index(S1,S2,pos); <br/>if(re!=0) <br/>&nbsp;&nbsp; printf(&quot;\nThe posision is %d\n&quot;,&amp;re); <br/>else <br/>&nbsp;&nbsp; printf(&quot;\nNot found!&quot;); <br/>}</span></span></span>
+
+				</article>
+			</div>
+		</div>
+	    <footer>
+			<div class="owner">
+				<p><a href="https://github.com/firstfhy" class="avatar"><img src="https://avatars0.githubusercontent.com/u/10542465?v=3&amp;s=60" width="48" height="48"></a>View <a href="https://github.com/firstfhy">firstfhy</a> on <a href="https://www.github.com">GitHub</a></p>
+			</div>
+			<div class="creds">
+			  	<small>This page generated using <a href="http://pages.github.com/">GitHub Pages</a><br>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
+			</div>
+	    </footer>
+	</div>
+</body>
+</html>

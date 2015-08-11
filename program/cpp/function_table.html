@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>VB连VC</title>
+	<title>C++虚函数及虚函数表解析</title>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	
 	<link rel="stylesheet" href="../../stylesheets/stylesheet.css" media="screen">
@@ -26,7 +26,7 @@
 		        </div>
 		        <article class="markdown-body">
 					<h3>
-						VB连VC
+						C++虚函数及虚函数表解析
 				   	</h3>
 <p>虚函数的定义：<br />　　虚函数必须是<span style="color: #ff0000;">类</span>的<span style="color: #ff0000;">非静态成员函数(且非构造函数)</span>，其访问权限是<span style="color: #ff0000;">public（可以定义为private or proteceted, 但是对于多态来说，没有意义。）</span>，在基类的类定义中定义虚函数的一般形式：<br />　　virtual 函数返回值类型 虚函数名（形参表）<br />　　{ 函数体 }<br />虚函数的作用是实现动态联编，也就是在程序的运行阶段动态地选择合适的成员函数，在定义了虚函数后，<br />可以在基类的派生类中对虚函数重新定义（<span style="color: #ff0000;">形式也是：virtual 函数返回值类型 虚函数名（形参表）<span style="color: #ff0000;">{ 函数体 }</span></span>），在派生类中重新定义的函数应与虚函数具有相同的形参个数和形参类型。以实现统一的接口，不同定义过程。如果在派生类中没有对虚函数重新定义，则它继承其基类的虚函数。当程序发现虚函数名前的关键字virtual后，会自动将其作为动态联编处理，即在程序运行时动态地选择合适的成员函数。</p>
 <p>实现动态联编需要三个条件：<br />　　1、 必须把需要动态联编的行为定义为类的<span style="color: #ff0000;">公共属性的虚函数</span>。<br />　　2、 类之间存在子类型关系，一般表现为一个类从另一个类<span style="color: #ff0000;">公有派生</span>而来。<br />　　3、 必须先使用基类指针指向子类型的对象，然后<span style="color: #ff0000;">直接或者间接使用基类指针</span>调用虚函数。<br /><br />定义虚函数的限制：</p>

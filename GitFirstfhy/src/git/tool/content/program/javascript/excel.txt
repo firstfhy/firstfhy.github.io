@@ -1,0 +1,28 @@
+使用javascript生成excel文件，基本思路是使用Microsoft Excel Object，和在其他编程语言中使用excel原理是一样的。不过客户端的电脑上必须安装有excel才行。
+<br>var xls = new ActiveXObject ( "Excel.Application" );
+<br> xls.visible = true;
+<br> var newBook = xls.Workbooks.Add;
+<br> newBook.Worksheets.Add;
+<br> newBook.Worksheets(1).Activate;
+<br> xls.ActiveWorkBook.ActiveSheet.PageSetup.Orientation = 2;
+<br> xls.ActiveWorkBook.ActiveSheet.PageSetup.PaperSize = 5;
+<br> newBook.Worksheets(1).Columns("A").columnwidth=40;  // 设置 A 列宽度为40px
+<br> newBook.Worksheets(1).Columns("A").WrapText = true; // 设置自动换行
+<br>newBook.Worksheets(1).Columns("B").columnwidth=50;  // 设置 B 列宽度为50px
+<br> newBook.Worksheets(1).Columns("B").WrapText = true; // 设置自动换行
+<br>newBook.Worksheets(1).Range("A1:B1000").NumberFormat = "0";
+<br> newBook.Worksheets(1).Range("A1:B1000").HorizontalAlignment = -4131;
+<br> newBook.Worksheets(1).Range("A1:B1").merge();  // 合并单元格区域 A1:D1
+<br> newBook.Worksheets(1).Range("A1:B1").value="My Title"; // 赋值
+<br>newBook.Worksheets(1).Range("A1:B1").HorizontalAlignment=3; //居中对齐
+<br>newBook.Worksheets(1).Range("A1:B1").Interior.ColorIndex=2; //背景色设为白色
+<br>newBook.Worksheets(1).Range("A1:B1").Font.Bold = true;  // 粗体
+<br>newBook.Worksheets(1).Range("A1:B1").Font.ColorIndex = 3; // 字体为红色
+<br>newBook.Worksheets(1).Cells(2,1).Interior.ColorIndex=15; // 背景色
+<br>newBook.Worksheets(1).Cells(2,1).value="Second Row, First Column";
+<br> newBook.Worksheets(1).Cells(2,1).Font.Italic=true;
+<br> newBook.Worksheets(1).Cells(2,1).Font.Bold=true;
+<br> newBook.Worksheets(1).Cells(2,2).value="Second Row, Second Column";
+<br> newBook.Worksheets(1).Cells(3,1).value="Third Row, First Column";
+<br> newBook.Worksheets(1).Cells(3,2).value="Third Row, Second Column";
+<br> newBook.Worksheets(1).Name="My First WorkSheet"; 

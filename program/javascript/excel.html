@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>用javascript生成excel文件</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	
+	<link rel="stylesheet" href="../../stylesheets/stylesheet.css" media="screen">
+	<link rel="stylesheet" href="../../stylesheets/pygment_trac.css"/>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script type="text/javascript" src="../../javascripts/script.js"></script>
+	
+	<meta name="description" content="firstfhy">
+	
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+<body>
+	<div class="wrapper">
+		<div id="container">
+		    <div id="main" role="main">
+		    	<div class="download-bar">
+			    	<div class="inner">
+			          	<a class="code">JAVASCRIPT</a>
+			        </div>
+		        	<span class="blc"></span><span class="trc"></span>
+		        </div>
+		        <article class="markdown-body">
+					<h3>
+						用javascript生成excel文件
+				   	</h3>
+使用javascript生成excel文件，基本思路是使用Microsoft Excel Object，和在其他编程语言中使用excel原理是一样的。不过客户端的电脑上必须安装有excel才行。
+<br>var xls = new ActiveXObject ( "Excel.Application" );
+<br> xls.visible = true;
+<br> var newBook = xls.Workbooks.Add;
+<br> newBook.Worksheets.Add;
+<br> newBook.Worksheets(1).Activate;
+<br> xls.ActiveWorkBook.ActiveSheet.PageSetup.Orientation = 2;
+<br> xls.ActiveWorkBook.ActiveSheet.PageSetup.PaperSize = 5;
+<br> newBook.Worksheets(1).Columns("A").columnwidth=40;  // 设置 A 列宽度为40px
+<br> newBook.Worksheets(1).Columns("A").WrapText = true; // 设置自动换行
+<br>newBook.Worksheets(1).Columns("B").columnwidth=50;  // 设置 B 列宽度为50px
+<br> newBook.Worksheets(1).Columns("B").WrapText = true; // 设置自动换行
+<br>newBook.Worksheets(1).Range("A1:B1000").NumberFormat = "0";
+<br> newBook.Worksheets(1).Range("A1:B1000").HorizontalAlignment = -4131;
+<br> newBook.Worksheets(1).Range("A1:B1").merge();  // 合并单元格区域 A1:D1
+<br> newBook.Worksheets(1).Range("A1:B1").value="My Title"; // 赋值
+<br>newBook.Worksheets(1).Range("A1:B1").HorizontalAlignment=3; //居中对齐
+<br>newBook.Worksheets(1).Range("A1:B1").Interior.ColorIndex=2; //背景色设为白色
+<br>newBook.Worksheets(1).Range("A1:B1").Font.Bold = true;  // 粗体
+<br>newBook.Worksheets(1).Range("A1:B1").Font.ColorIndex = 3; // 字体为红色
+<br>newBook.Worksheets(1).Cells(2,1).Interior.ColorIndex=15; // 背景色
+<br>newBook.Worksheets(1).Cells(2,1).value="Second Row, First Column";
+<br> newBook.Worksheets(1).Cells(2,1).Font.Italic=true;
+<br> newBook.Worksheets(1).Cells(2,1).Font.Bold=true;
+<br> newBook.Worksheets(1).Cells(2,2).value="Second Row, Second Column";
+<br> newBook.Worksheets(1).Cells(3,1).value="Third Row, First Column";
+<br> newBook.Worksheets(1).Cells(3,2).value="Third Row, Second Column";
+<br> newBook.Worksheets(1).Name="My First WorkSheet"; 
+
+				</article>
+			</div>
+		</div>
+	    <footer>
+			<div class="owner">
+				<p><a href="https://github.com/firstfhy" class="avatar"><img src="https://avatars0.githubusercontent.com/u/10542465?v=3&amp;s=60" width="48" height="48"></a>View <a href="https://github.com/firstfhy">firstfhy</a> on <a href="https://www.github.com">GitHub</a></p>
+			</div>
+			<div class="creds">
+			  	<small>This page generated using <a href="http://pages.github.com/">GitHub Pages</a><br>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
+			</div>
+	    </footer>
+	</div>
+</body>
+</html>

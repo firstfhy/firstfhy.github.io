@@ -1,6 +1,7 @@
 cpp/cpp_dll.html template.html content/program/cpp/cpp_dll.txt [title]-标准C/C++的DLL编写
 cpp/vc_link_vb.html template.html content/program/cpp/vc_link_vb.txt [title]-VB连VC
 cpp/function_table.html template.html content/program/cpp/function_table.txt [title]-C++虚函数及虚函数表解析
+cpp/rpn_cpp.html template.html content/program/cpp/rpn_cpp.txt [title]-C++逆波兰式的实现
 
 nginx/nginx_reload.html template.html content/program/nginx/nginx_reload.txt [title]-nginx的平滑重启
 
@@ -31,6 +32,7 @@ ide/ide_vistual_studio_01.html template.html content/program/ide/ide_vistual_stu
 ide/ide_vistual_studio_02.html template.html content/program/ide/ide_vistual_studio_02.txt [title]-Visual_Studio原生开发的调试技巧(下)
 
 javascript/javascript_wscript.html template.html content/program/javascript/javascript_wscript.txt [title]-WScript.Shell对象的run和exec
+javascript/excel.html template.html content/program/javascript/excel.txt [title]-用javascript生成excel文件
 
 blizzard/blizzard_mpq.html template.html content/program/blizzard/blizzard_mpq.txt [title]-进军暴雪_MPQ技术内幕
 

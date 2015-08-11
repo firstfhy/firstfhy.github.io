@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>C++逆波兰式的实现</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	
+	<link rel="stylesheet" href="../../stylesheets/stylesheet.css" media="screen">
+	<link rel="stylesheet" href="../../stylesheets/pygment_trac.css"/>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script type="text/javascript" src="../../javascripts/script.js"></script>
+	
+	<meta name="description" content="firstfhy">
+	
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+<body>
+	<div class="wrapper">
+		<div id="container">
+		    <div id="main" role="main">
+		    	<div class="download-bar">
+			    	<div class="inner">
+			          	<a class="code">CPP</a>
+			        </div>
+		        	<span class="blc"></span><span class="trc"></span>
+		        </div>
+		        <article class="markdown-body">
+					<h3>
+						C++逆波兰式的实现
+				   	</h3>
+#include &lt;stdio.h&gt; <br/>#include &lt;string.h&gt; <br/>#define elemtype&nbsp;&nbsp;char <br/>&nbsp;&nbsp; const&nbsp;&nbsp;int maxsize=50; <br/>&nbsp;&nbsp; struct stack <br/>&nbsp;&nbsp; { <br/>&nbsp;&nbsp;&nbsp;&nbsp; elemtype s[maxsize]; <br/>&nbsp;&nbsp;&nbsp;&nbsp; int top; <br/>&nbsp;&nbsp; <br/>&nbsp;&nbsp;&nbsp;&nbsp; void setnull()//初始化 <br/>&nbsp;&nbsp;{&nbsp;&nbsp; top=0;&nbsp;&nbsp;} <br/>&nbsp;&nbsp;&nbsp;&nbsp; void push( elemtype&nbsp;&nbsp;x)//将元素压入栈 <br/>&nbsp;&nbsp;{ if(top&gt;=maxsize-1) <br/>&nbsp;&nbsp; printf(&quot;栈满\n&quot;); <br/>&nbsp;&nbsp;top++; <br/>&nbsp;&nbsp;s[top]=x; <br/>&nbsp;&nbsp;} <br/>&nbsp;&nbsp;elemtype pop()//将元素出栈 <br/>&nbsp;&nbsp;{ elemtype x; <br/>&nbsp;&nbsp;if(top&lt;0) <br/>&nbsp;&nbsp; printf(&quot;栈空\n&quot;); <br/>&nbsp;&nbsp;x=top; <br/>&nbsp;&nbsp;top++; <br/>&nbsp;&nbsp;return x; <br/>&nbsp;&nbsp;} <br/>&nbsp;&nbsp;elemtype gettop()//寻找栈顶元素 <br/>&nbsp;&nbsp;{ elemtype&nbsp;&nbsp;x; <br/>&nbsp;&nbsp; if(top!=x) <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;printf(&quot;栈空\n&quot;); <br/>&nbsp;&nbsp; x=top-1; <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return x; <br/>&nbsp;&nbsp;} <br/>&nbsp;&nbsp;elemtype pre(elemtype&nbsp;&nbsp;x1, elemtype&nbsp;&nbsp;x2)//判断栈顶元素与a数组中的第一个元素的优先级 <br/>&nbsp;&nbsp;{ elemtype result='&lt;'; <br/>&nbsp;&nbsp;elemtype sting[2]; <br/>&nbsp;&nbsp;sting[0]=x2; <br/>&nbsp;&nbsp;sting[1]='\0'; <br/>&nbsp;&nbsp;if(((x1=='+'||x1=='-')&amp;&amp;(strstr(&quot;+-)#&quot;,sting)!=NULL))||((x1=='*'||x1=='/')&amp;&amp;strstr(&quot;+-*/)#&quot;,sting)!=NULL)||(x1==')'&amp;&amp;strstr(&quot;+-*/)#&quot;,sting)!=NULL)) <br/>&nbsp;&nbsp; result='&gt;'; <br/>&nbsp;&nbsp;else <br/>&nbsp;&nbsp; if(x1=='('&amp;&amp;x2==')'||x1=='#'&amp;&amp;x2=='#') <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result='='; <br/>&nbsp;&nbsp; else <br/>&nbsp;&nbsp; if(x1==')'&amp;&amp;x2=='('||x1=='#'&amp;&amp;x2==')') <br/>&nbsp;&nbsp;&nbsp;&nbsp; result='='; <br/>&nbsp;&nbsp;return result; <br/>&nbsp;&nbsp;} <br/>&nbsp;&nbsp; }; <br/>&nbsp;&nbsp; int main() <br/>&nbsp;&nbsp; {&nbsp;&nbsp; stack s; <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int i=0;&nbsp;&nbsp;&nbsp;&nbsp; <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; elemtype a[maxsize],ch,b; <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; printf(&quot;本程序实现：将中缀表达式变为后缀表达式 \n&quot;);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br/>&nbsp;&nbsp;&nbsp;&nbsp; printf(&quot;请输入中缀表达式并以'#'作为结束:\n&quot;); <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gets(a); <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; printf(&quot;转换成的后缀表达式为:\n&quot;); <br/>&nbsp;&nbsp;&nbsp;&nbsp;s.setnull(); <br/>&nbsp;&nbsp;&nbsp;&nbsp;s.push('#'); <br/>&nbsp;&nbsp;&nbsp;&nbsp;ch=a<span style="font-style:italic"><wbr/>; <br/>&nbsp;&nbsp; while(ch!='#'||s.gettop()!='#') <br/>{ if(ch!='+'&amp;&amp;ch!='-'&amp;&amp;ch!='*'&amp;&amp;ch!='/'&amp;&amp;ch!='('&amp;&amp;ch!=')'&amp;&amp;ch!='#') <br/>&nbsp;&nbsp;{ printf(&quot;%c&quot;,ch); <br/>&nbsp;&nbsp;ch=a[++i]; <br/>&nbsp;&nbsp;if(ch=='\0') <br/>&nbsp;&nbsp; break; <br/>&nbsp;&nbsp;} <br/>&nbsp;&nbsp;else <br/>&nbsp;&nbsp;&nbsp;&nbsp; switch(s.pre(s.gettop(),ch)) <br/>{ case&nbsp;&nbsp;'&lt;' :&nbsp;&nbsp; s.push(ch);&nbsp;&nbsp;ch=a[++i]; <br/>&nbsp;&nbsp;&nbsp;&nbsp; break; <br/>&nbsp;&nbsp; case&nbsp;&nbsp;'=' :&nbsp;&nbsp; s.pop();&nbsp;&nbsp;ch=a[++i]; <br/>&nbsp;&nbsp;&nbsp;&nbsp; break; <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;&nbsp;'&gt;' :&nbsp;&nbsp; b=s.pop();&nbsp;&nbsp;printf(&quot;%c&quot;,b); <br/>&nbsp;&nbsp;&nbsp;&nbsp; break; <br/>} <br/>}&nbsp;&nbsp;&nbsp;&nbsp; <br/>&nbsp;&nbsp;&nbsp;&nbsp; printf(&quot;\n&quot;); <br/>&nbsp;&nbsp;&nbsp;&nbsp;return 0; <br/>&nbsp;&nbsp; }</span>
+
+				</article>
+			</div>
+		</div>
+	    <footer>
+			<div class="owner">
+				<p><a href="https://github.com/firstfhy" class="avatar"><img src="https://avatars0.githubusercontent.com/u/10542465?v=3&amp;s=60" width="48" height="48"></a>View <a href="https://github.com/firstfhy">firstfhy</a> on <a href="https://www.github.com">GitHub</a></p>
+			</div>
+			<div class="creds">
+			  	<small>This page generated using <a href="http://pages.github.com/">GitHub Pages</a><br>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
+			</div>
+	    </footer>
+	</div>
+</body>
+</html>

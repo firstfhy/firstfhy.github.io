@@ -4,6 +4,7 @@ cpp/function_table.html template.html content/program/cpp/function_table.txt [ti
 cpp/cpp_rpn.html template.html content/program/cpp/cpp_rpn.txt [title]-C++逆波兰式的实现
 cpp/string_match.html template.html content/program/cpp/string_match.txt [title]-C++串的简单模式匹配
 cpp/cpp_linkedlist.html template.html content/program/cpp/cpp_linkedlist.txt [title]-C++串的简单模式匹配
+cpp/dynamic_malloc.html template.html content/program/cpp/dynamic_malloc.txt [title]-C++动态分配空间实例
 
 nginx/nginx_reload.html template.html content/program/nginx/nginx_reload.txt [title]-nginx的平滑重启
 

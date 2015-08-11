@@ -6,6 +6,7 @@ cpp/string_match.html template.html content/program/cpp/string_match.txt [title]
 cpp/cpp_linkedlist.html template.html content/program/cpp/cpp_linkedlist.txt [title]-C++串的简单模式匹配
 cpp/dynamic_malloc.html template.html content/program/cpp/dynamic_malloc.txt [title]-C++动态分配空间实例
 cpp/cpp_sequence.html template.html content/program/cpp/cpp_sequence.txt [title]-C++动态分配空间实例
+cpp/cpp_dispatch.html template.html content/program/cpp/cpp_dispatch.txt [title]-C++贪婪法实例[多机调度问题]
 
 nginx/nginx_reload.html template.html content/program/nginx/nginx_reload.txt [title]-nginx的平滑重启
 

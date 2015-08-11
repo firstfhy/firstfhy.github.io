@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>C++贪婪法实例[多机调度问题]</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	
+	<link rel="stylesheet" href="../../stylesheets/stylesheet.css" media="screen">
+	<link rel="stylesheet" href="../../stylesheets/pygment_trac.css"/>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script type="text/javascript" src="../../javascripts/script.js"></script>
+	
+	<meta name="description" content="firstfhy">
+	
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+<body>
+	<div class="wrapper">
+		<div id="container">
+		    <div id="main" role="main">
+		    	<div class="download-bar">
+			    	<div class="inner">
+			          	<a class="code">CPP</a>
+			        </div>
+		        	<span class="blc"></span><span class="trc"></span>
+		        </div>
+		        <article class="markdown-body">
+					<h3>
+						C++贪婪法实例[多机调度问题]
+				   	</h3>
+#include &lt;iostream.h&gt;<br/>int s[100],hw[100],b[100][100],c[100];<br/>void diaodu(int m,int z)<br/>{<br/> int k=0,i,l=0,flag=0,j;<br/> for(i=1;i&lt;z;i++)<br/>&nbsp;&nbsp;if(s[k]&gt;s<span style="font-style:italic"><wbr/>) k=i;<br/> for(i=1;i&lt;m;i++)<br/>&nbsp;&nbsp;if(hw[l]&lt;hw<span style="font-style:italic"><wbr/>) l=i;<br/>&nbsp;&nbsp; s[k]+=hw[l];<br/> b[k][c[k]]+=l+1;<br/> c[k]++;<br/> hw[l]=0;<br/> for(i=0;i&lt;m;i++)<br/>&nbsp;&nbsp;if(hw<span style="font-style:italic"><wbr/>&gt;0) flag++;<br/> if(flag&gt;0) diaodu(m,z);<br/> else<br/> {<br/>&nbsp;&nbsp;for(j=0;j&lt;z;j++)<br/>&nbsp;&nbsp;{<br/>&nbsp;&nbsp; cout&lt;&lt;'s'&lt;&lt;j&lt;&lt;&quot;:&quot;;<br/>&nbsp;&nbsp; for(i=0;i&lt;c[j];i++)<br/>&nbsp;&nbsp;&nbsp;&nbsp;cout&lt;&lt;b[j]<span style="font-style:italic"><wbr/>&lt;&lt;&quot;号作业&nbsp;&nbsp;&nbsp;&nbsp;&quot;;<br/>&nbsp;&nbsp; cout&lt;&lt;endl;<br/>&nbsp;&nbsp;}<br/> }<br/>}<br/>void main()<br/>{<br/> int n,i,m;<br/> cout&lt;&lt;&quot;请输入机器数:&quot;;<br/> cin&gt;&gt;m;<br/> for(i=0;i&lt;m;i++)<br/> {<br/>&nbsp;&nbsp;s<span style="font-style:italic"><wbr/>=0;<br/>&nbsp;&nbsp;c<span style="font-style:italic"><wbr/>=0;<br/> }<br/> cout&lt;&lt;&quot;请输入作业个数:&quot;;<br/> cin&gt;&gt;n;<br/> for(i=0;i&lt;n;i++)<br/> {<br/>&nbsp;&nbsp;cout&lt;&lt;&quot;请输入作业使用时间&quot;&lt;&lt;i+1&lt;&lt;&quot;:&quot;;<br/>&nbsp;&nbsp;cin&gt;&gt;hw<span style="font-style:italic"><wbr/>;<br/> }<br/> diaodu(n,m);<br/>}</span></span></span></span></span></span></span>
+
+				</article>
+			</div>
+		</div>
+	    <footer>
+			<div class="owner">
+				<p><a href="https://github.com/firstfhy" class="avatar"><img src="https://avatars0.githubusercontent.com/u/10542465?v=3&amp;s=60" width="48" height="48"></a>View <a href="https://github.com/firstfhy">firstfhy</a> on <a href="https://www.github.com">GitHub</a></p>
+			</div>
+			<div class="creds">
+			  	<small>This page generated using <a href="http://pages.github.com/">GitHub Pages</a><br>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
+			</div>
+	    </footer>
+	</div>
+</body>
+</html>

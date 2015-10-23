@@ -56,3 +56,4 @@ other/object.html template.html content/program/other/object.txt [title]-面向�
 
 gmsv/npc_script_001.html template.html content/program/gmsv/npc_script_001.txt [title]-脚本语句讨论
 gmsv/npc_script_002.html template.html content/program/gmsv/npc_script_002.txt [title]-npc.txt多种NPC类型解释
+gmsv/readme.html template.html content/program/gmsv/readme.txt [title]-文件说明+时间类型+武器类型

@@ -1,0 +1,109 @@
+<strong>HouseMaster 房屋租赁</strong><div class="quote"><h5>引用:</h5><blockquote>HouseMaster 钎蔓 0 991197 0 1 1 0 <font color="red">3000 36 65 36 65 36 65 36 65</font> 1 60000 0 <font color="purple">11497</font> 0 1 0 <font color="sandybrown">11578|0,3000,37,66</font>|<font color="seagreen">11296|0,3000,35,62</font>|<font color="darkred">3806</font>|<font color="deepskyblue">19523</font>|<br />
+<font color="#ff0000">3000 36 65 36 65 36 65 36 65</font> 地图编号及坐标<br />
+<font color="#f4a460">11578|0,3000,37,66 </font>入口标记物形象和坐标<br />
+<font color="#2e8b57">11296|0,3000,35,62</font> 房子形象和坐标<br />
+<font color="#800080">11497</font> NPC形象<br />
+<font color="#8b0000">3806</font> 与HouseWarp2连接<br />
+<font color="deepskyblue">19523</font> 需要道具19523</blockquote></div><strong>HouseWarp2 房屋租赁传送</strong><div class="quote"><h5>引用:</h5><blockquote>HouseWarp2&nbsp;&nbsp;0 991198 0 1 1 0 3000 38 63 38 63 38 63 38 63 1 60000 0 0 0 1 0 <font color="red">1|3806</font><br />
+<font color="#ff0000">1|3806</font> 1为默认，房屋租赁入口到3806</blockquote></div></font><br />
+<strong><font face="宋体 ">orthopedist 整容医生</font></strong><br />
+<font face="宋体 "><div class="quote"><h5>引用:</h5><blockquote></font><br />
+<font face="宋体 ">orthopedist 橇发 沥绢府 0 806300 0 1 1 0<font color="red"> 59539 37 18 37 18 37 18 37 18</font> 1 60000 4 <font color="darkorange">14630</font> 0 1 0 <font color="darkorchid">3007174|3007175|3007176|3007177|3007178|3007179|3007180|3007181|3007182|3007183</font>|<font color="magenta">607683</font>|<font color="deepskyblue">1000</font>|</font><br />
+<font face="宋体 "></font><br />
+<font face="宋体 "><font color="#ff0000">59539 37 18 37 18 37 18 37 18</font> 地图坐标</font><br />
+<font face="宋体 "><font color="#ff8c00">14630</font> NPC形象</font><br />
+<font face="宋体 "><font color="#9932cc">3007174|3007175|3007176|3007177|3007178|3007179|3007180|3007181|3007182|3007183</font> 出现的MSG</font><br />
+<font face="宋体 "><font color="#ff00ff">607683</font> 需要物品607683</font><br />
+<font face="宋体 "><font color="#00bfff">1000</font> 价格为1000</blockquote></div></font><br />
+<br />
+<font face="宋体 "><strong>W</strong><strong>indowman 选项窗口</strong><div class="quote"><h5>引用:</h5><blockquote>Windowman 水晶兑换解说员 0 2052 0 1 1 0 <font color="red">1165 22 16 22 16 22 16 22 16</font> 1 60000 4 <font color="darkorange">14559</font> 0 1 0 <font color="blue">WM_ijk_2052.txt</font><br />
+<font color="#ff0000">1165 22 16 22 16 22 16 22 16</font> 地图和坐标<br />
+<font color="#ff8c00">14559 </font>NPC形象<br />
+<font color="#0000ff">WM_ijk_2052.txt </font>脚本<br />
+<br />
+以此为例：<br />
+PREV_00: #\n&nbsp; &nbsp;&nbsp; &nbsp; 农府胶呕狼 汲戈阑 秦靛府瘤.\n\n　　　　　辆幅客 狼固俊 措秦辑\n　　　　　己龙俊 措秦辑\n　　　　　荤侩过俊 措秦辑<br />
+Window 60184,SELECT[1]_100,SELECT[2]_100,SELECT[3]_100,CANCEL&nbsp; &nbsp; <font color="green">'对话弹出选项1，2，3，PREV为根选项</font><br />
+<br />
+SELECT[1]_100:&nbsp; &nbsp;&nbsp;&nbsp;</font><font face="宋体 "><font color="green">'分选项1<br />
+</font>Window 60185,NEXT_00<br />
+NEXT_00:<br />
+Window 60186,OK,PREV_00&nbsp; &nbsp;<font color="green">'弹出对话60186，确定后返回根选项</font></blockquote></div></font><font face="宋体 "><strong>Spiritman 招魂人员<br />
+</strong><div class="quote"><h5>引用:</h5><blockquote>Spiritman 罗德里克祭祀 0 770000 0 1 1 0 <font color="red">1202 12 17 12 17 12 17 12 17 </font>1 1000 4 <font color="deepskyblue">14067</font> 0 1 0 <font color="purple">100|990001|990002|990003|990004|990005|990006|990007|990008|990009|990010</font><br />
+<font color="#ff0000">1202 12 17 12 17 12 17 12 17 </font>地图坐标<br />
+<font color="#00bfff">14067 </font>NPC形象<br />
+<font color="#800080">100|990001|990002|990003|990004|990005|990006|990007|990008|990009|990010 </font>100为默认，后续为MSG</blockquote></div><strong>disemployment 撤消职业</strong><div class="quote"><h5>引用:</h5><blockquote>disemployment 游民申请员 0 10203 0 1 1 0 <font color="red">1000 85 44 85 44 85 44 85 44</font> 1 60000 6 <font color="mediumturquoise">14007</font> 0 1 0 <font color="yellowgreen">69046|69047|69048|69049|69050|69051|69052|</font><br />
+<font color="#ff0000">1000 85 44 85 44 85 44 85 44</font> 地图坐标<br />
+<font color="#48d1cc">14007</font> NPC形象<br />
+<font color="#9acd32">69046|69047|69048|69049|69050|69051|69052|</font> MSG</blockquote></div><strong>Brushman&nbsp;&nbsp;物品交换</strong><div class="quote"><h5>引用:</h5><blockquote>Brushman&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;纯银交换&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;0&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;10003&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;0&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;1&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;1&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;0&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;<font color="blue">1071&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;27&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;6&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;27&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;6&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;27&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;6&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;27&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;6 </font>&nbsp; &nbsp;&nbsp; &nbsp; 1&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;60000&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;0&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;<font color="darkorange">14075</font>&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;0&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;1&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;0&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;<font color="darkorchid"><font color="red">9603|</font>69004|69053|69057|69058|69059|</font><font color="red">9614</font>|<font color="yellowgreen">1|20</font><br />
+<br />
+<font color="#ff0000">9614</font>是兑换成的东西..<font color="#ff0000">9603</font>是需要的东西..<br />
+<font color="#0000ff">1071&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;27&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;6&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;27&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;6&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;27&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;6&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;27&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;6&nbsp; &nbsp; </font>是地图和坐标.<br />
+<font color="#9932cc">49004|69053|69057|69058|69059| </font>是相关MSG<br />
+<font color="#9acd32">1|20</font>是兑换一个<font color="#ff0000">9614</font>需要20个<font color="#ff0000">9603</font><br />
+<font color="#ff8c00">14075</font>&nbsp;&nbsp;NPC的形象<br />
+<font color="#ff0000"></font><br />
+那么.就添加<font color="#ff0000">9614</font>|<font color="yellowgreen">1|20</font>的类似内容<br />
+最大项目数为10个</blockquote></div></font><br />
+<font face="宋体 "><strong>TownPeople&nbsp;&nbsp;提示版</strong><div class="quote"><h5>引用:</h5><blockquote>TownPeople 伊恩 0 60138 0 1 1 0 <font color="red">2100 51 42 51 42 51 42 51 42</font> 1 60000 4 <font color="darkorange">14011</font> 0 1 0 </font><font face="宋体 "><font color="blue">2237|2238<br />
+</font><font color="#ff0000">2100 51 42 51 42 51 42 51 42</font> 相关地图和坐标<br />
+<font color="#0000ff">2237|2238 </font>会出现的MSG<br />
+<font color="#ff8c00">14011</font>&nbsp;&nbsp;NPC形象<br />
+<br />
+点击之后显示对话内容的NPC</blockquote></div><strong>StandEnemy&nbsp;&nbsp;地图上可见的敌人</strong><div class="quote"><h5>引用:</h5><blockquote>StandEnemy 水之精灵花罗 0 5304 0 1 1 0 <font color="red">9207 16 10 16 10 16 10 16 10</font> 1 60000 6 <font color="darkorange">110358</font> 0 1 0 <font color="yellowgreen">2|0,9208,5,10||0|||3006028||0|27212|||||||||</font><br />
+<font color="#ff0000">9207 16 10 16 10 16 10 16 10<font color="#000000"> </font></font>&nbsp;&nbsp;相关地图和坐标<br />
+<font color="#ff8c00">110358</font>&nbsp;&nbsp;NPC形象<br />
+<font color="#9acd32">2|0,9208,5,10||0|||3006028||0|27212|||||||||&nbsp;&nbsp;</font>0,9208,5,10 为战斗结束后传送到的坐标，27212为encount</blockquote></div><strong>WatchEx&nbsp;&nbsp;范围内监视</strong><div class="quote"><h5>引用:</h5><blockquote>WatchEx&nbsp;&nbsp;0 802239 0 1 1 0<font color="red"> 59680 148 145 148 145 148 145 148 145</font> 1 60000 0 0 0 1 0 <font color="royalblue">EV_tane_iwaya_200-11.txt</font><br />
+<font color="#ff0000">59680 148 145 148 145 148 145 148 145</font>&nbsp;&nbsp;地图和坐标<br />
+<font color="#4169e1">EV_tane_iwaya_200-11.txt&nbsp;&nbsp;</font>触发的脚本<br />
+<br />
+以此为例&nbsp;&nbsp;<br />
+block Xpos == 148 &amp;&amp; Ypos == 144&nbsp; &nbsp;<font color="green"> '判断是否在坐标内</font><br />
+Play_SE 274,320,240&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp; <font color="green">&nbsp; &nbsp;&nbsp;&nbsp;'播放音效</font><br />
+Message 3006709&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;</font><font face="宋体 "><font color="green">&nbsp;&nbsp;'出现系统提示MSG3006709<br />
+</font>SetLp -5&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;<font color="green"> ‘减5点魔</font><br />
+<br />
+估计是土洞里某陷阱的NPC类型吧…<br />
+<font color="green">'仔细一想不是…额…要是陷阱应该有Warp吧…那就应该是一个提示啦，比如你进入动物园，播放音效，提示啥的，哈~</font></blockquote></div><strong>ItemCount&nbsp; &nbsp; 物品积分计算</strong><div class="quote"><h5>引用:</h5><blockquote>ItemCount 墨款飘 攫聪 0 991278 0 1 1 0 <font color="red">444 5 4 5 4 5 4 5 4</font> 1 60000 0 <font color="darkorange">100752</font> 0 1 0 <font color="blue">CNT_19000.txt</font><br />
+<font color="#ff0000">444 5 4 5 4 5 4 5 4 </font>地图和坐标<br />
+<font color="#ff8c00">100752&nbsp;&nbsp;</font>NPC形象<br />
+<font color="blue">CNT_19000.txt</font>&nbsp;&nbsp;脚本<br />
+<br />
+以此为例<br />
+Total= 2, 2<br />
+Item= 10002,&nbsp;&nbsp;9602<br />
+Type=0<br />
+Gold=0&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;<font color="green"> '以上是前提，总计算量为2，物品可以是10002，9602，输出量为0，金钱为0</font><br />
+<br />
+block CountItemNum &lt; $Total&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;</font><font face="宋体 "><font color="green"> '判断条件，物品的计算小于总计数，也就是小于两次<br />
+</font>OpenItemCountWindow 990010,990011,990012,990013,990014&nbsp; &nbsp; <font color="green">‘打开计数的窗口，开始计算</font><br />
+GlobalTimerA = 0&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;<font color="green">&nbsp; &nbsp;'全局时间计算为0</font><br />
+Message 990014&nbsp; &nbsp; <font color="green">&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp; '系统提示990014</font><br />
+<br />
+解释如下：<br />
+比如你拿一个物品去该NPC，去一次计一次数，当计数小于Total限制的值时，触发。<br />
+关于星夜说的收取物品，可能也是计数后触发的吧…</blockquote></div><strong>Vehicle&nbsp;&nbsp;交通工具</strong><div class="quote"><h5>引用:</h5><blockquote><font color="#0000ff">Vehicle</font>&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;飞象&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;0&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;806572&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;0&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;1&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;1&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;0&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;59522&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;118&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;101&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;118&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;101&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;118&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;101&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;118&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;101&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;1&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;60000&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;0&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;14568&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;0&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;1&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;0&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;<br />
+<font color="#9acd32">110782</font>|<font color="orange">300</font>||<font color="deepskyblue">-2</font>|0|<font color="orange">59524|100|141</font>|<font color="seagreen">90</font>|<font color="deepskyblue">2</font>|<font color="purple">3007366|3007367|3007368|3007369|3007370|3007371|3007372|3007373</font><br />
+<br />
+<font color="yellowgreen">110782</font>&nbsp;&nbsp;交通工具形象<br />
+<font color="orange">300</font>&nbsp;&nbsp;为乘坐价格 300魔币<br />
+<font color="deepskyblue">-2&nbsp;&nbsp;2</font>其中一个是限制人数最大为2人..<br />
+<font color="orange">59524|100|141</font>&nbsp;&nbsp;59524目的地图编号 100 141&nbsp;&nbsp;坐标<br />
+<font color="seagreen">90</font>&nbsp;&nbsp;乘坐时间，单位second<br />
+<font color="purple">3007366|3007367|3007368|3007369|3007370|3007371|3007372|3007373</font>&nbsp;&nbsp;对应MSG</blockquote></div></font><div class="quote"><h5>免费内容:</h5><blockquote><font face="宋体 "><br />
+<strong>其他类型：</strong></font><br />
+<font face="宋体 "><strong><font color="red">replaceGM GM就职（不知为何显示不出来，但是MSG里有%s，类似于恢复魅力，我猜可能是付费成为GM）<br />
+</font></strong>Piolot 领航员(类似于Townpeople)<br />
+BossBox 宝箱</font><br />
+<font face="宋体 "><font color="darkorchid">exchanger 导游(类似于Townpeople,每一个|为×屏蔽词汇×内容,顺序播放MSG)</font><br />
+<font color="red"><strong>Skillmasterd 替换技能</strong></font></font><br />
+<font color="#ff0000"></font><font face="宋体 "><font color="darkorchid">PlayerSearch 查找个人资料里需要某物品的人</font><br />
+Injurydoctor&nbsp;&nbsp;医生</font><br />
+<font face="宋体 ">Charm 魅力恢复<br />
+Timecard 打卡处<br />
+Skillmaster 技能导师<br />
+Jobsmaster 职业导师<br />
+Windowhealer 护士<br />
+Windowhealer2 资深护士<br />
+Repairman 修理工<br />
+Titleman 检查称号<br />

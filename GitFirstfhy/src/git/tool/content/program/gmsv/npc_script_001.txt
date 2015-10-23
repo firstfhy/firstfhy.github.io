@@ -1,18 +1,153 @@
-&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;生命周期：某个脚本内，跳出脚本既归0<br />
-&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;类型：整型<br />
-&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;未被用到的编号：14-19,21-28<br />
-<br />
-LocalFlag<br />
-&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;生命周期：某个脚本内，跳出脚本既归0<br />
-&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;类型：布尔型<br />
-&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;未被用到的编号：4-24,26-256<br />
-<br />
-globalFlag<br />
-&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;生命周期：登出不消失，服务器重启归0<br />
-&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;类型：布尔型<br />
-&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;未被用到的编号：73-255<br />
-<br />
-NowEvent 和 EndEvent<br />
-&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;生命周期：永久存在，保存到数据库<br />
-&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;类型：布尔型<br />
-&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;未被用到的编号：160-199,210-255<br />
+addfeversec = 加卡时<br/>
+addgold = 加钱<br/>
+addgoldlevel <br/>
+addluck =加幸运度<br/>
+addskillslot = 加技能格<br/>
+addstampcount <br/>
+albumitemflg =变更人物头象<br/>
+bankitem <br/>
+BBImage(BImage) =判断人物图形编号<br/>
+block = NPC指令开端（类似设定一块一块脚本块）<br/>
+Changepal = 改变地图调色板 例如 changepal 15,180&nbsp;&nbsp;参数15为调色板值，180为时间，单位秒<br/>
+checkitemcategory <br/>
+CheckRealTime =检查真实时间<br/>
+checkskillslot =检查技能格数<br/>
+checktitle =檢查是否有新称号<br/>
+else =配合IF<br/>
+encount =打怪<br/>
+endblock <br/>
+endevent =赋予指定event编号<br/>
+endif =配合IF<br/>
+EndWindow =对话结束关闭对话视窗<br/>
+EquipItem <br/>
+fame =称号值<br/>
+floor&nbsp;&nbsp;判断所在地图的编号比如法兰 1000<br/>
+fp =给予+-生命值<br/>
+gaendwindow&nbsp;&nbsp;全队endwindow？<br/>
+gaglobalflag 全队globalFlag条件判断<br/>
+gawindow&nbsp; &nbsp;全队window？<br/>
+getalbumflgtotal<br/>
+giveitem =给予指定道具编号指令（道具鉴定与否看itemset中的设置几率）<br/>
+GiveLeak0Item =给予特定道具编号指令（未鉴定道具）<br/>
+GiveLeak1Item =给予指定关键道具编号指令（已鉴定道具）<br/>
+givepet 给予指定宠物<br/>
+giverecipe =给予指定技能编号<br/>
+givestackitem<br/>
+globalFlag&nbsp;&nbsp;类似ENDEVENT的判断？？ 登出效果不消失，服务器重启归零<br/>
+globaltimer<br/>
+Gold =检查当前金钱值<br/>
+gotob 用于语句跳转，向上跳（goto back）<br/>
+gotof 用语语句跳转，向下跳（goto forward）<br/>
+Group =检查当前組对人数<br/>
+guildmember <br/>
+HaveItem&nbsp;&nbsp;检测是否拥有道具<br/>
+haveleak0item<br/>
+haveleak1item<br/>
+havetitle&nbsp;&nbsp;检测是否拥有称号<br/>
+houseid<br/>
+if =搭配ELES指令<br/>
+imagetype =判断0:GIRL 1:BOY 2:CHILDBOY 3:CHILDGIRL 4:MAN 5:WOMAN 6:OLDMAN 7OG<br/>
+Item =道具编号开端(如Item1234)<br/>
+ItemCreateTime =判断道具创建到現在的时间差<br/>
+itemdur =判断指定道具当前耐久<br/>
+itemdurper <br/>
+ItemSpace =判断道具空间<br/>
+job =判断人物职业编号<br/>
+jobancestry <br/>
+jobrank =判断人物职业等級<br/>
+killdrugdish <br/>
+killitem =刪除指定编号道具<br/>
+killitemall =刪除指定编号下的所有道具<br/>
+killleak0item =刪除指定编号下未鉴定的所有道具<br/>
+killleak1item =刪除指定编号下已鉴定的所有道具<br/>
+killpet =刪除指定宠物<br/>
+killpeth<br/>
+killpetl =刪除指定宠物<br/>
+LeaveGroup =强制离队<br/>
+level =判断等級<br/>
+localcount&nbsp;&nbsp;本地计量？类似与局部计量变量<br/>
+localflag<br/>
+lp =判断生命值<br/>
+maxfp =判断最大魔法值<br/>
+maxlp =判断最大生命值<br/>
+Message = 显示系统提示 ，参数为msg编号<br/>
+metamocount =人物指定变更变身编号<br/>
+moveto<br/>
+Next =搭配Window指令<br/>
+no =搭配Window指令<br/>
+nowevent =判断当前event值<br/>
+nowtime =判断当前魔力时间(0~15)<br/>
+OK =搭配Window指令<br/>
+pequipitem&nbsp;&nbsp;整个队伍中有几人装备某道具&nbsp;&nbsp;例 EV_tomita_comtest0204<br/>
+petlevel =设定指定宠物等级<br/>
+petspace =判断宠物栏当前剩余空格<br/>
+phitem&nbsp;&nbsp;整个队伍的道具判断<br/>
+Play_SE =播放指定音效<br/>
+playse =播放指定音效<br/>
+random&nbsp;&nbsp;随即数设定<br/>
+Setaction =指定npc动作(必須是可动的npc)，动作参数应该是0-9<br/>
+setcharm =设定魅力值<br/>
+SetDur 设定物品耐久，例如 setdur 18776,-1 18776为物品ID，-1表示减1耐久度<br/>
+setfeverflg =设定称号值<br/>
+sethouse =设定房间剩余时间<br/>
+sethouselimit <br/>
+setlevel<br/>
+SetLoginPoint =设定登陆点指令，已知的参数为 0：法兰|1：阿凯鲁法|2：哥拉尔|3：应该是新城那个<br/>
+SetLp =设定生命值<br/>
+SetObject 设定指定不可穿越道具<br/>
+setparameter <br/>
+setvisitor&nbsp;&nbsp;在流行山丘的大地鼠婆婆的脚本里有用到 setvisitor +1<br/>
+shapenext&nbsp; &nbsp;设定NPC变换形象，举例“shapenext&nbsp;&nbsp;外观编号”<br/>
+shapeoff<br/>
+shapeon<br/>
+shipchardown&nbsp;&nbsp;下船？<br/>
+shipchartake&nbsp; &nbsp;上船<br/>
+shipgetstoptime<br/>
+skilllevel =设定技能等級<br/>
+stackitemspace<br/>
+StrCmpChat =判断 msg对话字句<br/>
+strstrchat&nbsp; &nbsp;同上？<br/>
+systemmessage&nbsp;&nbsp;系统信息？<br/>
+total&nbsp;&nbsp;全局总量<br/>
+tglobalflag<br/>
+trueimage<br/>
+warp =移动指令<br/>
+Window_NO =搭配Window_yes使用(玩家选no时)<br/>
+Window_OK =玩家选确定后<br/>
+Window_YES = 玩家选&quot;yes&quot;时<br/>
+xpos =指定x坐标<br/>
+yes 搭配window使用<br/>
+Ypos =指定y坐标<br/>
+<br/>
+LocalCount<br/>
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;生命周期：某个脚本内，跳出脚本既归0<br/>
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;类型：整型<br/>
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;未被用到的编号：14-19,21-28<br/>
+<br/>
+LocalFlag<br/>
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;生命周期：某个脚本内，跳出脚本既归0<br/>
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;类型：布尔型<br/>
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;未被用到的编号：4-24,26-256<br/>
+<br/>
+globalFlag<br/>
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;生命周期：登出不消失，服务器重启归0<br/>
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;类型：布尔型<br/>
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;未被用到的编号：73-255<br/>
+<br/>
+NowEvent 和 EndEvent<br/>
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;生命周期：永久存在，保存到数据库<br/>
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;类型：布尔型<br/>
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;未被用到的编号：160-199,210-255<br/>
+<br/>
+EquipItem 检查正装备着的道具 判定条件 用于判定语句后面<br/>
+格式:EquipItem == 道具编号<br/>
+<br/>
+killpet =刪除指定宠物<br/>
+killpeth<br/>
+killpetl =刪除指定宠物<br/>
+<br/>
+killpeth和killpetl 后面跟的代码是enemybase.txt 里的代码<br/>
+区别在于<br/>
+killpeth 删除大于1级的宠<br/>
+killpetl 删除1级的宠 </blockquote></div>翻了端里原有的一些脚本文件，然后又搜索了一下gmsv，在其中一块偏移地址里发现一部分很类似脚本语句的，也添加了进来。<br/>
+<br/>

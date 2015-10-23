@@ -3,7 +3,7 @@ addgold = 加钱<br/>
 addgoldlevel <br/>
 addluck =加幸运度<br/>
 addskillslot = 加技能格<br/>
-addstampcount <br/>
+addstampcount = 给某一道具加计数值 <br/>
 albumitemflg =变更人物头象<br/>
 bankitem <br/>
 BBImage(BImage) =判断人物图形编号<br/>

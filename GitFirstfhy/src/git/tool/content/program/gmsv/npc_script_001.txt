@@ -149,5 +149,4 @@ killpetl =刪除指定宠物<br/>
 killpeth和killpetl 后面跟的代码是enemybase.txt 里的代码<br/>
 区别在于<br/>
 killpeth 删除大于1级的宠<br/>
-killpetl 删除1级的宠 </blockquote></div>翻了端里原有的一些脚本文件，然后又搜索了一下gmsv，在其中一块偏移地址里发现一部分很类似脚本语句的，也添加了进来。<br/>
-<br/>
+killpetl 删除1级的宠 

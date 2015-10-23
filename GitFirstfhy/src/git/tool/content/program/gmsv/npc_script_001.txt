@@ -1,0 +1,18 @@
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;生命周期：某个脚本内，跳出脚本既归0<br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;类型：整型<br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;未被用到的编号：14-19,21-28<br />
+<br />
+LocalFlag<br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;生命周期：某个脚本内，跳出脚本既归0<br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;类型：布尔型<br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;未被用到的编号：4-24,26-256<br />
+<br />
+globalFlag<br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;生命周期：登出不消失，服务器重启归0<br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;类型：布尔型<br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;未被用到的编号：73-255<br />
+<br />
+NowEvent 和 EndEvent<br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;生命周期：永久存在，保存到数据库<br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;类型：布尔型<br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;未被用到的编号：160-199,210-255<br />

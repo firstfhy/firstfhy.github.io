@@ -37,6 +37,7 @@ public class GeneratedHTMLTemplate {
 		writer.append(content);
 		writer.flush();
 		writer.close();
+		System.out.println(file.getPath());
 	}
 	
 	public void make(String name, Map<String, String> contents, boolean existsDelete, File template) throws Exception {

@@ -53,3 +53,5 @@ other/aoi_02.html template.html content/program/other/aoi_02.txt [title]-游戏�
 other/sort.html template.html content/program/other/sort.txt [title]-程序员必知的8大排序
 other/trie_tree.html template.html content/program/other/trie_tree.txt [title]-数据结构之Trie树
 other/object.html template.html content/program/other/object.txt [title]-面向对象的几大原则
+
+gmsv/npc_script_001.html template.html content/program/gmsv/npc_script_001.txt [title]-共享npc脚本变量的说明和未被用到的编号

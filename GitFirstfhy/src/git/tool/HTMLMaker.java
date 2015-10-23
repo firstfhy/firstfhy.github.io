@@ -13,7 +13,7 @@ public class HTMLMaker extends GeneratedHTMLTemplate {
 	
 	public static void main(String[] args) {
 		if (args == null || args.length < 3) {
-			args = new String[]{"../../../../program", "content/rule.txt", "template.html"};
+			args = new String[]{"../../../../../program", "content/rule.txt", "template.html"};
 		}
 		
 		try {

@@ -1,0 +1,134 @@
+#定义Nginx运行的用户和用户组<br />
+user www www; </p>
+<p>#nginx进程数，建议设置为等于CPU总核心数。<br />
+worker_processes 8;</p>
+<p>#全局错误日志定义类型，[ debug | info | notice | warn | error | crit ]<br />
+error_log /var/log/nginx/error.log info;</p>
+<p>#进程文件<br />
+pid /var/run/nginx.pid;</p>
+<p>#一个nginx进程打开的最多文件描述符数目，理论值应该是最多打开文件数（系统的值ulimit -n）与nginx进程数相除，但是nginx分配请求并不均匀，所以建议与ulimit -n的值保持一致。<br />
+worker_rlimit_nofile 65535;</p>
+<p>#工作模式与连接数上限<br />
+events<br />
+{<br />
+#参考事件模型，use [ kqueue | rtsig | epoll | /dev/poll | select | poll ]; epoll模型是<a href="http://www.ha97.com/category/linux">Linux</a> 2.6以上版本内核中的高性能网络I/O模型，如果跑在FreeBSD上面，就用kqueue模型。<br />
+use epoll;<br />
+#单个进程最大连接数（最大连接数=连接数*进程数）<br />
+worker_connections 65535;<br />
+}<br />
+<span id="more-5194"></span><br />
+#设定http服务器<br />
+http<br />
+{<br />
+include mime.types; #文件扩展名与文件类型映射表<br />
+default_type application/octet-stream; #默认文件类型<br />
+#charset utf-8; #默认编码<br />
+server_names_hash_bucket_size 128; #服务器名字的hash表大小<br />
+client_header_buffer_size 32k; #上传文件大小限制<br />
+large_client_header_buffers 4 64k; #设定请求缓<br />
+client_max_body_size 8m; #设定请求缓<br />
+sendfile on; #开启高效文件传输模式，sendfile指令指定nginx是否调用sendfile函数来输出文件，对于普通应用设为 on，如果用来进行下载等应用磁盘IO重负载应用，可设置为off，以平衡磁盘与网络I/O处理速度，降低系统的负载。注意：如果图片显示不正常把这个改成off。<br />
+autoindex on; #开启目录列表访问，合适下载服务器，默认关闭。<br />
+tcp_nopush on; #防止网络阻塞<br />
+tcp_nodelay on; #防止网络阻塞<br />
+keepalive_timeout 120; #长连接超时时间，单位是秒</p>
+<p>#FastCGI相关参数是为了改善网站的性能：减少资源占用，提高访问速度。下面参数看字面意思都能理解。<br />
+fastcgi_connect_timeout 300;<br />
+fastcgi_send_timeout 300;<br />
+fastcgi_read_timeout 300;<br />
+fastcgi_buffer_size 64k;<br />
+fastcgi_buffers 4 64k;<br />
+fastcgi_busy_buffers_size 128k;<br />
+fastcgi_temp_file_write_size 128k;</p>
+<p>#gzip模块设置<br />
+gzip on; #开启gzip压缩输出<br />
+gzip_min_length 1k; #最小压缩文件大小<br />
+gzip_buffers 4 16k; #压缩缓冲区<br />
+gzip_http_version 1.0; #压缩版本（默认1.1，前端如果是squid2.5请使用1.0）<br />
+gzip_comp_level 2; #压缩等级<br />
+gzip_types text/plain application/x-javascript text/css application/xml;<br />
+#压缩类型，默认就已经包含text/html，所以下面就不用再写了，写上去也不会有问题，但是会有一个warn。<br />
+gzip_vary on;<br />
+#limit_zone crawler $binary_remote_addr 10m; #开启限制IP连接数的时候需要使用</p>
+<p>upstream blog.ha97.com {<br />
+#upstream的负载均衡，weight是权重，可以根据机器配置定义权重。weigth参数表示权值，权值越高被分配到的几率越大。<br />
+<a href="http://www.ha97.com/tag/server">server</a> 192.168.80.121:80 weight=3;<br />
+server 192.168.80.122:80 weight=2;<br />
+server 192.168.80.123:80 weight=3;<br />
+}</p>
+<p>#虚拟主机的配置<br />
+server<br />
+{<br />
+#监听端口<br />
+listen 80;<br />
+#域名可以有多个，用空格隔开<br />
+server_name www.ha97.com ha97.com;<br />
+index index.html index.htm index.php;<br />
+root /data/www/ha97;<br />
+location ~ .*\.(php|php5)?$<br />
+{<br />
+fastcgi_pass 127.0.0.1:9000;<br />
+fastcgi_index index.php;<br />
+include fastcgi.conf;<br />
+}<br />
+#图片缓存时间设置<br />
+location ~ .*\.(gif|jpg|jpeg|png|bmp|swf)$<br />
+{<br />
+expires 10d;<br />
+}<br />
+#JS和CSS缓存时间设置<br />
+location ~ .*\.(js|css)?$<br />
+{<br />
+expires 1h;<br />
+}<br />
+#日志格式设定<br />
+log_format access '$remote_addr - $remote_user [$time_local] "$request" '<br />
+'$status $body_bytes_sent "$http_referer" '<br />
+'"$http_user_agent" $http_x_forwarded_for';<br />
+#定义本虚拟主机的访问日志<br />
+access_log /var/log/nginx/ha97access.log access;</p>
+<p>#对 "/" 启用反向代理<br />
+location / {<br />
+proxy_pass http://127.0.0.1:88;<br />
+proxy_redirect off;<br />
+proxy_set_header X-Real-IP $remote_addr;<br />
+#后端的Web服务器可以通过X-Forwarded-For获取用户真实IP<br />
+proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;<br />
+#以下是一些反向代理的配置，可选。<br />
+proxy_set_header Host $host;<br />
+client_max_body_size 10m; #允许客户端请求的最大单文件字节数<br />
+client_body_buffer_size 128k; #缓冲区代理缓冲用户端请求的最大字节数，<br />
+proxy_connect_timeout 90; #nginx跟后端服务器连接超时时间(代理连接超时)<br />
+proxy_send_timeout 90; #后端服务器数据回传时间(代理发送超时)<br />
+proxy_read_timeout 90; #连接成功后，后端服务器响应时间(代理接收超时)<br />
+proxy_buffer_size 4k; #设置代理服务器（nginx）保存用户头信息的缓冲区大小<br />
+proxy_buffers 4 32k; #proxy_buffers缓冲区，网页平均在32k以下的设置<br />
+proxy_busy_buffers_size 64k; #高负荷下缓冲大小（proxy_buffers*2）<br />
+proxy_temp_file_write_size 64k;<br />
+#设定缓存文件夹大小，大于这个值，将从upstream服务器传<br />
+}</p>
+<p>#设定查看Nginx状态的地址<br />
+location /NginxStatus {<br />
+stub_status on;<br />
+access_log on;<br />
+auth_basic "NginxStatus";<br />
+auth_basic_user_file conf/htpasswd;<br />
+#htpasswd文件的内容可以用<a href="http://www.ha97.com/category/web-server/apache">apache</a>提供的htpasswd工具来产生。<br />
+}</p>
+<p>#本地动静分离反向代理配置<br />
+#所有jsp的页面均交由<a href="http://www.ha97.com/category/web-server/tomcat">tomcat</a>或<a href="http://www.ha97.com/category/web-server/resin">resin</a>处理<br />
+location ~ .(jsp|jspx|do)?$ {<br />
+proxy_set_header Host $host;<br />
+proxy_set_header X-Real-IP $remote_addr;<br />
+proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;<br />
+proxy_pass http://127.0.0.1:8080;<br />
+}<br />
+#所有静态文件由nginx直接读取不经过<a href="http://www.ha97.com/tag/tomcat">tomcat</a>或<a href="http://www.ha97.com/tag/resin">resin</a><br />
+location ~ .*.(htm|html|gif|jpg|jpeg|png|bmp|swf|ioc|rar|zip|txt|flv|mid|doc|ppt|pdf|xls|mp3|wma)$<br />
+{ expires 15d; }<br />
+location ~ .*.(js|css)?$<br />
+{ expires 1h; }<br />
+}<br />
+}<br />
+</code><br />
+更详细的模块参数请参考：http://wiki.nginx.org/Main</p>

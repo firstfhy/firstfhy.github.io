@@ -11,6 +11,7 @@ cpp/cpp_backtracking_02.html template.html content/program/cpp/cpp_backtracking_
 cpp/cpp_backtracking_01.html template.html content/program/cpp/cpp_backtracking_01.txt [title]-C++回溯法实例1
 
 nginx/nginx_reload.html template.html content/program/nginx/nginx_reload.txt [title]-nginx的平滑重启
+nginx/nginx_config.html template.html content/program/nginx/nginx_config.txt [title]-Nginx配置文件nginx.conf中文详解
 
 vb/vb_access.html template.html content/program/vb/vb_access.txt [title]-vb调用access主要代码
 
